@@ -1,7 +1,7 @@
 # Личный проект «TaskForce»
 
 * Студент: [Рашид Байчоров](https://up.htmlacademy.ru/yii/1/user/1180999).
-* Наставник: `Неизвестно`.
+* Наставник: [Evgeny Savich](https://htmlacademy.ru/profile/id68926).
 
 ---
 
