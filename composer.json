@@ -1,0 +1,15 @@
+{
+  "name": "vendor_name/1180999-task-force-1",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "msiDragon",
+      "email": "email@example.com"
+    }
+  ],
+  "require-dev": {
+    "kahlan/kahlan": "^5.1"
+  }
+}
