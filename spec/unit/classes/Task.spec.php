@@ -8,7 +8,7 @@ describe("Проверяем доступные действия на стату
         it("Доступные действия: отменить, откликнуться", function () {
             $task = new Task('test', 1);
             $res = $task->getActions(Task::STATUS_NEW);
-            expect($res)->toBe([Task::ACTION_CANCEL, Task::ACTION_RESPONSE]);
+            expect($res)->toBe([Task::ACTION_CANCEL, Task::ACTION_START]);
         });
     });
 
@@ -58,7 +58,7 @@ describe("Проверяем текущий статус задачи", function
     context("Когда задачу вязли в работу", function () {
         it('Ожидаем статус: выполняется', function() {
             $task = new Task('test', 1);
-            $res = $task->getNextStatus(Task::ACTION_RESPONSE);
+            $res = $task->getNextStatus(Task::ACTION_START);
             expect($res)->toBe(Task::STATUS_IN_WORK);
         });
     });
