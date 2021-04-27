@@ -1,15 +1,26 @@
 {
   "name": "vendor_name/1180999-task-force-1",
-  "description": "description",
+  "description": "TaskForce» — это онлайн площадка для поиска исполнителей на разовые задачи",
   "minimum-stability": "stable",
   "license": "proprietary",
   "authors": [
     {
-      "name": "msiDragon",
-      "email": "email@example.com"
+      "name": "B.Rashid",
+      "email": "mahraway@gmail.com"
     }
   ],
   "require-dev": {
     "kahlan/kahlan": "^5.1"
+  },
+  "scripts": {
+    "run-tests": "./vendor/bin/kahlan --config=bootstrap.php"
+  },
+  "autoload": {
+    "psr-4": {
+      "taskforce\\": "src/"
+    },
+    "files": [
+      "landing.html"
+    ]
   }
 }
