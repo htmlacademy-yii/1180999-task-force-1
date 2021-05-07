@@ -19,7 +19,7 @@ CREATE TABLE categories
 CREATE TABLE cities
 (
     id   INT AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL UNIQUE,
     code VARCHAR(255) NOT NULL,
 
     PRIMARY KEY (id)
@@ -29,7 +29,7 @@ CREATE TABLE cities
 CREATE TABLE files
 (
     id   INT AUTO_INCREMENT,
-    path VARCHAR(255) NOT NULL,
+    path VARCHAR(255) NOT NULL UNIQUE,
     PRIMARY KEY (id)
 );
 
