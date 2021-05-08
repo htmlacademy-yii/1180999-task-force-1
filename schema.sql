@@ -18,10 +18,10 @@ CREATE TABLE categories
 -- Список городов
 CREATE TABLE cities
 (
-    id   INT AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL UNIQUE,
-    code VARCHAR(255) NOT NULL,
-
+    id        INT AUTO_INCREMENT,
+    name      VARCHAR(255)   NOT NULL UNIQUE,
+    latitude  DECIMAL(9, 7)  NOT NULL,
+    longitude DECIMAL(10, 7) NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -54,7 +54,7 @@ CREATE TABLE users
     notification_task_action TINYINT       NOT NULL default 0,
     notification_review      TINYINT       NOT NULL default 0,
     failed_count             INT           NOT NULL default 0,
-    show_contacts            TINYINT       NOT NULL default 0, -- (скрыть контакты)
+    show_contacts            TINYINT       NOT NULL default 0,
 
     city_id                  INT           NOT NULL,
     avatar_file_id           INT           NULL,
@@ -64,7 +64,7 @@ CREATE TABLE users
     FOREIGN KEY (avatar_file_id) REFERENCES files (id)
 );
 
-
+-- Файлы пользователей
 CREATE TABLE users_files
 (
     id      INT AUTO_INCREMENT,
@@ -79,32 +79,31 @@ CREATE TABLE users_files
 -- Задачи
 CREATE TABLE tasks
 (
-    id            INT AUTO_INCREMENT,
-    dt_add        DATETIME      NOT NULL,
-    deadline      DATETIME      NOT NULL,
-    user_id       INT           NOT NULL,
-    executor_id   INT           NOT NULL,
-    category_id   INT           NOT NULL,
-    city_id       INT           NOT NULL,
-    task_files_id INT           NOT NULL,
-    status        TINYINT       NOT NULL,
-    name          VARCHAR(255)  NOT NULL,
-    description   VARCHAR(1000) NOT NULL,
-    cost          INT           NULL,
+    id          INT AUTO_INCREMENT,
+    dt_add      DATETIME      NOT NULL,
+    deadline    DATETIME      NOT NULL,
+    user_id     INT           NOT NULL,
+    executor_id INT           NOT NULL,
+    category_id INT           NOT NULL,
+    city_id     INT           NOT NULL,
+    status      TINYINT       NOT NULL,
+    name        VARCHAR(255)  NOT NULL,
+    description VARCHAR(1000) NOT NULL,
+    cost        INT           NULL,
 
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (executor_id) REFERENCES users (id),
     FOREIGN KEY (category_id) REFERENCES categories (id),
     FOREIGN KEY (city_id) REFERENCES cities (id),
-    FOREIGN KEY (task_files_id) REFERENCES files (id),
     INDEX tasks_name_idx (name),
     INDEX tasks_category_idx (category_id),
     INDEX tasks_executor_idx (executor_id),
     INDEX tasks_city_idx (city_id)
-    );
+);
 
-CREATE TABLE task_files
+-- Файлы задач
+CREATE TABLE tasks_files
 (
     id      INT AUTO_INCREMENT,
     task_id INT NOT NULL,
@@ -115,6 +114,7 @@ CREATE TABLE task_files
     FOREIGN KEY (file_id) REFERENCES files (id)
 );
 
+-- Сообщения
 CREATE TABLE users_messages
 (
     id           INT AUTO_INCREMENT,
@@ -123,6 +123,7 @@ CREATE TABLE users_messages
     recipient_id INT           NOT NULL, -- получатель
     text         VARCHAR(1000) NOT NULL,
     task_id      INT           NOT NULL,
+    is_read      TINYINT       NOT NULL default 0,
 
     PRIMARY KEY (id),
     FOREIGN KEY (sender_id) REFERENCES users (id),
@@ -137,7 +138,7 @@ CREATE TABLE responses
     dt_add      DATETIME,
     executor_id INT           NOT NULL,
     task_id     INT           NOT NULL,
-    description VARCHAR(1000) NOT NULL,
+    description VARCHAR(2000) NOT NULL,
     price       INT           NOT NULL,
 
     PRIMARY KEY (id),
@@ -147,6 +148,7 @@ CREATE TABLE responses
     INDEX responses_task_idx (task_id)
 );
 
+-- Отзывы
 CREATE TABLE reviews
 (
     id          INT AUTO_INCREMENT,
@@ -154,11 +156,11 @@ CREATE TABLE reviews
     executor_id INT           NOT NULL,
     task_id     INT           NOT NULL,
     score       TINYINT       NULL default 0,
-    text        VARCHAR(1000) NULL,
+    text        TEXT NULL,
 
     PRIMARY KEY (id),
     FOREIGN KEY (executor_id) REFERENCES users (id),
-    FOREIGN KEY (task_id) REFERENCES  tasks (id)
+    FOREIGN KEY (task_id) REFERENCES tasks (id)
 );
 
 -- Для полнотекстового поиска по имени задачи
