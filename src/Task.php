@@ -1,6 +1,12 @@
 <?php
 namespace taskforce;
 
+use taskforce\actions\TaskAccept;
+use taskforce\actions\TaskCancel;
+use taskforce\actions\TaskComplete;
+use taskforce\actions\TaskDiscard;
+use taskforce\actions\TaskResponse;
+
 class Task
 {
     //Статусы
@@ -10,11 +16,19 @@ class Task
     const STATUS_SUCCESS = 'Выполнено';
     const STATUS_FAIL = 'Провалено';
 
-    //Действия
-    const ACTION_CANCEL = 'Отменить';
-    const ACTION_START = 'Откликнуться';
-    const ACTION_FAIL = 'Отказаться';
-    const ACTION_SUCCESS = 'Выполнено';
+//    //Действия RU
+//    const ACTION_CANCEL = 'Отменить';
+//    const ACTION_START = 'Откликнуться';
+//    const ACTION_FAIL = 'Отказаться';
+//    const ACTION_SUCCESS = 'Выполнено';
+//    const ACTION_ACCEPT = 'Принять';
+
+    //Действия EN
+    const ACTION_CANCEL = 'Cancel';
+    const ACTION_START = 'Respond';
+    const ACTION_FAIL = 'Refuse';
+    const ACTION_SUCCESS = 'Execute';
+    const ACTION_ACCEPT = 'Accept';
 
     //Карта действий
     const ACTION_STATUS_MAP = [
@@ -41,6 +55,7 @@ class Task
         $this->name = $name;
         $this->status = self::STATUS_NEW;
         $this->clientId = $clientId;
+        $this->masterId = $clientId;
     }
 
     /**
@@ -52,12 +67,12 @@ class Task
     {
         if ($status === self::STATUS_NEW)
         {
-            return [self::ACTION_CANCEL, self::ACTION_START];
+            return [new TaskCancel(), new TaskResponse(), new TaskAccept()];
         }
 
         if ($status === self::STATUS_IN_WORK)
         {
-            return [self::ACTION_SUCCESS, self::ACTION_FAIL];
+            return [new TaskComplete(), new TaskDiscard()];
         }
 
         return null;

@@ -2,21 +2,74 @@
 
 require_once 'vendor/autoload.php';
 
+describe("Проверка прав на действия пользователя", function() {
+
+    context("Статус Новая задача", function () {
+        it("Отменить задание можно если id пользователя = id автора = id мастера", function () {
+            $actionCancel = new \taskforce\actions\TaskCancel();
+            $res = $actionCancel->checkAccess(\taskforce\Task::STATUS_NEW, 1, 1, 1);
+            expect($res)->toBe(true);
+        });
+    });
+
+    context("Статус Новая задача", function () {
+        it("Откликнуться на задание может пользователь у которого id не равен id автора", function () {
+            $actionCancel = new \taskforce\actions\TaskResponse();
+            $res = $actionCancel->checkAccess(\taskforce\Task::STATUS_NEW, 1, 1, 2);
+            expect($res)->toBe(true);
+        });
+    });
+
+    context("Статус Новая задача", function () {
+        it("Принять отклик может пользователь, у которого id = id автора", function () {
+            $actionCancel = new \taskforce\actions\TaskAccept();
+            $res = $actionCancel->checkAccess(\taskforce\Task::STATUS_NEW, 1, 1, 1);
+            expect($res)->toBe(true);
+        });
+    });
+
+    context("Статус в работе", function () {
+        it("Отказаться от задания может пользователь, у которого id = id мастера", function () {
+            $actionCancel = new \taskforce\actions\TaskDiscard();
+            $res = $actionCancel->checkAccess(\taskforce\Task::STATUS_IN_WORK, 1, 3, 3);
+            expect($res)->toBe(true);
+        });
+    });
+
+    context("Статус в работе", function () {
+        it("Завершить задание может пользователь, у которого id = id мастера", function () {
+            $actionCancel = new \taskforce\actions\TaskComplete();
+            $res = $actionCancel->checkAccess(\taskforce\Task::STATUS_IN_WORK, 1, 3, 3);
+            expect($res)->toBe(true);
+        });
+    });
+
+});
+
+//
 describe("Проверяем доступные действия на статус", function() {
 
     context("Когда задача создана", function () {
         it("Доступные действия: отменить, откликнуться", function () {
             $task = new \taskforce\Task('test', 1);
-            $res = $task->getActions(\taskforce\Task::STATUS_NEW);
-            expect($res)->toBe([\taskforce\Task::ACTION_CANCEL, \taskforce\Task::ACTION_START]);
+            $getActions = $task->getActions(\taskforce\Task::STATUS_NEW);
+            $res = [];
+            foreach ($getActions as $v) {
+                $res[] = $v->getName();
+            }
+             expect($res)->toBe(['Отменить', 'Откликнуться', 'Принять']);
         });
     });
 
     context("Когда задача в работе", function () {
         it("Доступные действия: отказаться, выполнить", function () {
             $task = new \taskforce\Task('test', 1);
-            $res = $task->getActions(\taskforce\Task::STATUS_IN_WORK);
-            expect($res)->toBe([\taskforce\Task::ACTION_SUCCESS, \taskforce\Task::ACTION_FAIL]);
+            $getActions = $task->getActions(\taskforce\Task::STATUS_IN_WORK);
+            $res = [];
+            foreach ($getActions as $v) {
+                $res[] = $v->getName();
+            }
+            expect($res)->toBe(['Выполнить', 'Отказаться']);
         });
     });
 

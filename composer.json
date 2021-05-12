@@ -17,7 +17,8 @@
   },
   "autoload": {
     "psr-4": {
-      "taskforce\\": "src/"
+      "taskforce\\": "src/",
+      "taskforce\\actions\\": "src/actions"
     },
     "files": [
       "landing.html"
