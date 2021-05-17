@@ -40,22 +40,22 @@ class Task
 
     protected string $name;
     protected string $status;
-    protected int $clientId;
-    protected int $masterId;
+    protected int $customerId;
+    protected int $executorId;
 
     /**
      * Task constructor.
      * Конструктор создает экземпляр класса, в который обязательно нужно передать имя и id-заказчика
      * Статус задания при это автоматически переходит в "новое"
      * @param string $name наименование задания
-     * @param int $clientId идентификатор заказчика
+     * @param int $customerId идентификатор заказчика
      */
-    public function __construct(string $name, int $clientId)
+    public function __construct(string $name, int $customerId)
     {
         $this->name = $name;
         $this->status = self::STATUS_NEW;
-        $this->clientId = $clientId;
-        $this->masterId = $clientId;
+        $this->customerId = $customerId;
+        $this->executorId = $customerId;
     }
 
     /**

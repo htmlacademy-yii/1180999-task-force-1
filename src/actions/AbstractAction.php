@@ -5,7 +5,18 @@ namespace taskforce\actions;
 
 abstract class AbstractAction
 {
-    abstract protected function getName(): string;
-    abstract protected function getCodeName(): string;
-    abstract protected function checkAccess(string $status, int $clientId, int $masterId, int $currentId): bool;
+    protected string $name;
+    protected string $codeName;
+
+    public function getName(): string
+    {
+        return $this->name;
+
+    }
+    public function getCodeName(): string
+    {
+        return $this->codeName;
+    }
+
+    abstract protected function checkAccess(string $status, int $customerId, int $executorId, int $currentId): bool;
 }

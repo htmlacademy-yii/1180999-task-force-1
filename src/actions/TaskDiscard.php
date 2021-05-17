@@ -6,19 +6,15 @@ use taskforce\Task;
 
 class TaskDiscard extends AbstractAction
 {
-    public function getName(): string
+    public function __construct()
     {
-        return 'Отказаться';
+        $this->name = 'Отказаться';
+        $this->codeName = 'Refuse';
     }
 
-    public function getCodeName(): string
+    public function checkAccess(string $status, int $customerId,int $executorId, int $currentId): bool
     {
-        return Task::ACTION_FAIL;
-    }
-
-    public function checkAccess(string $status, int $clientId,int $masterId, int $currentId): bool
-    {
-        if ($status === Task::STATUS_IN_WORK && $currentId === $masterId) {
+        if ($status === Task::STATUS_IN_WORK && $currentId === $executorId) {
             return true;
         }
         return false;

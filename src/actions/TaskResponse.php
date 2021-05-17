@@ -6,19 +6,15 @@ use taskforce\Task;
 
 class TaskResponse extends AbstractAction
 {
-    public function getName(): string
+    public function __construct()
     {
-        return 'Откликнуться';
+        $this->name = 'Откликнуться';
+        $this->codeName = 'Respond';
     }
 
-    public function getCodeName(): string
+    public function checkAccess(string $status, int $customerId,int $executorId, int $currentId): bool
     {
-        return Task::ACTION_START;
-    }
-
-    public function checkAccess(string $status, int $clientId,int $masterId, int $currentId): bool
-    {
-        if ($status === Task::STATUS_NEW && $currentId != $clientId) {
+        if ($status === Task::STATUS_NEW && $currentId != $customerId) {
             return true;
         }
         return false;

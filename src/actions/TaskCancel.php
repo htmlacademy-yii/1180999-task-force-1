@@ -6,19 +6,15 @@ use taskforce\Task;
 
 class TaskCancel extends AbstractAction
 {
-    public function getName(): string
+    public function __construct()
     {
-        return 'Отменить';
+        $this->name = 'Отменить';
+        $this->codeName = 'Cancel';
     }
 
-    public function getCodeName(): string
+    public function checkAccess(string $status, int $customerId,int $executorId, int $currentId): bool
     {
-        return Task::ACTION_CANCEL;
-    }
-
-    public function checkAccess(string $status, int $clientId, int $masterId, int $currentId): bool
-    {
-        if ($status === Task::STATUS_NEW && $clientId === $masterId && $currentId === $clientId) {
+        if ($status === Task::STATUS_NEW && $customerId === $executorId && $currentId === $customerId) {
             return true;
         }
         return false;

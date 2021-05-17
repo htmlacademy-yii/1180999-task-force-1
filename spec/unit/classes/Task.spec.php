@@ -76,7 +76,7 @@ describe("Проверяем доступные действия на стату
     context("Если задача отменена", function () {
         it("Доступных действий нет", function () {
             $task = new \taskforce\Task('test', 1);
-            $res = $task->getActions(\taskforce\Task::STATUS_CANCEL);
+            $res = $task->getActions('Cancel');
             expect($res)->toBe(null);
         });
     });
@@ -111,7 +111,7 @@ describe("Проверяем текущий статус задачи", function
     context("Когда задачу вязли в работу", function () {
         it('Ожидаем статус: выполняется', function() {
             $task = new \taskforce\Task('test', 1);
-            $res = $task->getNextStatus(\taskforce\Task::ACTION_START);
+            $res = $task->getNextStatus('Respond');
             expect($res)->toBe(\taskforce\Task::STATUS_IN_WORK);
         });
     });
@@ -119,7 +119,7 @@ describe("Проверяем текущий статус задачи", function
     context("Когда отказались от задачи", function () {
         it('Ожидаем статус: провалено', function() {
             $task = new \taskforce\Task('test', 1);
-            $res = $task->getNextStatus(\taskforce\Task::ACTION_FAIL);
+            $res = $task->getNextStatus('Refuse');
             expect($res)->toBe(\taskforce\Task::STATUS_FAIL);
         });
     });
@@ -127,7 +127,7 @@ describe("Проверяем текущий статус задачи", function
     context("Когда задачу выполнили", function () {
         it('Ожидаем статус: завершено', function() {
             $task = new \taskforce\Task('test', 1);
-            $res = $task->getNextStatus(\taskforce\Task::ACTION_SUCCESS);
+            $res = $task->getNextStatus('Execute');
             expect($res)->toBe(\taskforce\Task::STATUS_SUCCESS);
         });
     });
