@@ -17,11 +17,7 @@
   },
   "autoload": {
     "psr-4": {
-      "taskforce\\": "src/",
-      "taskforce\\actions\\": "src/actions"
-    },
-    "files": [
-      "landing.html"
-    ]
+      "taskforce\\": "src/"
+    }
   }
 }

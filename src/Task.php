@@ -1,6 +1,7 @@
 <?php
 namespace taskforce;
 
+use taskforce\actions\AbstractAction;
 use taskforce\actions\TaskAccept;
 use taskforce\actions\TaskCancel;
 use taskforce\actions\TaskComplete;
@@ -9,33 +10,18 @@ use taskforce\actions\TaskResponse;
 
 class Task
 {
-    //Статусы
     const STATUS_NEW = 'Новое';
     const STATUS_CANCEL = 'Отменено';
     const STATUS_IN_WORK = 'В работе';
     const STATUS_SUCCESS = 'Выполнено';
     const STATUS_FAIL = 'Провалено';
 
-//    //Действия RU
-//    const ACTION_CANCEL = 'Отменить';
-//    const ACTION_START = 'Откликнуться';
-//    const ACTION_FAIL = 'Отказаться';
-//    const ACTION_SUCCESS = 'Выполнено';
-//    const ACTION_ACCEPT = 'Принять';
-
-    //Действия EN
-    const ACTION_CANCEL = 'Cancel';
-    const ACTION_START = 'Respond';
-    const ACTION_FAIL = 'Refuse';
-    const ACTION_SUCCESS = 'Execute';
-    const ACTION_ACCEPT = 'Accept';
-
-    //Карта действий
     const ACTION_STATUS_MAP = [
-        self::ACTION_CANCEL => self::STATUS_CANCEL,
-        self::ACTION_START => self::STATUS_IN_WORK,
-        self::ACTION_FAIL => self::STATUS_FAIL,
-        self::ACTION_SUCCESS => self::STATUS_SUCCESS
+        'Cancel' => self::STATUS_CANCEL,
+        'Respond' => self::STATUS_IN_WORK,
+        'Refuse' => self::STATUS_FAIL,
+        'Execute' => self::STATUS_SUCCESS,
+        'Accept' => self::STATUS_IN_WORK
     ];
 
     protected string $name;
@@ -80,11 +66,11 @@ class Task
 
     /**
      * Функция возвращает имя статуса, в который перейдёт задание после выполнения конкретного действия.
-     * @param string $action передаваемое действие
+     * @param AbstractAction $action передаваемое действие
      * @return string|null возвращает имя статуса
      */
-    public function getNextStatus(string $action): ?string
+    public function getNextStatus(AbstractAction $action): ?string
     {
-        return self::ACTION_STATUS_MAP[$action] ?? null;
+        return self::ACTION_STATUS_MAP[$action->getCodeName()] ?? null;
     }
 }

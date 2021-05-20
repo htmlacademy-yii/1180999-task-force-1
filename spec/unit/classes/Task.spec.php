@@ -103,7 +103,7 @@ describe("Проверяем текущий статус задачи", function
     context("Когда задачу отменили", function () {
         it('Ожидаем статус: отменено', function() {
             $task = new \taskforce\Task('test', 1);
-            $res = $task->getNextStatus(\taskforce\Task::ACTION_CANCEL);
+            $res = $task->getNextStatus(new \taskforce\actions\TaskCancel());
             expect($res)->toBe(\taskforce\Task::STATUS_CANCEL);
         });
     });
@@ -111,7 +111,7 @@ describe("Проверяем текущий статус задачи", function
     context("Когда задачу вязли в работу", function () {
         it('Ожидаем статус: выполняется', function() {
             $task = new \taskforce\Task('test', 1);
-            $res = $task->getNextStatus('Respond');
+            $res = $task->getNextStatus(new \taskforce\actions\TaskResponse());
             expect($res)->toBe(\taskforce\Task::STATUS_IN_WORK);
         });
     });
@@ -119,15 +119,23 @@ describe("Проверяем текущий статус задачи", function
     context("Когда отказались от задачи", function () {
         it('Ожидаем статус: провалено', function() {
             $task = new \taskforce\Task('test', 1);
-            $res = $task->getNextStatus('Refuse');
+            $res = $task->getNextStatus(new \taskforce\actions\TaskDiscard());
             expect($res)->toBe(\taskforce\Task::STATUS_FAIL);
+        });
+    });
+
+    context("Когда задачу приняли в работу", function () {
+        it('Ожидаем статус: новая задача', function() {
+            $task = new \taskforce\Task('test', 1);
+            $res = $task->getNextStatus(new \taskforce\actions\TaskAccept());
+            expect($res)->toBe(\taskforce\Task::STATUS_IN_WORK);
         });
     });
 
     context("Когда задачу выполнили", function () {
         it('Ожидаем статус: завершено', function() {
             $task = new \taskforce\Task('test', 1);
-            $res = $task->getNextStatus('Execute');
+            $res = $task->getNextStatus(new \taskforce\actions\TaskComplete());
             expect($res)->toBe(\taskforce\Task::STATUS_SUCCESS);
         });
     });
