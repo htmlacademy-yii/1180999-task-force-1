@@ -1,46 +1,47 @@
 <?php
 namespace taskforce;
 
+use taskforce\actions\AbstractAction;
+use taskforce\actions\TaskAccept;
+use taskforce\actions\TaskCancel;
+use taskforce\actions\TaskComplete;
+use taskforce\actions\TaskDiscard;
+use taskforce\actions\TaskResponse;
+
 class Task
 {
-    //Статусы
     const STATUS_NEW = 'Новое';
     const STATUS_CANCEL = 'Отменено';
     const STATUS_IN_WORK = 'В работе';
     const STATUS_SUCCESS = 'Выполнено';
     const STATUS_FAIL = 'Провалено';
 
-    //Действия
-    const ACTION_CANCEL = 'Отменить';
-    const ACTION_START = 'Откликнуться';
-    const ACTION_FAIL = 'Отказаться';
-    const ACTION_SUCCESS = 'Выполнено';
-
-    //Карта действий
     const ACTION_STATUS_MAP = [
-        self::ACTION_CANCEL => self::STATUS_CANCEL,
-        self::ACTION_START => self::STATUS_IN_WORK,
-        self::ACTION_FAIL => self::STATUS_FAIL,
-        self::ACTION_SUCCESS => self::STATUS_SUCCESS
+        'Cancel' => self::STATUS_CANCEL,
+        'Respond' => self::STATUS_IN_WORK,
+        'Refuse' => self::STATUS_FAIL,
+        'Execute' => self::STATUS_SUCCESS,
+        'Accept' => self::STATUS_IN_WORK
     ];
 
     protected string $name;
     protected string $status;
-    protected int $clientId;
-    protected int $masterId;
+    protected int $customerId;
+    protected int $executorId;
 
     /**
      * Task constructor.
      * Конструктор создает экземпляр класса, в который обязательно нужно передать имя и id-заказчика
      * Статус задания при это автоматически переходит в "новое"
      * @param string $name наименование задания
-     * @param int $clientId идентификатор заказчика
+     * @param int $customerId идентификатор заказчика
      */
-    public function __construct(string $name, int $clientId)
+    public function __construct(string $name, int $customerId)
     {
         $this->name = $name;
         $this->status = self::STATUS_NEW;
-        $this->clientId = $clientId;
+        $this->customerId = $customerId;
+        $this->executorId = $customerId;
     }
 
     /**
@@ -52,12 +53,12 @@ class Task
     {
         if ($status === self::STATUS_NEW)
         {
-            return [self::ACTION_CANCEL, self::ACTION_START];
+            return [new TaskCancel(), new TaskResponse(), new TaskAccept()];
         }
 
         if ($status === self::STATUS_IN_WORK)
         {
-            return [self::ACTION_SUCCESS, self::ACTION_FAIL];
+            return [new TaskComplete(), new TaskDiscard()];
         }
 
         return null;
@@ -65,11 +66,11 @@ class Task
 
     /**
      * Функция возвращает имя статуса, в который перейдёт задание после выполнения конкретного действия.
-     * @param string $action передаваемое действие
+     * @param AbstractAction $action передаваемое действие
      * @return string|null возвращает имя статуса
      */
-    public function getNextStatus(string $action): ?string
+    public function getNextStatus(AbstractAction $action): ?string
     {
-        return self::ACTION_STATUS_MAP[$action] ?? null;
+        return self::ACTION_STATUS_MAP[$action->getCodeName()] ?? null;
     }
 }

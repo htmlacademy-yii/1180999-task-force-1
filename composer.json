@@ -18,9 +18,6 @@
   "autoload": {
     "psr-4": {
       "taskforce\\": "src/"
-    },
-    "files": [
-      "landing.html"
-    ]
+    }
   }
 }
