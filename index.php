@@ -1,12 +1,26 @@
 <?php
 
+/**
+ * Это тестовый скрипт
+ */
+
+use taskforce\Task;
+use taskforce\actions\TaskAccept;
+
 require_once __DIR__ . '/vendor/autoload.php';
 
-$task = new \taskforce\Task('name', 1);
 
-$action = new \taskforce\actions\TaskCancel();
-print $action->getCodeName();
+try {
+    $task = new Task('Test', 1);
+    $task->getNextStatus(new TaskAccept());
+    $action = new TaskAccept();
+    print $action->checkAccess('Новое',1,2,1);
+} catch (Exception $e) {
+    print $e->getMessage();
+}
 
-print $task->getNextStatus(new \taskforce\actions\TaskAccept());
-print_r($task->getActions(\taskforce\Task::STATUS_IN_WORK));
+finally {
+    die();
+}
+
 
