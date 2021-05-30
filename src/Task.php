@@ -30,7 +30,7 @@ class Task
     protected string $name;
     protected string $status;
     protected int $customerId;
-    protected int $executorId;
+    protected ?int $executorId;
 
     /**
      * Task constructor.
@@ -38,17 +38,18 @@ class Task
      * Статус задания при это автоматически переходит в "Новое"
      * @param string $name наименование задания
      * @param int $customerId идентификатор заказчика
+     * @param ?int $executorId идентификатор исполнителя
      * @throws TaskCreateException исключение, если не введено название или неверный идентификатор заказчика
      */
-    public function __construct(string $name, int $customerId)
+    public function __construct(string $name, int $customerId, ?int $executorId = null)
     {
-        if (!$name || $customerId <= 0) {
-            throw new TaskCreateException('Ошибка создания задания');
+        if (!$name) {
+            throw new TaskCreateException('Ошибка создания задания: не указано наименование');
         }
         $this->name = $name;
         $this->status = self::STATUS_NEW;
         $this->customerId = $customerId;
-        $this->executorId = $customerId;
+        $this->executorId = $executorId;
     }
 
 
@@ -98,4 +99,5 @@ class Task
     {
         return [self::STATUS_NEW, self::STATUS_CANCEL, self::STATUS_IN_WORK, self::STATUS_SUCCESS, self::STATUS_FAIL];
     }
+
 }

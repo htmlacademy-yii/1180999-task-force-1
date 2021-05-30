@@ -12,6 +12,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 try {
     $task = new Task('Test', 1);
+    var_dump($task);
     $task->getNextStatus(new TaskAccept());
     $action = new TaskAccept();
     print $action->checkAccess('Новое',1,2,1);

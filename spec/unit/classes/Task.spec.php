@@ -75,9 +75,13 @@ describe("Проверяем доступные действия на стату
 
     context("Если задача отменена", function () {
         it("Доступных действий нет", function () {
-            $task = new \taskforce\Task('test', 1);
-            $res = $task->getActions('Cancel');
-            expect($res)->toBe(null);
+            try {
+                $task = new \taskforce\Task('test', 1);
+                $res = $task->getActions('Cancel');
+            } catch (Exception $e) {
+                $res = $e->getMessage();
+            }
+            expect($res)->toBe('Статус не найден');
         });
     });
 

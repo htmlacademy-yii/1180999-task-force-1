@@ -2,9 +2,9 @@
 
 
 namespace taskforce\exceptions;
+use Exception;
 
-
-class TaskStatusException extends \Exception
+class TaskStatusException extends Exception
 {
 
 }
