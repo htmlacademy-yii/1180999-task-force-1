@@ -7,6 +7,9 @@ use taskforce\actions\TaskCancel;
 use taskforce\actions\TaskComplete;
 use taskforce\actions\TaskDiscard;
 use taskforce\actions\TaskResponse;
+use taskforce\exceptions\TaskActionException;
+use taskforce\exceptions\TaskCreateException;
+use taskforce\exceptions\TaskStatusException;
 
 class Task
 {
@@ -27,30 +30,40 @@ class Task
     protected string $name;
     protected string $status;
     protected int $customerId;
-    protected int $executorId;
+    protected ?int $executorId;
 
     /**
      * Task constructor.
-     * Конструктор создает экземпляр класса, в который обязательно нужно передать имя и id-заказчика
-     * Статус задания при это автоматически переходит в "новое"
+     * Конструктор создает экземпляр класса, в который обязательно нужно передать имя и идентификатор заказчика
+     * Статус задания при это автоматически переходит в "Новое"
      * @param string $name наименование задания
      * @param int $customerId идентификатор заказчика
+     * @param ?int $executorId идентификатор исполнителя
+     * @throws TaskCreateException исключение, если не введено название или неверный идентификатор заказчика
      */
-    public function __construct(string $name, int $customerId)
+    public function __construct(string $name, int $customerId, ?int $executorId = null)
     {
+        if (!$name) {
+            throw new TaskCreateException('Ошибка создания задания: не указано наименование');
+        }
         $this->name = $name;
         $this->status = self::STATUS_NEW;
         $this->customerId = $customerId;
-        $this->executorId = $customerId;
+        $this->executorId = $executorId;
     }
 
+
     /**
-     * Функция, возвращает список доступных действие на текущий статус задания
      * @param string $status статус задания
-     * @return string[]|null возвращает массив из доступных действий
+     * @return array|null список доступных действий
+     * @throws TaskStatusException исключение, если статус будет не найден или пустой
      */
     public function getActions(string $status): ?array
     {
+        if (!in_array($status, $this->getStatuses())) {
+            throw new TaskStatusException('Статус не найден');
+        }
+
         if ($status === self::STATUS_NEW)
         {
             return [new TaskCancel(), new TaskResponse(), new TaskAccept()];
@@ -68,9 +81,23 @@ class Task
      * Функция возвращает имя статуса, в который перейдёт задание после выполнения конкретного действия.
      * @param AbstractAction $action передаваемое действие
      * @return string|null возвращает имя статуса
+     * @throws TaskActionException исключение, если передано неверное действие
      */
     public function getNextStatus(AbstractAction $action): ?string
     {
+        if (!array_key_exists($action->getCodeName(), self::ACTION_STATUS_MAP)) {
+            throw new TaskActionException('Неверное действие');
+        }
         return self::ACTION_STATUS_MAP[$action->getCodeName()] ?? null;
     }
+
+    /**
+     * Функция возвращает массив со статусами
+     * @return string[] список статусов
+     */
+    private function getStatuses(): array
+    {
+        return [self::STATUS_NEW, self::STATUS_CANCEL, self::STATUS_IN_WORK, self::STATUS_SUCCESS, self::STATUS_FAIL];
+    }
+
 }
