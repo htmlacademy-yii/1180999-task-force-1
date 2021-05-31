@@ -10,8 +10,15 @@ abstract class AbstractImporter
     protected string $pathSQL;
     protected string $query;
 
+    /**
+     * Функция преобразует csv файл в строку
+     */
     abstract protected function convert(): void;
 
+    /**
+     * Функция удаляет первую строку в файле
+     * @throws Exception исключение, когда не найден файл
+     */
     protected function eraseHeader(): void
     {
         $fd = fopen($this->pathSQL, 'r');
@@ -33,6 +40,10 @@ abstract class AbstractImporter
         rename($tmpname, $this->pathSQL);
     }
 
+    /**
+     * Функция конвертирует данные и сохраняет их в файл
+     * @throws Exception
+     */
     public function import()
     {
         $this->convert();
