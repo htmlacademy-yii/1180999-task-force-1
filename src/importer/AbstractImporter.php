@@ -4,27 +4,27 @@
 namespace taskforce\importer;
 
 
+use JetBrains\PhpStorm\Pure;
 use SplFileObject;
 use Exception;
 use taskforce\exceptions\FileImportException;
 
 abstract class AbstractImporter
 {
-    protected string $filename;
+    protected string $importFile;
     protected array $columns;
     protected object $fileObject;
 
-    protected string $query = '';
-    protected array $result = [];
+    protected array $data = [];
 
     /**
      * AbstractImporter constructor.
-     * @param string $filename путь к исходному файлу CSV
+     * @param string $importFile путь к исходному файлу CSV
      * @param array $columns массив из полей таблицы
      */
-    public function __construct(string $filename, array $columns)
+    public function __construct(string $importFile, array $columns)
     {
-        $this->filename = $filename;
+        $this->importFile = $importFile;
         $this->columns = $columns;
     }
 
@@ -42,12 +42,12 @@ abstract class AbstractImporter
             throw new FileImportException("Заданы неверные заголовки столбцов");
         }
 
-        if (!file_exists($this->filename)) {
+        if (!file_exists($this->importFile)) {
             throw new FileImportException("Файл не существует");
         }
 
         try {
-            $this->fileObject = new SplFileObject($this->filename);
+            $this->fileObject = new SplFileObject($this->importFile);
 
         } catch (FileImportException $exception) {
             throw new FileImportException("Не удалось открыть файл на чтение");
@@ -56,28 +56,40 @@ abstract class AbstractImporter
         $this->getHeaderData();
 
         foreach ($this->getNextLine() as $line) {
-            $this->result[] = $line;
+            $this->data[] = $line;
         }
 
-        $this->sqlExport();
+        $this->exportFile();
     }
 
+    /**
+     * Фильтрует массив данных от пустых значения
+     * @return array обработанный массив с данными
+     */
     protected function getData(): array
     {
-        return array_filter($this->result, function ($item) {
+        return array_filter($this->data, function ($item) {
             if (count($item) > 1) {
                 return !empty($item);
             }
+
             return null;
         });
     }
 
+    /**
+     * @return array|null возвращает заголовки данных
+     */
     protected function getHeaderData(): ?array
     {
         $this->fileObject->rewind();
         return $this->fileObject->fgetcsv();
     }
 
+    /**
+     * Перебирает данные из файла
+     * @return iterable|null
+     */
     protected function getNextLine(): ?iterable
     {
         $result = null;
@@ -85,27 +97,35 @@ abstract class AbstractImporter
         while (!$this->fileObject->eof()) {
             yield $this->fileObject->fgetcsv();
         }
-
+        var_dump($result);
+        print gettype($result);
         return $result;
     }
 
-
-    protected function validateColumns(array $columns): bool
+    /**
+     * Функция валидации переданных полей
+     * @param array $columns массив с колонками
+     * @return bool возвращает true в случае успеха
+     */
+    #[Pure] protected function validateColumns(array $columns): bool
     {
-        $result = true;
-
-        if (count($columns)) {
-            foreach ($columns as $column) {
-                if (!is_string($column)) {
-                    $result = false;
-                }
-            }
-        } else {
-            $result = false;
+        if (!count($columns)) {
+            return false;
         }
 
-        return $result;
+        foreach ($columns as $column) {
+            if (!is_string($column)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
-    abstract protected function sqlExport(): void;
+    /**
+     * Функция экспорта данными с предварительными форматированием под SQL-запросы
+     * Проверяет существование экспортируемого файла, а так же доступ к записи
+     * В случае успеха построчно записывает полученные данные в файл 'sql/*.sql'
+     */
+    abstract protected function exportFile(): void;
 }

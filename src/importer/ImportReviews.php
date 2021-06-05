@@ -3,16 +3,25 @@
 
 namespace taskforce\importer;
 
+use SplFileObject;
+use taskforce\exceptions\FileImportException;
 
 class ImportReviews extends AbstractImporter
 {
-    protected function sqlExport(): void
+    protected string $exportFile = 'sql/reviews.sql';
+
+    protected function exportFile(): void
     {
+        if (file_exists($this->exportFile)) {
+            if (!is_writable($this->exportFile)) {
+                throw new FileImportException('Ошибка записи в файл');
+            }
+        }
+
+        $handle = new SplFileObject($this->exportFile, 'w');
         foreach ($this->getData() as $row) {
             list($dt_add, $rate, $description) = $row;
-            $this->query .= "INSERT INTO reviews (dt_add, executor_id, task_id, score, text)
-VALUES ('$dt_add', 8, 13, $rate, '$description'); \n";
+            $handle->fwrite("INSERT INTO reviews (dt_add, executor_id, task_id, score, text) VALUES ('$dt_add', 8, 13, $rate, '$description'); \n");
         }
-        file_put_contents('sql/reviews.sql', $this->query);
     }
 }
