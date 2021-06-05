@@ -21,7 +21,7 @@ class ImportReviews extends AbstractImporter
         $handle = new SplFileObject($this->exportFile, 'w');
         foreach ($this->getData() as $row) {
             list($dt_add, $rate, $description) = $row;
-            $handle->fwrite("INSERT INTO reviews (dt_add, executor_id, task_id, score, text) VALUES ('$dt_add', 8, 13, $rate, '$description'); \n");
+            $handle->fwrite("INSERT INTO reviews (dt_add, executor_id, task_id, score, text) VALUES ('$dt_add', 8, 8, $rate, '$description'); \n");
         }
     }
 }

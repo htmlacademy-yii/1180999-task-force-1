@@ -1,5 +1,9 @@
 <?php
 
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+
 /**
  * Это тестовый скрипт
  */
@@ -24,7 +28,7 @@ require_once __DIR__ . '/vendor/autoload.php';
      $reviews = new ImportReviews('data/replies.csv', ['dt_add', 'rate', 'description']);
      $reviews->importData();
 
-     $tasks = new ImportTasks('data/replies.csv', [
+     $tasks = new ImportTasks('data/tasks.csv', [
          'dt_add', 'category_id', 'description', 'expire', 'name', 'address', 'budget', 'lat', 'long']);
      $tasks->importData();
 
