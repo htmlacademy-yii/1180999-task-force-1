@@ -3,10 +3,7 @@
 
 namespace taskforce\importer;
 
-
-use JetBrains\PhpStorm\Pure;
 use SplFileObject;
-use Exception;
 use taskforce\exceptions\FileImportException;
 
 abstract class AbstractImporter
@@ -97,8 +94,6 @@ abstract class AbstractImporter
         while (!$this->fileObject->eof()) {
             yield $this->fileObject->fgetcsv();
         }
-        var_dump($result);
-        print gettype($result);
         return $result;
     }
 
@@ -107,7 +102,7 @@ abstract class AbstractImporter
      * @param array $columns массив с колонками
      * @return bool возвращает true в случае успеха
      */
-    #[Pure] protected function validateColumns(array $columns): bool
+    protected function validateColumns(array $columns): bool
     {
         if (!count($columns)) {
             return false;
