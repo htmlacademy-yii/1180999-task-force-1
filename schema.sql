@@ -83,7 +83,7 @@ CREATE TABLE tasks
     dt_add      DATETIME      NOT NULL,
     deadline    DATETIME      NOT NULL,
     user_id     INT           NOT NULL,
-    executor_id INT           NOT NULL,
+    executor_id INT           NULL,
     category_id INT           NOT NULL,
     city_id     INT           NOT NULL,
     status      TINYINT       NOT NULL,

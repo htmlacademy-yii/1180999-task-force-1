@@ -12,6 +12,9 @@
   "require-dev": {
     "kahlan/kahlan": "^5.1"
   },
+  "require": {
+    "php" : "^7.4"
+  },
   "scripts": {
     "run-tests": "./vendor/bin/kahlan --config=bootstrap.php"
   },
