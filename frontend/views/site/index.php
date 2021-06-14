@@ -2,11 +2,33 @@
 
 use frontend\models\Categories;
 use frontend\models\Users;
+use frontend\models\Cities;
+use Faker\Factory;
 
 $categories = Categories::find()->all();
 $users = Users::find()->all();
+$cities = Cities::find()->all();
+$faker = Factory::create();
 
 ?>
+
+<div class="container mb-5">
+    <label for="city">Список городов</label>
+    <select name="" id="city" class="form-select">
+        <option value="" selected disabled>Выбрать из списка</option>
+        <?php foreach ($cities as $city): ?>
+            <option value=""><?= $city->name ?></option>
+        <?php endforeach; ?>
+    </select>
+
+    <label for="faker">Фейковые города</label>
+    <select name="" id="faker" class="form-select">
+        <option value="" selected disabled>Выбрать из списка</option>
+        <?php foreach (range(1, 100) as $x): ?>
+            <option value=""><?= $faker->state ?></option>
+        <?php endforeach; ?>
+    </select>
+</div>
 
 <div class="container">
     <h4>Категории</h4>
@@ -57,3 +79,7 @@ $users = Users::find()->all();
         </tbody>
     </table>
 </div>
+
+
+
+
