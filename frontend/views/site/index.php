@@ -51,7 +51,7 @@ $users = Users::find()->all();
                 <td><?= $user->email ?></td>
                 <td><?= $user->contacts ?></td>
                 <td><?= $user->about_me ?></td>
-                <td><?= $user->city_id ?></td>
+                <td><?= $user->city->name ?></td>
             </tr>
         <?php endforeach; ?>
         </tbody>
