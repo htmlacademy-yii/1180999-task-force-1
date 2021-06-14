@@ -1,5 +1,5 @@
 <?php
-
+defined('YII_ENV') or define('YII_ENV', 'dev');
 use yii\helpers\Html;
 use yii\web\View;
 
@@ -17,6 +17,7 @@ use yii\web\View;
     <meta charset="<?= Yii::$app->charset ?>">
     <?php $this->registerCsrfMetaTags(); ?>
     <title><?= Html::encode($this->title) ?></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
