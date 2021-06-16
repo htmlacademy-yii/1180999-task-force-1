@@ -1,5 +1,5 @@
 <?php
-
+defined('YII_ENV') or define('YII_ENV', 'dev');
 use yii\helpers\Html;
 use yii\web\View;
 
@@ -17,6 +17,7 @@ use yii\web\View;
     <meta charset="<?= Yii::$app->charset ?>">
     <?php $this->registerCsrfMetaTags(); ?>
     <title><?= Html::encode($this->title) ?></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -28,7 +29,7 @@ use yii\web\View;
     <header class="page-header">
         <div class="main-container page-header__container">
             <div class="page-header__logo">
-                <a href="index.html">
+                <a href="/">
                     <svg class="page-header__logo-image" id="Layer_2" xmlns="http://www.w3.org/2000/svg"
                          viewBox="0 0 1634 646.35">
                         <title>taskforce_logo2-01</title>
