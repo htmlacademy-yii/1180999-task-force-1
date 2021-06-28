@@ -1,0 +1,29 @@
+-- Категории задач
+./yii migrate/create create_categories_table --fields="name:string(255):notNull,code:string(255):notNull"
+
+-- Список городов
+./yii migrate/create create_cities_table --fields="name:string(255):notNull,latitude:decimal(9,7):notNull,longitude:decimal(10,7):notNull"
+
+-- Таблица с файлами
+./yii migrate/create create_files_table --fields="path:string(255):notNull:unique"
+
+-- Пользователи
+./yii migrate/create create_users_table --fields="is_executor:tinyInteger:notNull:defaultValue(0),dt_add:datetime:notNull,last_active_time:datetime:null,name:string(255):notNull,email:string(255):notNull:unique,password:string(255):notNull,contacts:string(255):null,phone:string(255):notNull,skype:string(255):notNull,other_contacts:string(255):null,birthday:datetime:notNull,about_me:text:notNull,notification_new_message:tinyInteger:notNull:defaultValue(0),notification_task_action:tinyInteger:notNull:defaultValue(0),failed_count:tinyInteger:null:defaultValue(0),show_contacts:tinyInteger:notNull:defaultValue(0),city_id:integer:notNull:foreignKey(cities),avatar_file_id:integer:null:foreignKey(files)"
+
+-- Файлы пользователей
+./yii migrate/create create_users_files_table --fields="user_id:integer:notNull:foreignKey(users),file_id:integer:notNull:foreignKey(files)"
+
+-- Задачи
+./yii migrate/create create_tasks_table --fields="dt_add:datetime:notNull,deadline:datetime:notNull,user_id:integer:notNull:foreignKey(users),executor_id:integer:null:foreignKey(users),category_id:integer:notNull:foreignKey(categories),city_id:integer:notNull:foreignKey(cities),status:tinyInteger:notNull,name:string(255):notNull,description:text:notNull,cost:integer:null"
+
+-- Файлы задач
+./yii migrate/create create_tasks_files_table --fields="task_id:integer:notNull:foreignKey(tasks),file_id:integer:notNull:foreignKey(files)"
+
+-- Сообщения --
+    ./yii migrate/create create_users_messages_table --fields="dt_add:datetime:notNull,sender_id:integer:notNull:foreignKey(users),recipient_id:integer:notNull:foreignKey(users),text:text:notNull,task_id:integer:notNull:foreignKey(tasks),is_read:tinyInteger:notNull:defaultValue(0)"
+
+-- Отклики --
+./yii migrate/create create_responses_table --fields="dt_add:datetime:notNull,executor_id:integer:notNull:foreignKey(users),task_id:integer:notNull:foreignKey(tasks),description:text:notNull,price:integer:notNull"
+
+-- Отзывы
+./yii migrate/create create_reviews_table --fields="dt_add:datetime:notNull,executor_id:integer:notNull:foreignKey(users),task_id:integer:notNull:foreignKey(tasks),score:tinyInteger:null:defaultValue(0),text:text:null"
