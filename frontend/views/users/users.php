@@ -4,14 +4,13 @@
  * @var $users object объект данных исполнителей
  */
 ?>
-
 <div class="main-container page-container">
     <section class="user__search">
         <?php foreach ($users as $user): ?>
         <div class="content-view__feedback-card user__search-wrapper">
             <div class="feedback-card__top">
                 <div class="user__search-icon">
-                    <a href="user.html"><img src="./<?= $user->avatarFile->path ?>" width="65" height="65"></a>
+                    <a href="user.html"><img src="<?= $user->avatarFile->path ?? './img/camera.png' ?>" width="65" height="65" alt=""></a>
                     <span>17 заданий</span>
                     <span>6 отзывов</span>
                 </div>

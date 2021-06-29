@@ -15,9 +15,9 @@ class UsersController extends Controller
     {
         $users = Users::find()->all();
 
-        return $this->render('users', [
-             'users' => $users
-         ]
+        return $this->render(
+            'users',
+            ['users' => $users]
         );
     }
 

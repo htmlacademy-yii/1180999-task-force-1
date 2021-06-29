@@ -15,9 +15,10 @@ class TasksController extends Controller
     {
         $tasks = Tasks::find()->all();
 
-        return $this->render('tasks', [
-            'tasks' => $tasks
-        ]);
+        return $this->render(
+            'tasks',
+            ['tasks' => $tasks]
+        );
     }
 
 }
