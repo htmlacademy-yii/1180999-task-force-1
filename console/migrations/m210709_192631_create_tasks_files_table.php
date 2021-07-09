@@ -9,7 +9,7 @@ use yii\db\Migration;
  * - `{{%tasks}}`
  * - `{{%files}}`
  */
-class m210628_160807_create_tasks_files_table extends Migration
+class m210709_192631_create_tasks_files_table extends Migration
 {
     /**
      * {@inheritdoc}

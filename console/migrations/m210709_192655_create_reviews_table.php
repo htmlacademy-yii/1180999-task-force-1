@@ -9,7 +9,7 @@ use yii\db\Migration;
  * - `{{%users}}`
  * - `{{%tasks}}`
  */
-class m210628_160835_create_reviews_table extends Migration
+class m210709_192655_create_reviews_table extends Migration
 {
     /**
      * {@inheritdoc}

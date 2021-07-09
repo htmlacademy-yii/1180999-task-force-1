@@ -14,7 +14,7 @@
 ./yii migrate/create create_users_files_table --fields="user_id:integer:notNull:foreignKey(users),file_id:integer:notNull:foreignKey(files)"
 
 -- Задачи
-./yii migrate/create create_tasks_table --fields="dt_add:datetime:notNull,deadline:datetime:notNull,user_id:integer:notNull:foreignKey(users),executor_id:integer:null:foreignKey(users),category_id:integer:notNull:foreignKey(categories),city_id:integer:notNull:foreignKey(cities),status:tinyInteger:notNull,name:string(255):notNull,description:text:notNull,cost:integer:null"
+./yii migrate/create create_tasks_table --fields="dt_add:datetime:notNull,deadline:datetime:notNull,user_id:integer:notNull:foreignKey(users),executor_id:integer:null:foreignKey(users),category_id:integer:notNull:foreignKey(categories),city_id:integer:notNull:foreignKey(cities),status:string(255):notNull,name:string(255):notNull,description:text:notNull,cost:integer:null"
 
 -- Файлы задач
 ./yii migrate/create create_tasks_files_table --fields="task_id:integer:notNull:foreignKey(tasks),file_id:integer:notNull:foreignKey(files)"

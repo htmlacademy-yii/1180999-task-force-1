@@ -9,7 +9,7 @@ use yii\db\Migration;
  * - `{{%cities}}`
  * - `{{%files}}`
  */
-class m210628_160723_create_users_table extends Migration
+class m210709_192602_create_users_table extends Migration
 {
     /**
      * {@inheritdoc}
