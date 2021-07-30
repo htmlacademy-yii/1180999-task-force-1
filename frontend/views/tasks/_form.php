@@ -65,7 +65,7 @@ $items = array_combine(range(1, count($items)), array_values($items));
     </div>
     <div class="field-container">
         <label class="search-task__name" for="9">Поиск по названию</label>
-        <?= $form->field($modelForm, 'search')->input('text') ?>
+        <?= $form->field($modelForm, 'search')->input('text')->label(false) ?>
     </div>
 <?= Html::submitButton('Поиск', [
     'type' => 'submit',
