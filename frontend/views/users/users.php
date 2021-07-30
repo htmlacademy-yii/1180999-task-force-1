@@ -2,6 +2,8 @@
 /* @var $this yii\web\View */
 /**
  * @var $users object объект данных исполнителей
+ * @var $modelForm object данные формы фильтра
+ * @var $categories object список категорий
  */
 ?>
 <div class="main-container page-container">
@@ -34,39 +36,12 @@
     </section>
     <section class="search-task">
         <div class="search-task__wrapper">
-            <form class="search-task__form" name="users" method="post" action="#">
-                <fieldset class="search-task__categories">
-                    <legend>Категории</legend>
 
-                    <label class="checkbox__legend">
-                        <input class="visually-hidden checkbox__input" type="checkbox" name="" value="" checked disabled>
-                        <span>Курьерские услуги</span>
-                    </label>
+            <?= $this->render('_form', [
+                'modelForm' => $modelForm,
+                'categories' => $categories
+            ]) ?>
 
-                </fieldset>
-                <fieldset class="search-task__categories">
-                    <legend>Дополнительно</legend>
-                    <label class="checkbox__legend">
-                        <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
-                        <span>Сейчас свободен</span>
-                    </label>
-                    <label class="checkbox__legend">
-                        <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
-                        <span>Сейчас онлайн</span>
-                    </label>
-                    <label class="checkbox__legend">
-                        <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
-                        <span>Есть отзывы</span>
-                    </label>
-                    <label class="checkbox__legend">
-                        <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
-                        <span>В избранном</span>
-                    </label>
-                </fieldset>
-                <label class="search-task__name" for="110">Поиск по имени</label>
-                <input class="input-middle input" id="110" type="search" name="q" placeholder="">
-                <button class="button" type="submit">Искать</button>
-            </form>
         </div>
     </section>
 </div>
