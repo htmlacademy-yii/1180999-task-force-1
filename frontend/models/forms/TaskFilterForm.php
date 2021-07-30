@@ -11,6 +11,7 @@ class TaskFilterForm extends Model
     public $interval;
     public $search;
 
+    const INTERVAL_DEFAULT = 0;
     const INTERVAL_DAY = 1;
     const INTERVAL_WEEK = 2;
     const INTERVAL_MONTH = 3;
@@ -45,6 +46,7 @@ class TaskFilterForm extends Model
     public static function getIntervalName(): array
     {
         return [
+            self::INTERVAL_DEFAULT => 'Не выбран',
             self::INTERVAL_DAY => 'За день',
             self::INTERVAL_WEEK => 'За неделю',
             self::INTERVAL_MONTH => 'За месяц'

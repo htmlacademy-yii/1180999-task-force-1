@@ -61,7 +61,6 @@ $items = array_combine(range(1, count($items)), array_values($items));
     </fieldset>
 
     <div class="field-container">
-        <label class="search-task__name" for="8">Период</label>
         <?= $form->field($modelForm, 'interval')->dropDownList($interval) ?>
     </div>
     <div class="field-container">
