@@ -61,22 +61,23 @@ class TasksSearch extends Tasks
         }
 
         if ($modelForm->search) {
-            $query->andFilterWhere(['like', 'name', $modelForm->search]);
+            $query->andWhere(['like', 'tasks.name', $modelForm->search]);
         }
 
         if ($modelForm->interval) {
-            if ($modelForm->interval == 1) {
-                $query->andWhere(['dt_add' => date('Y-m-d')]);
-            } elseif ($modelForm->interval == 2) {
-                $query->andWhere(['between', 'dt_add', date('Y-m-d', strtotime('-7 days')), date('Y-m-d')]);
-            } elseif ($modelForm->interval == 3) {
-                $query->andWhere(['between', 'dt_add', date('Y-m-d', strtotime('-1 month')), date('Y-m-d')]);
-            }
 
-            $query->andFilterWhere(['like', 'status', $this->status])
-                ->andFilterWhere(['like', 'name', $this->name])
-                ->andFilterWhere(['like', 'description', $this->description]);
+            switch ($modelForm->interval) {
+                case 1:
+                    $query->andWhere(['dt_add' => date('Y-m-d')]);
+                    break;
+                case 2:
+                    $query->andWhere(['between', 'dt_add', date('Y-m-d', strtotime('-7 days')), date('Y-m-d')]);
+                    break;
+                case 3:
+                    $query->andWhere(['between', 'dt_add', date('Y-m-d', strtotime('-1 month')), date('Y-m-d')]);
+            }
         }
+
         return $dataProvider;
     }
 }

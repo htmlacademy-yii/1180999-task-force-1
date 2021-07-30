@@ -12,7 +12,6 @@ use Yii;
 class UsersController extends Controller
 {
     /**
-     * Функция формирует объект с данными исполнителей
      * @return string
      */
     public function actionIndex(): string

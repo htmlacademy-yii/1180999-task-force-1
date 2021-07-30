@@ -193,7 +193,7 @@ class UsersSearch extends \yii\db\ActiveRecord
         ]);
 
         if ($modelForm->category_ids) {
-            $query->Where(['is_executor' => !null]);
+            $query->where(['is_executor' => 1]);
         }
 
         if ($modelForm->nameSearch) {

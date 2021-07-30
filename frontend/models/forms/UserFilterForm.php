@@ -41,6 +41,4 @@ class UserFilterForm extends Model
             ]
         ];
     }
-
-
 }

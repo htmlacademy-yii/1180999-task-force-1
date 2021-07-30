@@ -20,9 +20,7 @@ class TasksController extends Controller
         $categories = Categories::find()->all();
         $modelForm = new TaskFilterForm();
 
-        // получаю данные из формы и отправляю в представление
         if ($modelForm->load(Yii::$app->request->post())) {
-            //modelform->attributes проверить данные после отправки
 
             $taskSearch = new TasksSearch();
             $dataProvider = $taskSearch->search($modelForm);
