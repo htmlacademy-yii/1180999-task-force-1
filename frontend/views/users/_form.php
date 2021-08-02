@@ -17,7 +17,7 @@ $items = array_combine(range(1, count($items)), array_values($items));
 ?>
 <?php $form = ActiveForm::begin([
     'action' => ['index'],
-    'method' => 'post',
+    'method' => 'get',
     'options' => ['class' => 'search-task__form'],
     'fieldConfig' => [
         'labelOptions' => ['class' => 'checkbox__legend'],

@@ -3,12 +3,18 @@
 namespace frontend\controllers;
 
 use frontend\models\Categories;
+use frontend\models\Files;
 use frontend\models\forms\TaskFilterForm;
+use frontend\models\Responses;
+use frontend\models\TasksFiles;
 use frontend\models\TasksSearch;
+use frontend\models\Users;
+use yii\db\Exception;
 use yii\web\Controller;
 use Yii;
 use frontend\models\Tasks;
 use taskforce\Task;
+use yii\web\NotFoundHttpException;
 
 class TasksController extends Controller
 {
@@ -20,7 +26,7 @@ class TasksController extends Controller
         $categories = Categories::find()->all();
         $modelForm = new TaskFilterForm();
 
-        if ($modelForm->load(Yii::$app->request->post())) {
+        if ($modelForm->load(Yii::$app->request->get())) {
 
             $taskSearch = new TasksSearch();
             $dataProvider = $taskSearch->search($modelForm);
@@ -36,6 +42,24 @@ class TasksController extends Controller
                 'categories' => $categories
             ]
         );
+    }
+
+    public function actionView($id)
+    {
+        $task = Tasks::findOne($id);
+        $responses = Responses::find()->where(['task_id' => $id])->all();
+        $user = Users::findOne(['id' => $task->user_id]);
+        $files = TasksFiles::find()->where(['task_id' => $id])->all();
+
+        if (!$task) {
+            throw new NotFoundHttpException("Задачи с id = $id не существует");
+        }
+        return $this->render('view', [
+            'task' => $task,
+            'responses' => $responses,
+            'files' => $files,
+            'user' => $user
+        ]);
     }
 
 }
