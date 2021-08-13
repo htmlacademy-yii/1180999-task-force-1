@@ -1,7 +1,6 @@
 <?php
 /**
  * @var object $user пользователь
- * @var object $reviews отзывы о пользователе
  */
 
 use yii\helpers\Url;
@@ -12,7 +11,7 @@ use yii\helpers\Url;
     <section class="content-view">
         <div class="user__card-wrapper">
             <div class="user__card">
-                <img src="<?= $user->avatarFile->path ?? 'https://via.placeholder.com/1.png' ?>" width="120" height="120" alt="Аватар пользователя">
+                <img src="<?= $user->avatarFile->path ?? '/img/user-man.jpg' ?>" width="120" height="120" alt="Аватар пользователя">
                 <div class="content-view__headline">
                     <h1><?= $user->name ?></h1>
                     <p><?= $user->city->name ?></p>
@@ -47,24 +46,24 @@ use yii\helpers\Url;
                 </div>
                 <div class="user__card-photo">
                     <h3 class="content-view__h3">Фото работ</h3>
-                    <a href="#"><img src="./img/rome-photo.jpg" width="85" height="86" alt="Фото работы"></a>
-                    <a href="#"><img src="./img/smartphone-photo.png" width="85" height="86" alt="Фото работы"></a>
-                    <a href="#"><img src="./img/dotonbori-photo.png" width="85" height="86" alt="Фото работы"></a>
+                    <a href="#"><img src="../img/rome-photo.jpg" width="85" height="86" alt="Фото работы"></a>
+                    <a href="#"><img src="../img/smartphone-photo.png" width="85" height="86" alt="Фото работы"></a>
+                    <a href="#"><img src="../img/dotonbori-photo.png" width="85" height="86" alt="Фото работы"></a>
                 </div>
             </div>
         </div>
         <div class="content-view__feedback">
-            <h2>Отзывы<span> (<?= count($reviews) ?>)</span></h2>
+            <h2>Отзывы<span> (<?= count($user->reviews) ?>)</span></h2>
             <div class="content-view__feedback-wrapper reviews-wrapper">
 
-                <?php foreach ($reviews as $review): ?>
+                <?php foreach ($user->reviews as $review): ?>
                 <div class="feedback-card__reviews">
                     <p class="link-task link">Задание
                         <a href="<?= Url::to(['tasks/view', 'id' => $review->task_id]) ?>" class="link-regular">
                             <?= $review->task->name ?></a></p>
                     <div class="card__review">
                         <a href="">
-                            <img src="<?= $review->user->avatarFile ?? 'https://via.placeholder.com/1.png' ?>" width="55" height="54">
+                            <img src="<?= $review->user->avatarFile ?? '/img/user-man.jpg' ?>" width="55" height="54">
                         </a>
                         <div class="feedback-card__reviews-content">
                             <p class="link-name link"><a href="<?= Url::to(['users/view', 'id' => $review->user_id])?>" class="link-regular">

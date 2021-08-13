@@ -7,7 +7,7 @@ body {
   background-color: #f1f2f6;
   color: #333438; }
   body.landing {
-    background-image: url("../img/polygon.png");
+    background-image: url("../img/Polygon.png");
     background-repeat: no-repeat;
     background-position-x: center;
     background-position-y: -413px; }
@@ -1111,7 +1111,7 @@ footer {
 
 .feedback-card__top--name span {
   display: inline-block;
-  background-image: url("../img/star.png");
+  background-image: url("../img/Star.png");
   background-repeat: no-repeat;
   background-position: center;
   width: 16px;
@@ -1676,7 +1676,7 @@ footer {
 .five-rate {
   color: #ff7f50; }
   .five-rate span {
-    background-image: url("../img/star-rate.png"); }
+    background-image: url("../img/Star-rate.png"); }
 
 .three-rate {
   color: #c71d1d; }
@@ -1718,7 +1718,7 @@ footer {
   left: 411px; }
 
 .clipart-message {
-  background-image: url("../img/oval.png");
+  background-image: url("../img/Oval.png");
   background-repeat: no-repeat;
   background-position: center;
   width: 456px;
@@ -2584,7 +2584,7 @@ footer {
     cursor: pointer; }
 
 .completion-form-star .star-disabled:hover {
-  background-image: url("../img/star.png"); }
+  background-image: url("../img/Star.png"); }
 
 .dz-image,
 .dz-success-mark,

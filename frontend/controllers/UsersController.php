@@ -41,15 +41,13 @@ class UsersController extends Controller
     public function actionView($id)
     {
         $user = Users::findOne($id);
-        $reviews = Reviews::find()->where(['executor_id' => $id])->all();
 
         if (!$user) {
             throw new NotFoundHttpException("Пользователь с id $id не найден");
         }
 
         return $this->render('view', [
-            'user' => $user,
-            'reviews' => $reviews
+            'user' => $user
         ]);
     }
 

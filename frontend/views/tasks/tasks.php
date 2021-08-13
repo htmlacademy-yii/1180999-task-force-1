@@ -12,7 +12,6 @@ use yii\widgets\ActiveForm;
 use yii\widgets\ActiveField;
 use yii\helpers\Url;
 
-
 ?>
 <div class="main-container page-container">
     <section class="new-task">
@@ -31,7 +30,7 @@ use yii\helpers\Url;
                         <?= $task->description ?>
                     </p>
                     <b class="new-task__price new-task__price--translation"><?= $task->cost ?><b> ₽</b></b>
-                    <p class="new-task__place"><?= $task->city->name ?></p>
+                    <p class="new-task__place"><?php print $task->city->name?? ''; ?></p>
                     <span class="new-task__time"><?= $task->dt_add ?></span>
                 </div>
             <?php endforeach; ?>

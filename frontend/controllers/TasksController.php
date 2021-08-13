@@ -47,18 +47,12 @@ class TasksController extends Controller
     public function actionView($id)
     {
         $task = Tasks::findOne($id);
-        $responses = Responses::find()->where(['task_id' => $id])->all();
-        $user = Users::findOne(['id' => $task->user_id]);
-        $files = TasksFiles::find()->where(['task_id' => $id])->all();
 
         if (!$task) {
             throw new NotFoundHttpException("Задачи с id = $id не существует");
         }
         return $this->render('view', [
-            'task' => $task,
-            'responses' => $responses,
-            'files' => $files,
-            'user' => $user
+            'task' => $task
         ]);
     }
 

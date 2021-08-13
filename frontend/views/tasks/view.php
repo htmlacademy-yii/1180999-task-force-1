@@ -1,9 +1,6 @@
 <?php
 /**
  * @var object $task данные задачи
- * @var object $responses отклики
- * @var object $user создатель задачи
- * @var object $files файлы задачи
  */
 
 use yii\helpers\Url;
@@ -38,7 +35,7 @@ use frontend\models\Files;
                 <div class="content-view__attach">
                     <h3 class="content-view__h3">Вложения</h3>
 
-                    <?php foreach ($files as $file): ?>
+                    <?php foreach ($task->tasksFiles as $file): ?>
                         <a href="uploads/<?= Files::findOne($file->file_id)->path ?>">
                             <?= Files::findOne($file->file_id)->path ?>
                         </a>
@@ -49,7 +46,7 @@ use frontend\models\Files;
                     <h3 class="content-view__h3">Расположение</h3>
                     <div class="content-view__location-wrapper">
                         <div class="content-view__map">
-                            <a href="#"><img src="./img/map.jpg" width="361" height="292"
+                            <a href="#"><img src="../img/map.jpg" width="361" height="292"
                                              alt="Москва, Новый арбат, 23 к. 1"></a>
                         </div>
                         <div class="content-view__address">
@@ -73,10 +70,10 @@ use frontend\models\Files;
             </div>
         </div>
         <div class="content-view__feedback">
-            <h2>Отклики <span>(<?= count($responses)?>)</span></h2>
+            <h2>Отклики <span>(<?= count($task->responses)?>)</span></h2>
             <div class="content-view__feedback-wrapper">
 
-                <?php foreach ($responses as $response): ?>
+                <?php foreach ($task->responses as $response): ?>
                 <div class="content-view__feedback-card">
                     <div class="feedback-card__top">
                         <a href="<?= Url::to(['users/view', 'id' => $response->executor_id])?>">
@@ -111,13 +108,13 @@ use frontend\models\Files;
             <div class="profile-mini__wrapper">
                 <h3>Заказчик</h3>
                 <div class="profile-mini__top">
-                    <img src="./img/man-brune.jpg" width="62" height="62" alt="Аватар заказчика">
+                    <img src="../img/man-brune.jpg" width="62" height="62" alt="Аватар заказчика">
                     <div class="profile-mini__name five-stars__rate">
-                        <p><?= $user->name ?></p>
+                        <p><?= $task->user->name ?></p>
                     </div>
                 </div>
                 <p class="info-customer"><span>12 заданий</span><span class="last-">2 года на сайте</span></p>
-                <a href="<?= Url::to(['users/view', 'id' => $user->id]) ?>" class="link-regular">Смотреть профиль</a>
+                <a href="<?= Url::to(['users/view', 'id' => $task->user->id]) ?>" class="link-regular">Смотреть профиль</a>
             </div>
         </div>
         <div id="chat-container">

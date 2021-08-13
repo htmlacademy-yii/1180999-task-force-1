@@ -15,7 +15,7 @@ use yii\helpers\Url;
         <div class="content-view__feedback-card user__search-wrapper">
             <div class="feedback-card__top">
                 <div class="user__search-icon">
-                    <a href="<?= $user->id ?>"><img src="<?= $user->avatarFile->path ?? './img/camera.png' ?>" width="65" height="65" alt=""></a>
+                    <a href="<?= $user->id ?>"><img src="<?= $user->avatarFile->path ?? '/img/user-man.jpg' ?>" width="65" height="65" alt=""></a>
                     <span>17 заданий</span>
                     <span>6 отзывов</span>
                 </div>
