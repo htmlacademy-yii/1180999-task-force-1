@@ -8,7 +8,8 @@ use Yii;
  * This is the model class for table "reviews".
  *
  * @property int $id
- * @property string|null $dt_add
+ * @property string $dt_add
+ * @property int $user_id
  * @property int $executor_id
  * @property int $task_id
  * @property int|null $score
@@ -16,6 +17,7 @@ use Yii;
  *
  * @property Users $executor
  * @property Tasks $task
+ * @property Users $user
  */
 class Reviews extends \yii\db\ActiveRecord
 {
@@ -33,12 +35,13 @@ class Reviews extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['dt_add', 'user_id', 'executor_id', 'task_id'], 'required'],
             [['dt_add'], 'safe'],
-            [['executor_id', 'task_id'], 'required'],
-            [['executor_id', 'task_id', 'score'], 'integer'],
+            [['user_id', 'executor_id', 'task_id', 'score'], 'integer'],
             [['text'], 'string'],
             [['executor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['executor_id' => 'id']],
             [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -50,6 +53,7 @@ class Reviews extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'dt_add' => 'Dt Add',
+            'user_id' => 'User ID',
             'executor_id' => 'Executor ID',
             'task_id' => 'Task ID',
             'score' => 'Score',
@@ -75,5 +79,15 @@ class Reviews extends \yii\db\ActiveRecord
     public function getTask()
     {
         return $this->hasOne(Tasks::className(), ['id' => 'task_id']);
+    }
+
+    /**
+     * Gets query for [[User]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(Users::className(), ['id' => 'user_id']);
     }
 }

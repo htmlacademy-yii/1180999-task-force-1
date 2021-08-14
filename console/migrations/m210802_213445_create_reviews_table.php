@@ -7,9 +7,10 @@ use yii\db\Migration;
  * Has foreign keys to the tables:
  *
  * - `{{%users}}`
+ * - `{{%users}}`
  * - `{{%tasks}}`
  */
-class m210709_192655_create_reviews_table extends Migration
+class m210802_213445_create_reviews_table extends Migration
 {
     /**
      * {@inheritdoc}
@@ -19,11 +20,29 @@ class m210709_192655_create_reviews_table extends Migration
         $this->createTable('{{%reviews}}', [
             'id' => $this->primaryKey(),
             'dt_add' => $this->datetime()->notNull(),
+            'user_id' => $this->integer()->notNull(),
             'executor_id' => $this->integer()->notNull(),
             'task_id' => $this->integer()->notNull(),
             'score' => $this->tinyInteger()->null()->defaultValue(0),
             'text' => $this->text()->null(),
         ]);
+
+        // creates index for column `user_id`
+        $this->createIndex(
+            '{{%idx-reviews-user_id}}',
+            '{{%reviews}}',
+            'user_id'
+        );
+
+        // add foreign key for table `{{%users}}`
+        $this->addForeignKey(
+            '{{%fk-reviews-user_id}}',
+            '{{%reviews}}',
+            'user_id',
+            '{{%users}}',
+            'id',
+            'CASCADE'
+        );
 
         // creates index for column `executor_id`
         $this->createIndex(
@@ -65,6 +84,18 @@ class m210709_192655_create_reviews_table extends Migration
      */
     public function safeDown()
     {
+        // drops foreign key for table `{{%users}}`
+        $this->dropForeignKey(
+            '{{%fk-reviews-user_id}}',
+            '{{%reviews}}'
+        );
+
+        // drops index for column `user_id`
+        $this->dropIndex(
+            '{{%idx-reviews-user_id}}',
+            '{{%reviews}}'
+        );
+
         // drops foreign key for table `{{%users}}`
         $this->dropForeignKey(
             '{{%fk-reviews-executor_id}}',

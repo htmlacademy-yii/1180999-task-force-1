@@ -26,4 +26,4 @@
 ./yii migrate/create create_responses_table --fields="dt_add:datetime:notNull,executor_id:integer:notNull:foreignKey(users),task_id:integer:notNull:foreignKey(tasks),description:text:notNull,price:integer:notNull"
 
 -- Отзывы
-./yii migrate/create create_reviews_table --fields="dt_add:datetime:notNull,executor_id:integer:notNull:foreignKey(users),task_id:integer:notNull:foreignKey(tasks),score:tinyInteger:null:defaultValue(0),text:text:null"
+./yii migrate/create create_reviews_table --fields="dt_add:datetime:notNull,user_id:integer:notNull:foreignKey(users), executor_id:integer:notNull:foreignKey(users),task_id:integer:notNull:foreignKey(tasks),score:tinyInteger:null:defaultValue(0),text:text:null"
