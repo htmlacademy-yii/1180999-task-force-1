@@ -26,7 +26,7 @@ class TaskFilterForm extends Model
             'noExecutor' => 'Без исполнителя',
             'remote' => 'Удаленная работа',
             'interval' => 'Период',
-            'search' => 'Поиск'
+            'search' => 'Поиск по названию'
         ];
     }
 

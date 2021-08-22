@@ -9,7 +9,7 @@ use yii\db\Migration;
  * - `{{%users}}`
  * - `{{%tasks}}`
  */
-class m210709_192647_create_responses_table extends Migration
+class m210819_143144_create_responses_table extends Migration
 {
     /**
      * {@inheritdoc}

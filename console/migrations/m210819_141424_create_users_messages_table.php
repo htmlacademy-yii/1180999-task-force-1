@@ -10,7 +10,7 @@ use yii\db\Migration;
  * - `{{%users}}`
  * - `{{%tasks}}`
  */
-class m210709_192637_create_users_messages_table extends Migration
+class m210819_141424_create_users_messages_table extends Migration
 {
     /**
      * {@inheritdoc}

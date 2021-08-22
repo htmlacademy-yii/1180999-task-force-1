@@ -18,7 +18,6 @@ use yii\helpers\Url;
     <meta charset="<?= Yii::$app->charset ?>">
     <?php $this->registerCsrfMetaTags(); ?>
     <title><?= Html::encode($this->title) ?></title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/normalize.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -89,13 +88,17 @@ use yii\helpers\Url;
                         <a href="<?= Url::to(['users/index']) ?>">Исполнители</a>
                     </li>
                     <li class="site-list__item">
-                        <a href="#">Создать задание</a>
+                        <a href="<?= Url::to(['sign-up/index']) ?>">Создать задание</a>
                     </li>
+                    <?php if (!Yii::$app->user->isGuest) : ?>
                     <li class="site-list__item">
                         <a>Мой профиль</a>
                     </li>
+                    <?php endif; ?>
                 </ul>
             </div>
+
+            <?php if (!Yii::$app->user->isGuest) : ?>
             <div class="header__town">
                 <select class="multiple-select input town-select" size="1" name="town[]">
                     <option value="Moscow">Москва</option>
@@ -144,6 +147,7 @@ use yii\helpers\Url;
                     </li>
                 </ul>
             </div>
+            <?php endif; ?>
         </div>
     </header>
     <main class="page-main">
@@ -191,7 +195,22 @@ use yii\helpers\Url;
                          alt="Логотип HTML Academy">
                 </a>
             </div>
+            <?php if (Yii::$app->request->url === '/sign-up'): ?>
+                <div class="clipart-woman">
+                    <img src="./img/clipart-woman.png" width="238" height="450">
+                </div>
+                <div class="clipart-message">
+                    <div class="clipart-message-text">
+                        <h2>Знаете ли вы, что?</h2>
+                        <p>После регистрации вам будет доступно более
+                            двух тысяч заданий из двадцати разных категорий.</p>
+                        <p>В среднем, наши исполнители зарабатывают
+                            от 500 рублей в час.</p>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
+
     </footer>
 </div>
 

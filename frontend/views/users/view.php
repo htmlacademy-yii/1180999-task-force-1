@@ -57,26 +57,26 @@ use yii\helpers\Url;
             <div class="content-view__feedback-wrapper reviews-wrapper">
 
                 <?php foreach ($user->reviews as $review): ?>
-                <div class="feedback-card__reviews">
-                    <p class="link-task link">Задание
-                        <a href="<?= Url::to(['tasks/view', 'id' => $review->task_id]) ?>" class="link-regular">
-                            <?= $review->task->name ?></a></p>
-                    <div class="card__review">
-                        <a href="">
-                            <img src="<?= $review->user->avatarFile ?? '/img/user-man.jpg' ?>" width="55" height="54">
-                        </a>
-                        <div class="feedback-card__reviews-content">
-                            <p class="link-name link"><a href="<?= Url::to(['users/view', 'id' => $review->user_id])?>" class="link-regular">
-                                    <?= $review->user->name ?></a></p>
-                            <p class="review-text">
-                                <?= $review->text ?>
-                            </p>
-                        </div>
-                        <div class="card__review-rate">
-                            <p class="five-rate big-rate"><?= $review->score ?><span></span></p>
+                    <div class="feedback-card__reviews">
+                        <p class="link-task link">Задание
+                            <a href="<?= Url::to(['tasks/view', 'id' => $review->task_id]) ?>" class="link-regular">
+                                <?= $review->task->name ?></a></p>
+                        <div class="card__review">
+                            <a href="">
+                                <img src="<?= $review->user->avatarFile ?? '/img/user-man.jpg' ?>" width="55" height="54">
+                            </a>
+                            <div class="feedback-card__reviews-content">
+                                <p class="link-name link"><a href="<?= Url::to(['users/view', 'id' => $review->user_id])?>" class="link-regular">
+                                        <?= $review->user->name ?></a></p>
+                                <p class="review-text">
+                                    <?= $review->text ?>
+                                </p>
+                            </div>
+                            <div class="card__review-rate">
+                                <p class="five-rate big-rate"><?= $review->score ?><span></span></p>
+                            </div>
                         </div>
                     </div>
-                </div>
                 <?php endforeach; ?>
 
             </div>

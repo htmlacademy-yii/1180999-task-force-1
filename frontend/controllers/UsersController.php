@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use frontend\models\Categories;
 use frontend\models\forms\UserFilterForm;
+use frontend\models\Responses;
 use frontend\models\Reviews;
 use frontend\models\UsersSearch;
 use yii\web\Controller;
@@ -41,13 +42,15 @@ class UsersController extends Controller
     public function actionView($id)
     {
         $user = Users::findOne($id);
+        $reviews = Reviews::find()->where(['executor_id' => $user->id])->all();
 
         if (!$user) {
             throw new NotFoundHttpException("Пользователь с id $id не найден");
         }
 
         return $this->render('view', [
-            'user' => $user
+            'user' => $user,
+            'reviews' => $reviews
         ]);
     }
 

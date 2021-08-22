@@ -8,7 +8,7 @@
 ./yii migrate/create create_files_table --fields="path:string(255):notNull:unique"
 
 -- Пользователи
-./yii migrate/create create_users_table --fields="is_executor:tinyInteger:notNull:defaultValue(0),dt_add:datetime:notNull,last_active_time:datetime:null,name:string(255):notNull,email:string(255):notNull:unique,password:string(255):notNull,contacts:string(255):null,phone:string(255):notNull,skype:string(255):notNull,other_contacts:string(255):null,birthday:datetime:notNull,about_me:text:notNull,notification_new_message:tinyInteger:notNull:defaultValue(0),notification_task_action:tinyInteger:notNull:defaultValue(0),failed_count:tinyInteger:null:defaultValue(0),show_contacts:tinyInteger:notNull:defaultValue(0),city_id:integer:notNull:foreignKey(cities),avatar_file_id:integer:null:foreignKey(files)"
+./yii migrate/create create_users_table --fields="is_executor:tinyInteger:notNull:defaultValue(0),dt_add:datetime:notNull,last_active_time:datetime:null,name:string(255):notNull,email:string(255):notNull:unique,password:string(255):notNull,contacts:string(255):null:defaultValue(0),phone:string(255):notNull:defaultValue(0),skype:string(255):notNull:defaultValue(0),other_contacts:string(255):null:defaultValue(0),birthday:datetime:notNull:defaultValue(0),about_me:text:notNull:defaultValue(0),notification_new_message:tinyInteger:notNull:defaultValue(0),notification_task_action:tinyInteger:notNull:defaultValue(0),failed_count:tinyInteger:null:defaultValue(0),show_contacts:tinyInteger:notNull:defaultValue(0),city_id:integer:notNull:foreignKey(cities),avatar_file_id:integer:null:foreignKey(files)"
 
 -- Файлы пользователей
 ./yii migrate/create create_users_files_table --fields="user_id:integer:notNull:foreignKey(users),file_id:integer:notNull:foreignKey(files)"
