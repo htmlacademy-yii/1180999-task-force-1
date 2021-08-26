@@ -45,6 +45,7 @@ return [
                 '/' => 'site/index',
                 'users' => 'users/index',
                 'tasks' => 'tasks/index',
+                'sign-up' => 'sign-up/index',
                 'user/<id:\d+>' => 'users/view',
                 'task/<id:\d+>' => 'tasks/view',
             ],

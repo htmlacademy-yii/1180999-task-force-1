@@ -9,7 +9,7 @@ use yii\db\Migration;
  * - `{{%cities}}`
  * - `{{%files}}`
  */
-class m210709_192602_create_users_table extends Migration
+class m210819_135124_create_users_table extends Migration
 {
     /**
      * {@inheritdoc}
@@ -24,12 +24,12 @@ class m210709_192602_create_users_table extends Migration
             'name' => $this->string(255)->notNull(),
             'email' => $this->string(255)->notNull()->unique(),
             'password' => $this->string(255)->notNull(),
-            'contacts' => $this->string(255)->null(),
-            'phone' => $this->string(255)->notNull(),
-            'skype' => $this->string(255)->notNull(),
+            'contacts' => $this->string(255)->Null(),
+            'phone' => $this->string(255)->Null(),
+            'skype' => $this->string(255)->Null(),
             'other_contacts' => $this->string(255)->null(),
-            'birthday' => $this->datetime()->notNull(),
-            'about_me' => $this->text()->notNull(),
+            'birthday' => $this->datetime()->Null(),
+            'about_me' => $this->text()->Null(),
             'notification_new_message' => $this->tinyInteger()->notNull()->defaultValue(0),
             'notification_task_action' => $this->tinyInteger()->notNull()->defaultValue(0),
             'failed_count' => $this->tinyInteger()->null()->defaultValue(0),

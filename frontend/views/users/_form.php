@@ -13,7 +13,10 @@ $items = [];
 foreach ($categories as $category) {
     $items[] = $category->name;
 }
-$items = array_combine(range(1, count($items)), array_values($items));
+if (count($items) > 0) {
+    $items = array_combine(range(1, count($items)), array_values($items));
+}
+
 ?>
 <?php $form = ActiveForm::begin([
     'action' => ['index'],
@@ -82,8 +85,12 @@ $items = array_combine(range(1, count($items)), array_values($items));
         false); ?>
 </fieldset>
 
-    <label class="search-task__name">Поиск по имени</label>
-    <?= $form->field($modelForm, 'nameSearch')->input('text')->label(false) ?>
+    <?= $form->field($modelForm, 'nameSearch', [
+        'template' => "{label}\n{input}\n",
+        'options' => ['class' => 'field-container'],
+        'labelOptions' => ['class' => 'search-task__name']
+    ])->input('text', ['class' => 'input-middle input']) ?>
+
 
 
 <?= Html::submitButton('Поиск', [

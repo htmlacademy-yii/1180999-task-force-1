@@ -5,19 +5,11 @@
  * @var array[] $items
  */
 
+use frontend\models\Categories;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use frontend\models\forms\TaskFilterForm;
 
-?>
-<?php
-$interval = TaskFilterForm::getIntervalName();
-$items = [];
-
-foreach ($categories as $category) {
-    $items[] = $category->name;
-}
-$items = array_combine(range(1, count($items)), array_values($items));
 ?>
 
 <?php $form = ActiveForm::begin([
@@ -25,17 +17,16 @@ $items = array_combine(range(1, count($items)), array_values($items));
     'method' => 'get',
     'options' => ['class' => 'search-task__form'],
     'fieldConfig' => [
-        'labelOptions' => ['class' => 'checkbox__legend'],
-        'options' => ['tag' => false]
-        ]
-    ])
+        'labelOptions' => ['class' => 'checkbox__legend']
+    ]
+])
 ?>
     <fieldset class="search-task__categories">
         <legend>Категории</legend>
         <?= $form->field($modelForm, 'category_ids', ['template' => '{input}'])
-            ->checkboxList($items, [
-                'item' => function ($index, $label, $name, $checked, $value)  {
-                    $checked = $checked ? 'checked':'';
+            ->checkboxList(Categories::find()->select(['name', 'id'])->indexBy('id')->column(), [
+                'item' => function ($index, $label, $name, $checked, $value) {
+                    $checked = $checked ? 'checked' : '';
                     return "
                     <label class='checkbox__legend' for='{$index}'>
                         <input class=\"visually-hidden checkbox__input\" id='{$index}' type='checkbox' name='{$name}' value='{$value}' $checked >
@@ -48,10 +39,10 @@ $items = array_combine(range(1, count($items)), array_values($items));
     <fieldset class="search-task__categories">
         <legend>Дополнительно</legend>
         <?= $form->field($modelForm, 'noExecutor', [
-                'template' => '<label class="checkbox__legend">{input}
+            'template' => '<label class="checkbox__legend">{input}
                   <span>Без исполнителя</span>
                 </label>'])
-                 ->checkbox(['class' => 'visually-hidden checkbox__input'], false) ?>
+            ->checkbox(['class' => 'visually-hidden checkbox__input'], false) ?>
 
         <?= $form->field($modelForm, 'remote', [
             'template' => '<label class="checkbox__legend">{input}
@@ -60,13 +51,23 @@ $items = array_combine(range(1, count($items)), array_values($items));
             ->checkbox(['class' => 'visually-hidden checkbox__input'], false) ?>
     </fieldset>
 
-    <div class="field-container">
-        <?= $form->field($modelForm, 'interval')->dropDownList($interval) ?>
-    </div>
-    <div class="field-container">
-        <label class="search-task__name" for="9">Поиск по названию</label>
-        <?= $form->field($modelForm, 'search')->input('text')->label(false) ?>
-    </div>
+
+    <?= $form->field($modelForm, 'interval', [
+        'template' => "{label}\n{input}\n",
+        'options' => [
+            'class' => 'field-container'
+        ],
+        'labelOptions' => ['class' => 'search-task__name'],
+        'inputOptions' => ['class' => 'multiple-select input']
+    ])->dropDownList(TaskFilterForm::getIntervalName()) ?>
+
+
+<?= $form->field($modelForm, 'search', [
+        'template' => "{label}\n{input}\n",
+        'options' => ['class' => 'field-container'],
+        'labelOptions' => ['class' => 'search-task__name']
+])->input('text', ['class' => 'input-middle input']) ?>
+
 <?= Html::submitButton('Поиск', [
     'type' => 'submit',
     'class' => 'button'

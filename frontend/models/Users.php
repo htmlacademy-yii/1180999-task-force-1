@@ -15,25 +15,25 @@ use Yii;
  * @property string $email
  * @property string $password
  * @property string|null $contacts
- * @property string $phone
- * @property string $skype
+ * @property string|null $phone
+ * @property string|null $skype
  * @property string|null $other_contacts
- * @property string $birthday
- * @property string $about_me
+ * @property string|null $birthday
+ * @property string|null $about_me
  * @property int $notification_new_message
  * @property int $notification_task_action
- * @property int $notification_review
- * @property int $failed_count
+ * @property int|null $failed_count
  * @property int $show_contacts
  * @property int $city_id
  * @property int|null $avatar_file_id
  *
  * @property Responses[] $responses
  * @property Reviews[] $reviews
+ * @property Reviews[] $reviews0
  * @property Tasks[] $tasks
  * @property Tasks[] $tasks0
- * @property Cities $city
  * @property Files $avatarFile
+ * @property Cities $city
  * @property UsersFiles[] $usersFiles
  * @property UsersMessages[] $usersMessages
  * @property UsersMessages[] $usersMessages0
@@ -54,14 +54,14 @@ class Users extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['is_executor', 'notification_new_message', 'notification_task_action', 'notification_review', 'failed_count', 'show_contacts', 'city_id', 'avatar_file_id'], 'integer'],
-            [['dt_add', 'name', 'email', 'password', 'phone', 'skype', 'birthday', 'about_me', 'city_id'], 'required'],
+            [['is_executor', 'notification_new_message', 'notification_task_action', 'failed_count', 'show_contacts', 'city_id', 'avatar_file_id'], 'integer'],
+            [['dt_add', 'name', 'email', 'password', 'city_id'], 'required'],
             [['dt_add', 'last_active_time', 'birthday'], 'safe'],
+            [['about_me'], 'string'],
             [['name', 'email', 'password', 'contacts', 'phone', 'skype', 'other_contacts'], 'string', 'max' => 255],
-            [['about_me'], 'string', 'max' => 1000],
             [['email'], 'unique'],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
             [['avatar_file_id'], 'exist', 'skipOnError' => true, 'targetClass' => Files::className(), 'targetAttribute' => ['avatar_file_id' => 'id']],
+            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
         ];
     }
 
@@ -86,7 +86,6 @@ class Users extends \yii\db\ActiveRecord
             'about_me' => 'About Me',
             'notification_new_message' => 'Notification New Message',
             'notification_task_action' => 'Notification Task Action',
-            'notification_review' => 'Notification Review',
             'failed_count' => 'Failed Count',
             'show_contacts' => 'Show Contacts',
             'city_id' => 'City ID',
@@ -115,13 +114,23 @@ class Users extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Reviews0]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReviews0()
+    {
+        return $this->hasMany(Reviews::className(), ['user_id' => 'id']);
+    }
+
+    /**
      * Gets query for [[Tasks]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getTasks()
     {
-        return $this->hasMany(Tasks::className(), ['user_id' => 'id']);
+        return $this->hasMany(Tasks::className(), ['executor_id' => 'id']);
     }
 
     /**
@@ -131,17 +140,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getTasks0()
     {
-        return $this->hasMany(Tasks::className(), ['executor_id' => 'id']);
-    }
-
-    /**
-     * Gets query for [[City]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCity()
-    {
-        return $this->hasOne(Cities::className(), ['id' => 'city_id']);
+        return $this->hasMany(Tasks::className(), ['user_id' => 'id']);
     }
 
     /**
@@ -152,6 +151,16 @@ class Users extends \yii\db\ActiveRecord
     public function getAvatarFile()
     {
         return $this->hasOne(Files::className(), ['id' => 'avatar_file_id']);
+    }
+
+    /**
+     * Gets query for [[City]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCity()
+    {
+        return $this->hasOne(Cities::className(), ['id' => 'city_id']);
     }
 
     /**
@@ -171,7 +180,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getUsersMessages()
     {
-        return $this->hasMany(UsersMessages::className(), ['sender_id' => 'id']);
+        return $this->hasMany(UsersMessages::className(), ['recipient_id' => 'id']);
     }
 
     /**
@@ -181,6 +190,6 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getUsersMessages0()
     {
-        return $this->hasMany(UsersMessages::className(), ['recipient_id' => 'id']);
+        return $this->hasMany(UsersMessages::className(), ['sender_id' => 'id']);
     }
 }

@@ -11,7 +11,7 @@ use yii\db\Migration;
  * - `{{%categories}}`
  * - `{{%cities}}`
  */
-class m210709_192622_create_tasks_table extends Migration
+class m210819_141406_create_tasks_table extends Migration
 {
     /**
      * {@inheritdoc}
@@ -25,8 +25,8 @@ class m210709_192622_create_tasks_table extends Migration
             'user_id' => $this->integer()->notNull(),
             'executor_id' => $this->integer()->null(),
             'category_id' => $this->integer()->notNull(),
-            'city_id' => $this->integer()->Null(),
-            'status' => $this->integer()->notNull(),
+            'city_id' => $this->integer()->notNull(),
+            'status' => $this->string(255)->notNull(),
             'name' => $this->string(255)->notNull(),
             'description' => $this->text()->notNull(),
             'cost' => $this->integer()->null(),
