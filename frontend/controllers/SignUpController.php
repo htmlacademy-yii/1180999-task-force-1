@@ -25,19 +25,14 @@ class SignUpController extends Controller
             $user->name = $model->name;
             $user->email = $model->email;
             $user->city_id = $model->city;
-            $user->password = $model->password;
+            $user->password = Yii::$app->getSecurity()->generatePasswordHash($model->password);
             $user->save();
             $this->goHome();
 
-        } else {
+        }
             return $this->render('index', [
                 'model' => $model
             ]);
-        }
-
-        return $this->render('index', [
-            'model' => $model
-        ]);
     }
 
 }
