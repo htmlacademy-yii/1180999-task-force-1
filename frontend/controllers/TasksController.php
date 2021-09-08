@@ -16,14 +16,14 @@ use frontend\models\Tasks;
 use taskforce\Task;
 use yii\web\NotFoundHttpException;
 
-class TasksController extends Controller
+class TasksController extends SecuredController
 {
     /**
      * @return string
      */
     public function actionIndex(): string
     {
-        $categories = Categories::find()->all();
+                $categories = Categories::find()->all();
         $modelForm = new TaskFilterForm();
 
         if ($modelForm->load(Yii::$app->request->get())) {

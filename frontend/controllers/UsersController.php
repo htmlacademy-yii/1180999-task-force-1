@@ -12,7 +12,7 @@ use frontend\models\Users;
 use Yii;
 use yii\web\NotFoundHttpException;
 
-class UsersController extends Controller
+class UsersController extends SecuredController
 {
     /**
      * @return string

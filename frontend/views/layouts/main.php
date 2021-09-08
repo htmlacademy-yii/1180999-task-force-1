@@ -131,7 +131,7 @@ use yii\helpers\Url;
                          alt="Аватар пользователя">
                 </a>
                 <span class="header__account-name">
-                 Василий
+                 <?= Yii::$app->user->identity->name ?>
              </span>
             </div>
             <div class="account__pop-up">
@@ -143,7 +143,9 @@ use yii\helpers\Url;
                         <a href="#">Настройки</a>
                     </li>
                     <li>
-                        <a href="#">Выход</a>
+                        <?= Html::a('Выход', 'site/logout', [
+                            'data' => ['method' => 'post']
+                        ]) ?>
                     </li>
                 </ul>
             </div>
