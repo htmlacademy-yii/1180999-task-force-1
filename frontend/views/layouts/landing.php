@@ -1,17 +1,33 @@
+<?php
+use yii\bootstrap\Html;
+use yii\web\View;
+use yii\helpers\Url;
+
+/* @var $this View */
+
+/* @var $content string */
+?>
+
+<?php $this->beginPage() ?>
+
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="<?= Yii::$app->language ?>">
 <head>
-    <meta charset="UTF-8">
-    <title>TaskForce</title>
-    <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/style.css">
+    <?php $this->head(); ?>
+    <meta charset="<?= Yii::$app->charset ?>">
+    <?php $this->registerCsrfMetaTags(); ?>
+    <title><?= Html::encode($this->title) ?></title>
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
-<body class="landing">
+<body>
+
+<?php $this->beginBody() ?><body class="landing">
 <div class="table-layout">
     <header class=" page-header--index">
         <div class="main-container page-header__container page-header__container--index">
             <div class="page-header__logo--index">
-                <a>
+                <a href="/">
                     <svg class="logo-image--index" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1634 646.35">
                         <title>taskforce_logo2-01</title>
                         <g>
@@ -40,23 +56,33 @@
                 <p>Работа там, где ты!</p>
             </div>
             <div class="header__account--index">
+                <?php if (Yii::$app->user->isGuest): ?>
                 <a href="#" class="header__account-enter open-modal" data-for="enter-form">
                     <span>Вход</span></a>
                 или
-                <a href="signup.html" class="header__account-registration">
+                <a href="<?= Url::to(['sign-up/index'])?>" class="header__account-registration">
                     Регистрация
                 </a>
+                <?php endif; ?>
+                <?php if (!Yii::$app->user->isGuest): ?>
+                <?= Html::a('Выйти', 'site/logout', [
+                    'data' => ['method' => 'post']
+                ]) ?>
+                <?php endif; ?>
             </div>
         </div>
     </header>
     <main>
+
+
     <?= $content ?? '' ?>
+
     </main>
     <footer class="page-footer">
         <div class="main-container page-footer__container">
             <div class="page-footer__info">
                 <p class="page-footer__info-copyright">
-                    © 2019-<?= '111'?>, ООО «ТаскФорс»
+                    © 2019-<?= date('Y')?>, ООО «ТаскФорс»
                     Все права защищены
                 </p>
                 <p class="page-footer__info-use">
@@ -99,6 +125,11 @@
 </div>
 <div class="overlay"></div>
 <script src="js/main.js"></script>
+
+<?php $this->endBody(); ?>
+
 </body>
 </html>
+
+<?php $this->endPage(); ?>
 

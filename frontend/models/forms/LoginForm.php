@@ -13,6 +13,14 @@ class LoginForm extends Model
 
     private $_user;
 
+    public function attributeLabels()
+    {
+        return [
+            'email' => 'Email',
+            'password' => 'Пароль'
+        ];
+    }
+
     /**
      * @return array
      */

@@ -2081,6 +2081,8 @@ footer {
   width: 345px; }
 
 .page-header__container--index {
+  animation-duration: 1000ms;
+  position: relative;
   min-height: 268px;
   width: 1280px;
   display: -webkit-box;
@@ -2088,10 +2090,14 @@ footer {
   display: flex;
   -webkit-box-pack: end;
       -ms-flex-pack: end;
-          justify-content: flex-end;
+          justify-content: center;
   -webkit-box-align: start;
       -ms-flex-align: start;
           align-items: flex-start; }
+
+.page-header__logo--index {
+  align-self: center;
+}
 
 .page-header__logo--index p {
   font-family: "PT Sans", sans-serif;
@@ -2107,6 +2113,8 @@ footer {
   fill: #ffffff; }
 
 .header__account--index {
+  position: absolute;
+  right: 0;
   font-family: "Myriad Pro", sans-serif;
   font-size: 18px;
   margin-right: 65px;
