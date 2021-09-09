@@ -143,11 +143,11 @@ use yii\helpers\Url;
                         <a href="#">Настройки</a>
                     </li>
                     <li>
-                        <?= Html::a('Выход', 'site/logout', [
+                        <?= Html::a('Выход', '/site/logout', [
                             'data' => ['method' => 'post']
                         ]) ?>
                     </li>
-                </ul>
+                    </ul>
             </div>
             <?php endif; ?>
         </div>

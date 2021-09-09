@@ -1,27 +1,20 @@
 <?php
+
 namespace frontend\controllers;
 
-use frontend\models\ResendVerificationEmailForm;
-use frontend\models\Users;
-use frontend\models\VerifyEmailForm;
 use Yii;
-use yii\base\InvalidArgumentException;
-use yii\web\BadRequestHttpException;
-use yii\web\Controller;
-use yii\filters\VerbFilter;
+use frontend\models\Users;
 use yii\filters\AccessControl;
 use frontend\models\forms\LoginForm;
-use frontend\models\PasswordResetRequestForm;
-use frontend\models\ResetPasswordForm;
-use frontend\models\SignupForm;
-use frontend\models\ContactForm;
 
 /**
  * Site controller
  */
 class SiteController extends SecuredController
 {
-
+    /**
+     * Инициализация layouts/landing
+     */
     public function init()
     {
         parent::init();
@@ -29,37 +22,36 @@ class SiteController extends SecuredController
     }
 
     /**
-     * {@inheritdoc}
+     * @return array[]
      */
     public function behaviors()
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['logout', 'index'],
+                'class' => AccessControl::class,
                 'rules' => [
                     [
                         'actions' => ['index'],
                         'allow' => true,
-                        'roles' => ['?'],
+                        'roles' => ['?']
+                    ],
+                    [
+                        'actions' => ['index'],
+                        'allow' => false,
+                        'roles' => ['@']
                     ],
                     [
                         'actions' => ['logout'],
                         'allow' => true,
-                        'roles' => ['@'],
-                    ],
+                        'roles' => ['@']
+                    ]
                 ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
+                'denyCallback' => function ($rule, $action) {
+                    return $this->redirect('tasks');
+                },
+            ]
         ];
     }
-
-
 
     /**
      * Displays homepage.
@@ -84,7 +76,7 @@ class SiteController extends SecuredController
     }
 
     /**
-     * @return bool|\yii\web\Response
+     * Вывод пользователя из сессии
      */
     public function actionLogout()
     {
@@ -92,21 +84,17 @@ class SiteController extends SecuredController
             Yii::$app->user->logout();
             return $this->goHome();
         }
-        return $this->goHome();
     }
 
     /**
-     *
+     * {@inheritdoc}
      */
-    public function actionError()
+    public function actions()
     {
-        if (Yii::$app->response->statusCode === 404) {
-            $this->goHome();
-        }
-
-        if (Yii::$app->response->statusCode === 403) {
-            $this->redirect('tasks');
-        }
-
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+        ];
     }
 }

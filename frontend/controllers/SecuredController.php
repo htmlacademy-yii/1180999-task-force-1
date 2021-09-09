@@ -7,6 +7,10 @@ use yii\web\Controller;
 
 class SecuredController extends Controller
 {
+    /**
+     * Глобальный фильтр запрета для анонимных пользователей
+     * @return array[]
+     */
     public function behaviors()
     {
         return [
@@ -15,7 +19,8 @@ class SecuredController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['@']
+                        'roles' => ['@'],
+
                     ]
                 ]
             ]

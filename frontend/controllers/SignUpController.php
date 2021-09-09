@@ -27,7 +27,7 @@ class SignUpController extends Controller
                         'roles' => ['?']
                     ],
                     [
-                        'allow' => false,
+                        'allow' => true,
                         'roles' => ['@']
                     ]
                 ]
@@ -41,6 +41,10 @@ class SignUpController extends Controller
      */
     public function actionIndex()
     {
+        if (!Yii::$app->user->isGuest) {
+            $this->redirect('tasks');
+        }
+
         $model = new SingUpForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
