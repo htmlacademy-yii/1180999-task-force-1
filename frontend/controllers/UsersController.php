@@ -7,13 +7,36 @@ use frontend\models\forms\UserFilterForm;
 use frontend\models\Responses;
 use frontend\models\Reviews;
 use frontend\models\UsersSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use frontend\models\Users;
 use Yii;
 use yii\web\NotFoundHttpException;
 
-class UsersController extends Controller
+class UsersController extends SecuredController
 {
+    /**
+     * @return array[]
+     */
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index', 'view'],
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ],
+                'denyCallback' => function ($rule, $action) {
+                    return $this->goHome();
+                },
+            ]
+        ];
+    }
+
     /**
      * @return string
      */

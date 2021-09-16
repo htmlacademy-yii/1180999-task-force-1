@@ -6,6 +6,7 @@ use frontend\models\Cities;
 use frontend\models\forms\SingUpForm;
 use frontend\models\Users;
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 
 /**
@@ -15,8 +16,35 @@ use yii\web\Controller;
  */
 class SignUpController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['?']
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @return string
+     * @throws \yii\base\Exception
+     */
     public function actionIndex()
     {
+        if (!Yii::$app->user->isGuest) {
+            $this->redirect('tasks');
+        }
+
         $model = new SingUpForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
@@ -34,5 +62,4 @@ class SignUpController extends Controller
                 'model' => $model
             ]);
     }
-
 }

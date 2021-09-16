@@ -10,14 +10,37 @@ use frontend\models\TasksFiles;
 use frontend\models\TasksSearch;
 use frontend\models\Users;
 use yii\db\Exception;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use Yii;
 use frontend\models\Tasks;
 use taskforce\Task;
 use yii\web\NotFoundHttpException;
 
-class TasksController extends Controller
+class TasksController extends SecuredController
 {
+    /**
+     * @return array[]
+     */
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index', 'view'],
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ],
+                'denyCallback' => function ($rule, $action) {
+                    return $this->goHome();
+                },
+            ]
+        ];
+    }
+
     /**
      * @return string
      */
