@@ -88,7 +88,7 @@ use yii\helpers\Url;
                         <a href="<?= Url::to(['users/index']) ?>">Исполнители</a>
                     </li>
                     <li class="site-list__item">
-                        <a href="<?= Url::to(['sign-up/index']) ?>">Создать задание</a>
+                        <a href="<?= Url::to(['tasks/create']) ?>">Создать задание</a>
                     </li>
                     <?php if (!Yii::$app->user->isGuest) : ?>
                     <li class="site-list__item">
@@ -214,6 +214,10 @@ use yii\helpers\Url;
         </div>
 
     </footer>
+    <script src="js/dropzone.js"></script>
+    <script>
+        var dropzone = new Dropzone("div.create__file", {url: "upload.php", paramName: "Attach"});
+    </script>
 </div>
 
 <?php $this->endBody(); ?>

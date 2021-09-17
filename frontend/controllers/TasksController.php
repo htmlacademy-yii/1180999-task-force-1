@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use frontend\models\Categories;
 use frontend\models\Files;
+use frontend\models\forms\TaskCreate;
 use frontend\models\forms\TaskFilterForm;
 use frontend\models\Responses;
 use frontend\models\TasksFiles;
@@ -29,13 +30,13 @@ class TasksController extends SecuredController
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'view'],
+                        'actions' => ['index', 'view', 'create'],
                         'allow' => true,
                         'roles' => ['@']
                     ]
                 ],
                 'denyCallback' => function ($rule, $action) {
-                    return $this->goHome();
+                    return $this->goBack();
                 },
             ]
         ];
@@ -67,7 +68,12 @@ class TasksController extends SecuredController
         );
     }
 
-    public function actionView($id)
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionView($id): string
     {
         $task = Tasks::findOne($id);
 
@@ -76,6 +82,27 @@ class TasksController extends SecuredController
         }
         return $this->render('view', [
             'task' => $task
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionCreate(): string
+    {
+        $model = new TaskCreate();
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate()) {
+
+                return $this->render('create', [
+                    'model' => $model,
+                ]);
+            }
+        }
+
+        return $this->render('create', [
+            'model' => $model,
         ]);
     }
 
