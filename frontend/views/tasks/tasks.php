@@ -13,6 +13,7 @@ use yii\widgets\ActiveField;
 use yii\helpers\Url;
 
 ?>
+
 <div class="main-container page-container">
     <section class="new-task">
         <div class="new-task__wrapper">

@@ -16,11 +16,8 @@ use yii\widgets\ActiveForm;
 
             <?php $form = ActiveForm::begin([
                     'id' => 'task-form',
-                    'action' => ['create'],
                     'options' => [
                         'class' => 'create__task-form form-create',
-                        'method' => 'post',
-                        'enctype' => 'multipart/form-data'
                     ],
                 ]
             ); ?>
@@ -62,18 +59,17 @@ use yii\widgets\ActiveForm;
                 ->dropDownList(Categories::find()->select(['name', 'id'])->column())
                 ->hint('Выберите категорию') ?>
 
-            <?= $form->field($model, 'files[]', [
-                'template' => "{label}\n<span>{hint}</span><div class='create__file'>
-                        <span>Добавить новый файл</span>
-                    </div>",
-                'options' => [
-                    'class' => 'field-container'
-                ],
-                'inputOptions' => [
-                    'class' => 'create__file'
-                ]
-            ])
-                ->hint('Загрузите файлы, которые помогут исполнителю лучше выполнить или оценить работу') ?>
+            <?= $form->field($model, 'imageFiles[]', [
+                    'template' => "{label}\n{input}\n<span>{error}</span>",
+                    'options' => [
+                            'class' => 'field-container',
+                                                ],
+                    'inputOptions' => [
+                        'multiple' => true,
+                        'style' => 'padding: 14px 15px; border: 1px dashed lightgrey; border-radius: 5px;'
+                    ]
+                ])->fileInput()
+            ?>
 
             <?= $form->field($model, 'city', [
                 'template' => "{label}\n{input}\n<span>{hint}</span>",
@@ -129,14 +125,23 @@ use yii\widgets\ActiveForm;
                         что всё в фокусе, а фото показывает объект со всех
                         ракурсов.</p>
                 </div>
-                <?php if($model->errors): ?>
-                <div class="warning-item warning-item--error">
-                    <h2>Ошибки заполнения формы</h2>
-                    <h3>Категория</h3>
-                    <p>Это поле должно быть выбрано.<br>
-                        Задание должно принадлежать одной из категорий</p>
-                    <?= $form->errorSummary($model) ?>
-                </div>
+                <?php if ($model->errors): ?>
+                    <div class="warning-item warning-item--error">
+                        <h2>Ошибки заполнения формы</h2>
+
+                        <?php
+                        $errors = $model->errors;
+                        foreach ($errors as $key => $error): ?>
+
+                            <h3><?= $model->attributeLabels()[$key] ?></h3>
+
+                            <p>
+                                <?php foreach ($error as $description): ?>
+                                    <?= $description ?>
+                                <?php endforeach; ?>
+                            </p>
+                        <?php endforeach; ?>
+                    </div>
                 <?php endif; ?>
 
             </div>
@@ -151,7 +156,3 @@ use yii\widgets\ActiveForm;
 
     </section>
 </div>
-
-<form action="/">
-
-</form>

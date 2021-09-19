@@ -12,11 +12,13 @@ use frontend\models\TasksSearch;
 use frontend\models\Users;
 use yii\db\Exception;
 use yii\filters\AccessControl;
+use yii\helpers\Url;
 use yii\web\Controller;
 use Yii;
 use frontend\models\Tasks;
 use taskforce\Task;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 class TasksController extends SecuredController
 {
@@ -56,7 +58,7 @@ class TasksController extends SecuredController
             $dataProvider = $taskSearch->search($modelForm);
             $tasks = $dataProvider->getModels();
         } else {
-            $tasks = Tasks::find()->all();
+            $tasks = Tasks::find()->orderBy('dt_add DESC')->all();
         }
 
         return $this->render(
@@ -86,17 +88,39 @@ class TasksController extends SecuredController
     }
 
     /**
-     * @return string
+     * Действие создания новой задачи
+     * @return int|string
      */
-    public function actionCreate(): string
+    public function actionCreate()
     {
         $model = new TaskCreate();
 
-        if ($model->load(Yii::$app->request->post())) {
-            if ($model->validate()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
-                return $this->render('create', [
-                    'model' => $model,
+            $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
+
+            if ($model->upload()) {
+
+                $newTask = new Tasks();
+
+                $newTask->dt_add = date('Y-m-d');
+                $newTask->deadline = $model->deadline;
+                $newTask->user_id = Yii::$app->user->id;
+                $newTask->category_id = 1;
+                $newTask->name = $model->name;
+                $newTask->description = $model->description;
+                $newTask->cost = $model->cost;
+
+                $newTask->city_id = 1;
+                $newTask->status = 0;
+
+                $newTask->save();
+
+                $files = new TasksFiles();
+                $files->task_id = $newTask->id;
+
+                return $this->render('view', [
+                    'task' => $newTask
                 ]);
             }
         }
@@ -105,5 +129,4 @@ class TasksController extends SecuredController
             'model' => $model,
         ]);
     }
-
 }
