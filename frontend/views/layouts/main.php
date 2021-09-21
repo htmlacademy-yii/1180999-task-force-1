@@ -216,6 +216,7 @@ use yii\helpers\Url;
         </div>
 
     </footer>
+
 </div>
 
 <?php $this->endBody(); ?>

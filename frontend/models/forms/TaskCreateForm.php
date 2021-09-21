@@ -5,7 +5,7 @@ namespace frontend\models\forms;
 use frontend\models\Tasks;
 
 
-class TaskCreate extends Tasks
+class TaskCreateForm extends Tasks
 {
     public $name;
     public $description;
@@ -14,6 +14,7 @@ class TaskCreate extends Tasks
     public $location;
     public $cost;
     public $deadline;
+    public $path;
 
     /**
      * Названия полей формы
@@ -41,7 +42,7 @@ class TaskCreate extends Tasks
         return [
             [['name', 'description', 'category', 'files', 'location', 'cost', 'deadline'],
                 'safe'],
-            [['name', 'description', 'category'],
+            [['name', 'description', 'category', 'deadline'],
                 'required',
                 'message' => 'Обязательное поле'],
             [['files'],
@@ -52,7 +53,7 @@ class TaskCreate extends Tasks
             [['name'], 'forName'],
             [['description'], 'forDescription'],
             [['cost'], 'isNumericOnly'],
-            ['deadline', 'date', 'format' => 'php:Y-m-d', 'min' => date('Y-m-d')],
+            ['deadline', 'forDate']
         ];
     }
 
@@ -87,18 +88,36 @@ class TaskCreate extends Tasks
         }
     }
 
+    /**
+     * Валидация поля "Описание"
+     */
+    public function forDate()
+    {
+        if ($this->deadline < date('Y-m-d')) {
+            $this->addError('deadline', 'Указана дата раньше текущей');
+        }
+    }
+
 
     /**
      * Загрузка файлов на сервер
-     * @return bool
+     * @return bool|array
      */
-    public function uploadFiles(): bool
+    public function uploadFiles()
     {
+        $taskFiles = [];
+
+        $url = 'uploads/' . date("Y-m-d") .'_'. date("H-m-s") . '/';
+        if (!is_dir($url)) {
+            mkdir($url, 0777);
+        }
+
         if ($this->validate()) {
             foreach ($this->files as $file) {
-                $file->saveAs('@webroot/uploads/' . $file->baseName . '.' . $file->extension);
+                $file->saveAs($url . $file->baseName . '.' . $file->extension);
+                $taskFiles[] = ["$file->baseName.$file->extension" => $url . $file->baseName . '.' . $file->extension];
             }
-            return true;
+            return $taskFiles;
         }
         return false;
     }

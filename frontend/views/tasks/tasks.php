@@ -32,7 +32,7 @@ use yii\helpers\Url;
                     </p>
                     <b class="new-task__price new-task__price--translation"><?= $task->cost ?><b> ₽</b></b>
                     <p class="new-task__place"><?php print $task->city->name?? ''; ?></p>
-                    <span class="new-task__time"><?= $task->dt_add ?></span>
+                    <span class="new-task__time"><?= date('Y-m-d', strtotime($task->dt_add)) ?></span>
                 </div>
             <?php endforeach; ?>
             <div class="new-task__pagination">

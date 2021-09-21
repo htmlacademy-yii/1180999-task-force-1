@@ -4,7 +4,7 @@ namespace frontend\controllers;
 
 use frontend\models\Categories;
 use frontend\models\Files;
-use frontend\models\forms\TaskCreate;
+use frontend\models\forms\TaskCreateForm;
 use frontend\models\forms\TaskFilterForm;
 use frontend\models\Responses;
 use frontend\models\TasksFiles;
@@ -12,6 +12,7 @@ use frontend\models\TasksSearch;
 use frontend\models\Users;
 use yii\db\Exception;
 use yii\filters\AccessControl;
+use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\Controller;
 use Yii;
@@ -32,7 +33,7 @@ class TasksController extends SecuredController
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create'],
+                        'actions' => ['index', 'view', 'create', 'delete'],
                         'allow' => true,
                         'roles' => ['@']
                     ]
@@ -93,35 +94,45 @@ class TasksController extends SecuredController
      */
     public function actionCreate()
     {
-        $model = new TaskCreate();
+        $model = new TaskCreateForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
-            $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
+            $newTask = new Tasks();
+            $newTask->dt_add = date('Y-m-d h:i:s');
+            $newTask->user_id = Yii::$app->user->id;
+            $newTask->category_id = $model->category;
+            $newTask->name = $model->name;
+            $newTask->description = $model->description;
+            $newTask->cost = $model->cost;
+            $newTask->deadline = $model->deadline;
+            $newTask->city_id = 1;
+            $newTask->status = 0;
+            $newTask->save();   // Task done
 
-            if ($model->upload()) {
 
-                $newTask = new Tasks();
+            $model->files = UploadedFile::getInstances($model, 'files');
 
-                $newTask->dt_add = date('Y-m-d');
-                $newTask->deadline = $model->deadline;
-                $newTask->user_id = Yii::$app->user->id;
-                $newTask->category_id = 1;
-                $newTask->name = $model->name;
-                $newTask->description = $model->description;
-                $newTask->cost = $model->cost;
+            if ($model->uploadFiles()) {
 
-                $newTask->city_id = 1;
-                $newTask->status = 0;
+                $taskFiles = $model->uploadFiles();
+                foreach ($taskFiles as $files) {
+                    foreach ($files as $name => $path) {
 
-                $newTask->save();
+                        $files = new Files();
+                        $files->name = $name;
+                        $files->path = $path;
+                        $files->save();
 
-                $files = new TasksFiles();
-                $files->task_id = $newTask->id;
-
-                return $this->render('view', [
-                    'task' => $newTask
-                ]);
+                        $taskFiles = new TasksFiles();
+                        $taskFiles->task_id = $newTask->id;
+                        $taskFiles->file_id = $files->id;
+                        $taskFiles->save();
+                    }
+                }
+            }
+            if ($newTask->id) {
+                $this->redirect("task/$newTask->id");
             }
         }
 

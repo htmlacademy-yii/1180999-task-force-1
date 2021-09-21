@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\forms\TaskCreate */
+/* @var $model frontend\models\forms\TaskCreateForm */
 /* @var $form ActiveForm */
 ?>
 
@@ -56,22 +56,24 @@ use yii\widgets\ActiveForm;
                     'size' => '1'
                 ]
             ])
-                ->dropDownList(Categories::find()->select(['name', 'id'])->column())
+                ->dropDownList(Categories::find()->select(['name', 'id'])->indexBy('id')->column())
                 ->hint('Выберите категорию') ?>
 
-            <?= $form->field($model, 'imageFiles[]', [
-                    'template' => "{label}\n{input}\n<span>{error}</span>",
-                    'options' => [
-                            'class' => 'field-container',
-                                                ],
-                    'inputOptions' => [
-                        'multiple' => true,
-                        'style' => 'padding: 14px 15px; border: 1px dashed lightgrey; border-radius: 5px;'
-                    ]
-                ])->fileInput()
+            <?= $form->field($model, 'files[]', [
+                'template' => "{label}\n<div class='create__file'>
+                    {input}
+                </div>",
+                'options' => [
+                    'class' => 'field-container',
+                ],
+                'inputOptions' => [
+                    'multiple' => true,
+                    'style' => 'margin-bottom: 10px',
+                ],
+            ])->fileInput()
             ?>
 
-            <?= $form->field($model, 'city', [
+            <?= $form->field($model, 'location', [
                 'template' => "{label}\n{input}\n<span>{hint}</span>",
                 'options' => [
                     'class' => 'field-container'
@@ -100,12 +102,11 @@ use yii\widgets\ActiveForm;
                 <?= $form->field($model, 'deadline', [
                     'template' => "{label}\n{input}\n<span>{hint}</span>",
                     'options' => [
-                        'class' => 'field-container create__price-time--wrapper'
+                        'class' => 'field-container'
                     ],
                     'inputOptions' => [
                         'class' => 'input-middle input input-date',
-                        'placeholder' => 'ГГГГ-ММ-ДД',
-                        'type' => 'text'
+                        'type' => 'date',
                     ]
                 ])
                     ->hint('Укажите крайний срок исполнения') ?>

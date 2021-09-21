@@ -3,6 +3,8 @@
  * @var object $task данные задачи
  */
 
+use frontend\models\TasksFiles;
+use yii\helpers\Html;
 use yii\helpers\Url;
 use frontend\models\Files;
 
@@ -20,7 +22,7 @@ use frontend\models\Files;
                                class="link-regular">
                                 <?= $task->category->name ?>
                             </a>
-                            <?= $task->dt_add ?>
+                            <?= date('Y-m-d', strtotime($task->dt_add)) ?>
                         </span>
                     </div>
                     <b class="new-task__price new-task__price--clean content-view-price"><?= $task->cost ?><b> ₽</b></b>
@@ -35,11 +37,18 @@ use frontend\models\Files;
                 <div class="content-view__attach">
                     <h3 class="content-view__h3">Вложения</h3>
 
-                    <?php foreach ($task->tasksFiles as $file): ?>
-                        <a href="uploads/<?= Files::findOne($file->file_id)->path ?>">
-                            <?= Files::findOne($file->file_id)->path ?>
-                        </a>
-                    <?php endforeach; ?>
+                    <?php
+                    $taskFiles = TasksFiles::find()
+                        ->where(['task_id' => $task->id])
+                        ->select('file_id')->column();
+                    foreach ($taskFiles as $file_id) {
+                        print Html::a(
+                            Files::findOne(['id' => $file_id])->name,
+                            Url::base() . '/' . Files::findOne(['id' => $file_id])->path,
+                            ['target' => '_blank']
+                        );
+                    }
+                    ?>
 
                 </div>
                 <div class="content-view__location">
@@ -70,34 +79,36 @@ use frontend\models\Files;
             </div>
         </div>
         <div class="content-view__feedback">
-            <h2>Отклики <span>(<?= count($task->responses)?>)</span></h2>
+            <h2>Отклики <span>(<?= count($task->responses) ?>)</span></h2>
             <div class="content-view__feedback-wrapper">
 
                 <?php foreach ($task->responses as $response): ?>
-                <div class="content-view__feedback-card">
-                    <div class="feedback-card__top">
-                        <a href="<?= Url::to(['users/view', 'id' => $response->executor_id])?>">
-                            <img src="<?= $user->avatarFile->path ?? 'https://via.placeholder.com/1.png' ?>" width="55" height="55"></a>
-                        <div class="feedback-card__top--name">
-                            <p><a href="<?= Url::to(['users/view', 'id' => $response->executor_id])?>" class="link-regular"><?= $response->executor->name ?></a></p>
-                            <span></span><span></span><span></span><span></span><span class="star-disabled"></span>
-                            <b>4.25</b>
+                    <div class="content-view__feedback-card">
+                        <div class="feedback-card__top">
+                            <a href="<?= Url::to(['users/view', 'id' => $response->executor_id]) ?>">
+                                <img src="<?= $user->avatarFile->path ?? 'https://via.placeholder.com/1.png' ?>"
+                                     width="55" height="55"></a>
+                            <div class="feedback-card__top--name">
+                                <p><a href="<?= Url::to(['users/view', 'id' => $response->executor_id]) ?>"
+                                      class="link-regular"><?= $response->executor->name ?></a></p>
+                                <span></span><span></span><span></span><span></span><span class="star-disabled"></span>
+                                <b>4.25</b>
+                            </div>
+                            <span class="new-task__time"><?= $response->dt_add ?></span>
                         </div>
-                        <span class="new-task__time"><?= $response->dt_add ?></span>
+                        <div class="feedback-card__content">
+                            <p>
+                                <?= $response->description ?>
+                            </p>
+                            <span><?= $response->price ?> ₽</span>
+                        </div>
+                        <div class="feedback-card__actions">
+                            <a class="button__small-color response-button button"
+                               type="button">Подтвердить</a>
+                            <a class="button__small-color refusal-button button"
+                               type="button">Отказать</a>
+                        </div>
                     </div>
-                    <div class="feedback-card__content">
-                        <p>
-                            <?= $response->description ?>
-                        </p>
-                        <span><?= $response->price ?> ₽</span>
-                    </div>
-                    <div class="feedback-card__actions">
-                        <a class="button__small-color response-button button"
-                           type="button">Подтвердить</a>
-                        <a class="button__small-color refusal-button button"
-                           type="button">Отказать</a>
-                    </div>
-                </div>
                 <?php endforeach; ?>
 
             </div>
@@ -114,7 +125,8 @@ use frontend\models\Files;
                     </div>
                 </div>
                 <p class="info-customer"><span>12 заданий</span><span class="last-">2 года на сайте</span></p>
-                <a href="<?= Url::to(['users/view', 'id' => $task->user->id]) ?>" class="link-regular">Смотреть профиль</a>
+                <a href="<?= Url::to(['users/view', 'id' => $task->user->id]) ?>" class="link-regular">Смотреть
+                    профиль</a>
             </div>
         </div>
         <div id="chat-container">
