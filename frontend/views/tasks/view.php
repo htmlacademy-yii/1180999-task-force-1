@@ -49,7 +49,6 @@ use frontend\models\Files;
                         );
                     }
                     ?>
-
                 </div>
                 <div class="content-view__location">
                     <h3 class="content-view__h3">Расположение</h3>

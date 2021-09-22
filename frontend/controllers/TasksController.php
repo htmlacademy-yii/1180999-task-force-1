@@ -106,8 +106,8 @@ class TasksController extends SecuredController
             $newTask->description = $model->description;
             $newTask->cost = $model->cost;
             $newTask->deadline = $model->deadline;
-            $newTask->city_id = 1;
-            $newTask->status = 0;
+            $newTask->location = 1;
+            $newTask->status = Task::STATUS_NEW;
             $newTask->save();   // Task done
 
 

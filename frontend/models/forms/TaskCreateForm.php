@@ -42,7 +42,7 @@ class TaskCreateForm extends Tasks
         return [
             [['name', 'description', 'category', 'files', 'location', 'cost', 'deadline'],
                 'safe'],
-            [['name', 'description', 'category', 'deadline'],
+            [['name', 'description', 'category'],
                 'required',
                 'message' => 'Обязательное поле'],
             [['files'],
