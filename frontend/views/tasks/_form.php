@@ -23,8 +23,10 @@ use frontend\models\forms\TaskFilterForm;
 ?>
     <fieldset class="search-task__categories">
         <legend>Категории</legend>
-        <?= $form->field($modelForm, 'category_ids', ['template' => '{input}'])
-            ->checkboxList(Categories::find()->select(['name', 'id'])->indexBy('id')->column(), [
+        <?= $form->field($modelForm, 'category_ids', [
+                'template' => '{input}'
+        ])
+            ->checkboxList(Categories::find()->select(['name','id'])->indexBy('id')->column(), [
                 'item' => function ($index, $label, $name, $checked, $value) {
                     $checked = $checked ? 'checked' : '';
                     return "

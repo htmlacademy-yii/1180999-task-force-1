@@ -9,22 +9,22 @@ use Yii;
  *
  * @property int $id
  * @property string $dt_add
- * @property string $deadline
+ * @property string|null $deadline
  * @property int $user_id
  * @property int|null $executor_id
  * @property int $category_id
- * @property int $city_id
- * @property int $status
+ * @property int $location
+ * @property string|null $status
  * @property string $name
  * @property string $description
  * @property int|null $cost
  *
  * @property Responses[] $responses
  * @property Reviews[] $reviews
- * @property Users $user
- * @property Users $executor
  * @property Categories $category
- * @property Cities $city
+ * @property Cities $location0
+ * @property Users $executor
+ * @property Users $user
  * @property TasksFiles[] $tasksFiles
  * @property UsersMessages[] $usersMessages
  */
@@ -44,15 +44,15 @@ class Tasks extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['dt_add', 'deadline', 'user_id', 'category_id', 'city_id', 'status', 'name', 'description'], 'required'],
+            [['dt_add', 'user_id', 'category_id', 'location', 'name', 'description'], 'required'],
             [['dt_add', 'deadline'], 'safe'],
-            [['user_id', 'executor_id', 'category_id', 'city_id', 'status', 'cost'], 'integer'],
-            [['name'], 'string', 'max' => 255],
-            [['description'], 'string', 'max' => 1000],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['executor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['executor_id' => 'id']],
+            [['user_id', 'executor_id', 'category_id', 'location', 'cost'], 'integer'],
+            [['description'], 'string'],
+            [['status', 'name'], 'string', 'max' => 255],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['category_id' => 'id']],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
+            [['location'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['location' => 'id']],
+            [['executor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['executor_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -68,7 +68,7 @@ class Tasks extends \yii\db\ActiveRecord
             'user_id' => 'User ID',
             'executor_id' => 'Executor ID',
             'category_id' => 'Category ID',
-            'city_id' => 'City ID',
+            'location' => 'Location',
             'status' => 'Status',
             'name' => 'Name',
             'description' => 'Description',
@@ -97,13 +97,23 @@ class Tasks extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[User]].
+     * Gets query for [[Category]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getUser()
+    public function getCategory()
     {
-        return $this->hasOne(Users::className(), ['id' => 'user_id']);
+        return $this->hasOne(Categories::className(), ['id' => 'category_id']);
+    }
+
+    /**
+     * Gets query for [[Location0]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLocation0()
+    {
+        return $this->hasOne(Cities::className(), ['id' => 'location']);
     }
 
     /**
@@ -117,23 +127,13 @@ class Tasks extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Category]].
+     * Gets query for [[User]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCategory()
+    public function getUser()
     {
-        return $this->hasOne(Categories::className(), ['id' => 'category_id']);
-    }
-
-    /**
-     * Gets query for [[City]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCity()
-    {
-        return $this->hasOne(Cities::className(), ['id' => 'city_id']);
+        return $this->hasOne(Users::className(), ['id' => 'user_id']);
     }
 
     /**

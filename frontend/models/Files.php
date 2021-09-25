@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string $path
+ * @property string $name
  *
  * @property TasksFiles[] $tasksFiles
  * @property Users[] $users
@@ -30,8 +31,8 @@ class Files extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['path'], 'required'],
-            [['path'], 'string', 'max' => 255],
+            [['path', 'name'], 'required'],
+            [['path', 'name'], 'string', 'max' => 255],
             [['path'], 'unique'],
         ];
     }
@@ -44,6 +45,7 @@ class Files extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'path' => 'Path',
+            'name' => 'Name',
         ];
     }
 

@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use frontend\models\Categories;
 use frontend\models\Files;
+use frontend\models\forms\TaskCreateForm;
 use frontend\models\forms\TaskFilterForm;
 use frontend\models\Responses;
 use frontend\models\TasksFiles;
@@ -11,11 +12,14 @@ use frontend\models\TasksSearch;
 use frontend\models\Users;
 use yii\db\Exception;
 use yii\filters\AccessControl;
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\Controller;
 use Yii;
 use frontend\models\Tasks;
 use taskforce\Task;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 class TasksController extends SecuredController
 {
@@ -29,13 +33,13 @@ class TasksController extends SecuredController
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'view'],
+                        'actions' => ['index', 'view', 'create', 'delete'],
                         'allow' => true,
                         'roles' => ['@']
                     ]
                 ],
                 'denyCallback' => function ($rule, $action) {
-                    return $this->goHome();
+                    return $this->goBack();
                 },
             ]
         ];
@@ -55,7 +59,7 @@ class TasksController extends SecuredController
             $dataProvider = $taskSearch->search($modelForm);
             $tasks = $dataProvider->getModels();
         } else {
-            $tasks = Tasks::find()->all();
+            $tasks = Tasks::find()->orderBy('dt_add DESC')->all();
         }
 
         return $this->render(
@@ -67,7 +71,12 @@ class TasksController extends SecuredController
         );
     }
 
-    public function actionView($id)
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionView($id): string
     {
         $task = Tasks::findOne($id);
 
@@ -79,4 +88,56 @@ class TasksController extends SecuredController
         ]);
     }
 
+    /**
+     * Действие создания новой задачи
+     * @return int|string
+     */
+    public function actionCreate()
+    {
+        $model = new TaskCreateForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
+            $newTask = new Tasks();
+            $newTask->dt_add = date('Y-m-d h:i:s');
+            $newTask->user_id = Yii::$app->user->id;
+            $newTask->category_id = $model->category;
+            $newTask->name = $model->name;
+            $newTask->description = $model->description;
+            $newTask->cost = $model->cost;
+            $newTask->deadline = $model->deadline;
+            $newTask->location = 1;
+            $newTask->status = Task::STATUS_NEW;
+            $newTask->save();   // Task done
+
+
+            $model->files = UploadedFile::getInstances($model, 'files');
+
+            if ($model->uploadFiles()) {
+
+                $taskFiles = $model->uploadFiles();
+                foreach ($taskFiles as $files) {
+                    foreach ($files as $name => $path) {
+
+                        $files = new Files();
+                        $files->name = $name;
+                        $files->path = $path;
+                        $files->save();
+
+                        $taskFiles = new TasksFiles();
+                        $taskFiles->task_id = $newTask->id;
+                        $taskFiles->file_id = $files->id;
+                        $taskFiles->save();
+                    }
+                }
+            }
+            if ($newTask->id) {
+                $this->redirect("task/$newTask->id");
+            }
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
 }
