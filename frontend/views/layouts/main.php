@@ -218,7 +218,8 @@ use yii\helpers\Url;
     </footer>
 
 </div>
-
+<script src="/js/main.js"></script>
+<script src="/js/messenger.js"></script>
 <?php $this->endBody(); ?>
 
 </body>

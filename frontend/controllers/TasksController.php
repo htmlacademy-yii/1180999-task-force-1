@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use frontend\models\Categories;
 use frontend\models\Files;
+use frontend\models\forms\ResponseForm;
 use frontend\models\forms\TaskCreateForm;
 use frontend\models\forms\TaskFilterForm;
 use frontend\models\Responses;
@@ -33,7 +34,7 @@ class TasksController extends SecuredController
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'delete'],
+                        'actions' => ['index', 'view', 'create', 'response'],
                         'allow' => true,
                         'roles' => ['@']
                     ]
@@ -73,18 +74,36 @@ class TasksController extends SecuredController
 
     /**
      * @param $id
-     * @return string
+     * @return string|\yii\web\Response
      * @throws NotFoundHttpException
      */
-    public function actionView($id): string
+    public function actionView($id)
     {
         $task = Tasks::findOne($id);
+        $responseForm = new ResponseForm();
 
         if (!$task) {
             throw new NotFoundHttpException("Задачи с id = $id не существует");
         }
+
+        if (Yii::$app->request->getIsPost()) {
+            $responseForm->load(Yii::$app->request->post());
+            if ($responseForm->load(Yii::$app->request->post())  && $responseForm->validate()) {
+                $response = new Responses();
+                $response->dt_add = date('Y-m-d H:i:s');
+                $response->executor_id = Yii::$app->user->identity->getId();
+                $response->task_id = $task->id;
+                $response->price = $responseForm->price;
+                $response->description = $responseForm->description;
+                $response->save();
+
+                return $this->redirect($task->id);
+            }
+        }
+
         return $this->render('view', [
-            'task' => $task
+            'task' => $task,
+            'responseForm' => $responseForm
         ]);
     }
 
@@ -108,7 +127,7 @@ class TasksController extends SecuredController
             $newTask->deadline = $model->deadline;
             $newTask->location = 1;
             $newTask->status = Task::STATUS_NEW;
-            $newTask->save();   // Task done
+            $newTask->save();
 
 
             $model->files = UploadedFile::getInstances($model, 'files');

@@ -8,10 +8,10 @@ use Yii;
  * This is the model class for table "responses".
  *
  * @property int $id
- * @property string|null $dt_add
+ * @property string $dt_add
  * @property int $executor_id
  * @property int $task_id
- * @property string $description
+ * @property string|null $description
  * @property int $price
  *
  * @property Users $executor
@@ -33,10 +33,10 @@ class Responses extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['dt_add', 'executor_id', 'task_id', 'price'], 'required'],
             [['dt_add'], 'safe'],
-            [['executor_id', 'task_id', 'description', 'price'], 'required'],
             [['executor_id', 'task_id', 'price'], 'integer'],
-            [['description'], 'string', 'max' => 2000],
+            [['description'], 'string'],
             [['executor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['executor_id' => 'id']],
             [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
         ];
