@@ -34,7 +34,14 @@ class TasksController extends SecuredController
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'response'],
+                        'actions' => [
+                            'index',
+                            'view',
+                            'create',
+                            'response',
+                            'refuse',
+                            'accept'
+                        ],
                         'allow' => true,
                         'roles' => ['@']
                     ]
@@ -158,5 +165,35 @@ class TasksController extends SecuredController
         return $this->render('create', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Действие помечает отклик как отказанный
+     * @param $id int id отклика
+     */
+    public function actionRefuse(int $id)
+    {
+        $response = Responses::findOne($id);
+        $response->refuse = Task::ACTION_STATUS_MAP['Refuse'];
+        $response->save();
+
+        $this->redirect("/task/$response->task_id");
+    }
+
+    public function actionAccept(int $id)
+    {
+        $response = Responses::findOne($id);
+        $executor = Users::findOne($response->executor_id);
+        $task = Tasks::findOne($response->task_id);
+
+        $task->executor_id = $response->executor_id;
+        $task->status = Task::STATUS_IN_WORK;
+        $task->save();
+
+        $executor->is_executor = 1;
+        $executor->save();
+
+
+        $this->redirect("/task/$task->id");
     }
 }

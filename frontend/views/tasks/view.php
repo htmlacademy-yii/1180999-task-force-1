@@ -4,8 +4,8 @@
  * @var object $responseForm Форма добавления отклика
  */
 
-use frontend\models\Responses;
 use frontend\models\TasksFiles;
+use taskforce\Task;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use frontend\models\Files;
@@ -70,58 +70,31 @@ use yii\widgets\Pjax;
                 </div>
             </div>
             <div class="content-view__action-buttons">
+                <?php if ($task->status != Task::STATUS_IN_WORK): ?>
                 <button class=" button button__big-color response-button open-modal"
                         type="button" data-for="response-form">Откликнуться
                 </button>
+                <?php endif; ?>
+                <?php if (Yii::$app->user->identity->getId() === $task->user_id): ?>
                 <button class="button button__big-color refusal-button open-modal"
                         type="button" data-for="refuse-form">Отказаться
                 </button>
                 <button class="button button__big-color request-button open-modal"
                         type="button" data-for="complete-form">Завершить
                 </button>
+                <?php endif; ?>
             </div>
         </div>
 
-        <?php if (count($task->responses) > 0 && $task->user_id === Yii::$app->user->identity->getId()): ?>
-            <div class="content-view__feedback">
-                <h2>Отклики <span>(<?= count($task->responses) ?>)</span></h2>
-                <div class="content-view__feedback-wrapper">
+        <?php
+            if ($task->status != Task::STATUS_IN_WORK) {
+                if (count($task->responses) > 0 && $task->user_id === Yii::$app->user->identity->getId()) {
+                        print $this->render('_responses', [
+                        'task' => $task]);
+                }
+            }
+        ?>
 
-                    <?php foreach (Responses::find()
-                                       ->where(['task_id' => $task->id])
-                                       ->orderBy('dt_add DESC')
-                                       ->all() as $response): ?>
-                        <div class="content-view__feedback-card">
-                            <div class="feedback-card__top">
-                                <a href="<?= Url::to(['users/view', 'id' => $response->executor_id]) ?>">
-                                    <img src="<?= $user->avatarFile->path ?? 'https://via.placeholder.com/1' ?>"
-                                         width="55" height="55"></a>
-                                <div class="feedback-card__top--name">
-                                    <p><a href="<?= Url::to(['users/view', 'id' => $response->executor_id]) ?>"
-                                          class="link-regular"><?= $response->executor->name ?></a></p>
-                                    <span></span><span></span><span></span><span></span><span
-                                            class="star-disabled"></span>
-                                    <b>4.25</b>
-                                </div>
-                                <span class="new-task__time"><?= $response->dt_add ?></span>
-                            </div>
-                            <div class="feedback-card__content">
-                                <p>
-                                    <?= $response->description ?>
-                                </p>
-                                <span><?= $response->price ?> ₽</span>
-                            </div>
-                            <div class="feedback-card__actions">
-                                <a class="button__small-color response-button button"
-                                   type="button">Подтвердить</a>
-                                <a class="button__small-color refusal-button button"
-                                   type="button">Отказать</a>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        <?php endif; ?>
     </section>
     <section class="connect-desk">
         <div class="connect-desk__profile-mini">

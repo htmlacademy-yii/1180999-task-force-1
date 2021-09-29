@@ -13,6 +13,7 @@ use Yii;
  * @property int $task_id
  * @property string|null $description
  * @property int $price
+ * @property string|null $refuse
  *
  * @property Users $executor
  * @property Tasks $task
@@ -37,6 +38,7 @@ class Responses extends \yii\db\ActiveRecord
             [['dt_add'], 'safe'],
             [['executor_id', 'task_id', 'price'], 'integer'],
             [['description'], 'string'],
+            [['refuse'], 'string', 'max' => 255],
             [['executor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['executor_id' => 'id']],
             [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
         ];
@@ -54,6 +56,7 @@ class Responses extends \yii\db\ActiveRecord
             'task_id' => 'Task ID',
             'description' => 'Description',
             'price' => 'Price',
+            'refuse' => 'Refuse',
         ];
     }
 

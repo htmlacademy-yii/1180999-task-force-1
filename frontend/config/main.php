@@ -49,6 +49,8 @@ return [
                 'sign-up' => 'sign-up/index',
                 'user/<id:\d+>' => 'users/view',
                 'task/<id:\d+>' => 'tasks/view',
+                'refuse/<id:\d+>' => 'tasks/refuse',
+                'accept/<id:\d+>' => 'tasks/accept',
             ],
         ],
 

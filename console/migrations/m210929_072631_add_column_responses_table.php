@@ -3,25 +3,24 @@
 use yii\db\Migration;
 
 /**
- * Class m210927_224338_change_responses_table
+ * Class m210929_072631_add_column_responses_table
  */
-class m210927_224338_change_responses_table extends Migration
+class m210929_072631_add_column_responses_table extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
-        $this->alterColumn('responses',
-            'description', $this->text()->null());
-    }
+        $this->addColumn('responses',
+            'refuse', $this->string()->null());    }
 
     /**
      * {@inheritdoc}
      */
     public function safeDown()
     {
-        echo "m210927_224338_change_responses_table cannot be reverted.\n";
+        echo "m210929_072631_add_column_responses_table cannot be reverted.\n";
 
         return false;
     }
@@ -35,7 +34,7 @@ class m210927_224338_change_responses_table extends Migration
 
     public function down()
     {
-        echo "m210927_224338_change_responses_table cannot be reverted.\n";
+        echo "m210929_072631_add_column_responses_table cannot be reverted.\n";
 
         return false;
     }
