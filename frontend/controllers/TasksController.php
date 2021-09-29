@@ -4,10 +4,12 @@ namespace frontend\controllers;
 
 use frontend\models\Categories;
 use frontend\models\Files;
+use frontend\models\forms\CompletionForm;
 use frontend\models\forms\ResponseForm;
 use frontend\models\forms\TaskCreateForm;
 use frontend\models\forms\TaskFilterForm;
 use frontend\models\Responses;
+use frontend\models\Reviews;
 use frontend\models\TasksFiles;
 use frontend\models\TasksSearch;
 use frontend\models\Users;
@@ -88,6 +90,7 @@ class TasksController extends SecuredController
     {
         $task = Tasks::findOne($id);
         $responseForm = new ResponseForm();
+        $completionForm = new CompletionForm();
 
         if (!$task) {
             throw new NotFoundHttpException("Задачи с id = $id не существует");
@@ -95,7 +98,7 @@ class TasksController extends SecuredController
 
         if (Yii::$app->request->getIsPost()) {
             $responseForm->load(Yii::$app->request->post());
-            if ($responseForm->load(Yii::$app->request->post())  && $responseForm->validate()) {
+            if ($responseForm->load(Yii::$app->request->post()) && $responseForm->validate()) {
                 $response = new Responses();
                 $response->dt_add = date('Y-m-d H:i:s');
                 $response->executor_id = Yii::$app->user->identity->getId();
@@ -106,11 +109,35 @@ class TasksController extends SecuredController
 
                 return $this->redirect($task->id);
             }
+
+            $completionForm->load(Yii::$app->request->post());
+            if ($completionForm->load(Yii::$app->request->post()) && $completionForm->validate()) {
+                switch ($completionForm->completeness) {
+                    case 0: $task->status = Task::STATUS_SUCCESS;
+                        break;
+                    case 1: $task->status = Task::STATUS_FAIL;
+                }
+                $task->save();
+
+                $review = new Reviews();
+                $review->dt_add = date('Y-m-d H:i:s');
+                $review->task_id = $task->id;
+                $review->user_id = $task->user_id;
+                $review->executor_id = $task->executor_id;
+                $review->text = $completionForm->description;
+                $review->score = Yii::$app->request->post('rating');
+                $review->save();
+
+                if ($review->save()) {
+                    return $this->redirect("/user/$task->user_id");
+                }
+            }
         }
 
         return $this->render('view', [
             'task' => $task,
-            'responseForm' => $responseForm
+            'responseForm' => $responseForm,
+            'completionForm' => $completionForm
         ]);
     }
 
@@ -135,7 +162,6 @@ class TasksController extends SecuredController
             $newTask->location = 1;
             $newTask->status = Task::STATUS_NEW;
             $newTask->save();
-
 
             $model->files = UploadedFile::getInstances($model, 'files');
 
@@ -180,6 +206,10 @@ class TasksController extends SecuredController
         $this->redirect("/task/$response->task_id");
     }
 
+    /**
+     * Действие запуска задачи
+     * @param int $id
+     */
     public function actionAccept(int $id)
     {
         $response = Responses::findOne($id);

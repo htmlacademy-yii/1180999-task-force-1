@@ -2,6 +2,7 @@
 /**
  * @var object $task Данные задачи
  * @var object $responseForm Форма добавления отклика
+ * @var object $completionForm Модель формы завершения задачи
  */
 
 use frontend\models\TasksFiles;
@@ -70,29 +71,34 @@ use yii\widgets\Pjax;
                 </div>
             </div>
             <div class="content-view__action-buttons">
-                <?php if ($task->status != Task::STATUS_IN_WORK): ?>
-                <button class=" button button__big-color response-button open-modal"
-                        type="button" data-for="response-form">Откликнуться
-                </button>
-                <?php endif; ?>
-                <?php if (Yii::$app->user->identity->getId() === $task->user_id): ?>
-                <button class="button button__big-color refusal-button open-modal"
-                        type="button" data-for="refuse-form">Отказаться
-                </button>
-                <button class="button button__big-color request-button open-modal"
-                        type="button" data-for="complete-form">Завершить
-                </button>
+
+                <?php if ($task->status === Task::STATUS_NEW || $task->status === Task::STATUS_IN_WORK): ?>
+
+                    <?php if ($task->status != Task::STATUS_IN_WORK || $task->status === Task::STATUS_NEW): ?>
+                        <button class=" button button__big-color response-button open-modal"
+                                type="button" data-for="response-form">Откликнуться
+                        </button>
+                    <?php endif; ?>
+                    <?php if (Yii::$app->user->identity->getId() === $task->user_id): ?>
+                        <button class="button button__big-color refusal-button open-modal"
+                                type="button" data-for="refuse-form">Отказаться
+                        </button>
+                        <button class="button button__big-color request-button open-modal"
+                                type="button" data-for="complete-form">Завершить
+                        </button>
+                    <?php endif; ?>
+
                 <?php endif; ?>
             </div>
         </div>
 
         <?php
-            if ($task->status != Task::STATUS_IN_WORK) {
-                if (count($task->responses) > 0 && $task->user_id === Yii::$app->user->identity->getId()) {
-                        print $this->render('_responses', [
-                        'task' => $task]);
-                }
+        if ($task->status === Task::STATUS_NEW) {
+            if (count($task->responses) > 0 && $task->user_id === Yii::$app->user->identity->getId()) {
+                print $this->render('_responses', [
+                    'task' => $task]);
             }
+        }
         ?>
 
     </section>
@@ -122,7 +128,7 @@ use yii\widgets\Pjax;
             <?php $form = ActiveForm::begin([
                 'method' => 'post',
                 'options' => [
-                        'data' => ['Pjax' => true]
+                    'data' => ['Pjax' => true]
                 ]
 
             ]) ?>
@@ -141,7 +147,7 @@ use yii\widgets\Pjax;
                     'class' => 'response-form-payment input input-middle input-money'
                 ]
 
-            ])->error()?>
+            ])->error() ?>
             <?= $form->field($responseForm, 'description', [
                 'template' => "<p>{label}\n{input}\n</p>",
                 'labelOptions' => [
@@ -161,36 +167,11 @@ use yii\widgets\Pjax;
 
         </section>
         <section class="modal completion-form form-modal" id="complete-form">
-            <h2>Завершение задания</h2>
-            <p class="form-modal-description">Задание выполнено?</p>
-            <form action="#" method="post">
-                <input class="visually-hidden completion-input completion-input--yes" type="radio"
-                       id="completion-radio--yes"
-                       name="completion" value="yes">
-                <label class="completion-label completion-label--yes" for="completion-radio--yes">Да</label>
-                <input class="visually-hidden completion-input completion-input--difficult" type="radio"
-                       id="completion-radio--yet" name="completion" value="difficulties">
-                <label class="completion-label completion-label--difficult" for="completion-radio--yet">Возникли
-                    проблемы</label>
-                <p>
-                    <label class="form-modal-description" for="completion-comment">Комментарий</label>
-                    <textarea class="input textarea" rows="4" id="completion-comment" name="completion-comment"
-                              placeholder="Place your text"></textarea>
-                </p>
-                <p class="form-modal-description">
-                    Оценка
-                <div class="feedback-card__top--name completion-form-star">
-                    <span class="star-disabled"></span>
-                    <span class="star-disabled"></span>
-                    <span class="star-disabled"></span>
-                    <span class="star-disabled"></span>
-                    <span class="star-disabled"></span>
-                </div>
-                </p>
-                <input type="hidden" name="rating" id="rating">
-                <button class="button modal-button" type="submit">Отправить</button>
-            </form>
-            <button class="form-modal-close" type="button">Закрыть</button>
+
+            <?= $this->render('_complete', [
+                'completionForm' => $completionForm
+            ]) ?>
+
         </section>
         <section class="modal form-modal refusal-form" id="refuse-form">
             <h2>Отказ от задания</h2>
