@@ -80,9 +80,11 @@ use yii\widgets\Pjax;
                         </button>
                     <?php endif; ?>
                     <?php if (Yii::$app->user->identity->getId() === $task->user_id): ?>
-                        <button class="button button__big-color refusal-button open-modal"
-                                type="button" data-for="refuse-form">Отказаться
-                        </button>
+                        <?php if ($task->status != Task::STATUS_IN_WORK): ?>
+                            <button class="button button__big-color refusal-button open-modal"
+                                    type="button" data-for="refuse-form">Отказаться
+                            </button>
+                        <?php endif; ?>
                         <button class="button button__big-color request-button open-modal"
                                 type="button" data-for="complete-form">Завершить
                         </button>
@@ -127,7 +129,7 @@ use yii\widgets\Pjax;
         <section class="modal response-form form-modal" id="response-form">
 
             <?= $this->render('responseForm', [
-                    'responseForm' => $responseForm
+                'responseForm' => $responseForm
             ])
 
             ?>
@@ -142,7 +144,7 @@ use yii\widgets\Pjax;
         </section>
         <section class="modal form-modal refusal-form" id="refuse-form">
             <?= $this->render('_refuseForm', [
-                    'task' => $task
+                'task' => $task
             ]) ?>
         </section>
 </div>

@@ -129,9 +129,7 @@ class TasksController extends SecuredController
                 $review->score = Yii::$app->request->post('rating');
                 $review->save();
 
-                if ($review->save()) {
-                    return $this->redirect("/user/$task->user_id");
-                }
+                return $this->goHome();
             }
         }
 
@@ -204,7 +202,7 @@ class TasksController extends SecuredController
         $response->refuse = Task::ACTION_STATUS_MAP['Refuse'];
         $response->save();
 
-        $this->goHome();
+        $this->redirect("/task/$response->task_id");
     }
 
     /**

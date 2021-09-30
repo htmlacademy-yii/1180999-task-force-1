@@ -4,7 +4,7 @@
  * @var $task object Данные задачи
  */
 
-use yii\helpers\Html;
+use taskforce\Task;use yii\helpers\Html;
 use yii\helpers\Url;
 
 ?>
@@ -15,6 +15,7 @@ use yii\helpers\Url;
     Это действие приведёт к снижению вашего рейтинга.
     Вы уверены?
 </p>
+
 
 <?= Html::a('Отказаться',
     Url::to(['tasks/cancel', 'id' => $task->id]), [
