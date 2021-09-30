@@ -13,11 +13,7 @@ use frontend\models\Reviews;
 use frontend\models\TasksFiles;
 use frontend\models\TasksSearch;
 use frontend\models\Users;
-use yii\db\Exception;
 use yii\filters\AccessControl;
-use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\web\Controller;
 use Yii;
 use frontend\models\Tasks;
 use taskforce\Task;
@@ -40,6 +36,7 @@ class TasksController extends SecuredController
                             'index',
                             'view',
                             'create',
+                            'cancel',
                             'response',
                             'refuse',
                             'accept'
@@ -106,6 +103,10 @@ class TasksController extends SecuredController
                 $response->price = $responseForm->price;
                 $response->description = $responseForm->description;
                 $response->save();
+
+                $executor = Users::findOne($response->executor_id);
+                $executor->is_executor = 1;
+                $executor->save();
 
                 return $this->redirect($task->id);
             }
@@ -203,7 +204,7 @@ class TasksController extends SecuredController
         $response->refuse = Task::ACTION_STATUS_MAP['Refuse'];
         $response->save();
 
-        $this->redirect("/task/$response->task_id");
+        $this->goHome();
     }
 
     /**
@@ -223,6 +224,18 @@ class TasksController extends SecuredController
         $executor->is_executor = 1;
         $executor->save();
 
+        $this->redirect("/task/$task->id");
+    }
+
+    public function actionCancel(int $id)
+    {
+        $task = Tasks::findOne($id);
+        $task->status = Task::STATUS_FAIL;
+        $task->save();
+
+        $user = Users::findOne($task->user_id);
+        $user->failed_count++;
+        $user->save();
 
         $this->redirect("/task/$task->id");
     }

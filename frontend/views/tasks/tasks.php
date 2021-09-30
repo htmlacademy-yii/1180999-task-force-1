@@ -7,9 +7,6 @@
  * @var $modelForm object данные из формы
  */
 
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-use yii\widgets\ActiveField;
 use yii\helpers\Url;
 
 ?>
@@ -49,7 +46,7 @@ use yii\helpers\Url;
     <section class="search-task">
         <div class="search-task__wrapper">
 
-            <?= $this->render('_form', [
+            <?= $this->render('_searchForm', [
                 'modelForm' => $modelForm,
                 'categories' => $categories
             ]) ?>

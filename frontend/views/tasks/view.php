@@ -93,10 +93,12 @@ use yii\widgets\Pjax;
         </div>
 
         <?php
+
         if ($task->status === Task::STATUS_NEW) {
             if (count($task->responses) > 0 && $task->user_id === Yii::$app->user->identity->getId()) {
                 print $this->render('_responses', [
-                    'task' => $task]);
+                    'task' => $task
+                ]);
             }
         }
         ?>
@@ -123,69 +125,24 @@ use yii\widgets\Pjax;
         </div>
 
         <section class="modal response-form form-modal" id="response-form">
-            <h2>Отклик на задание</h2>
-            <?php Pjax::begin() ?>
-            <?php $form = ActiveForm::begin([
-                'method' => 'post',
-                'options' => [
-                    'data' => ['Pjax' => true]
-                ]
 
-            ]) ?>
-            <?= $form->field($responseForm, 'price', [
-                'template' => "{label}\n{input}\n
-                               <span style='display: block;
-                                            margin-bottom: 10px;
-                                            color: #FF116E;
-                                            font-family: Roboto, sans-serif;
-                                            font-weight: 300;
-                                            font-size: 12px;'>{error}</span>",
-                'labelOptions' => [
-                    'class' => 'form-modal-description field-container',
-                ],
-                'inputOptions' => [
-                    'class' => 'response-form-payment input input-middle input-money'
-                ]
+            <?= $this->render('responseForm', [
+                    'responseForm' => $responseForm
+            ])
 
-            ])->error() ?>
-            <?= $form->field($responseForm, 'description', [
-                'template' => "<p>{label}\n{input}\n</p>",
-                'labelOptions' => [
-                    'class' => 'form-modal-description',
-                ],
-                'inputOptions' => [
-                    'class' => 'input text-area',
-                    'rows' => 4
-                ]
-
-            ])->textarea() ?>
-            <?= Html::submitButton('Отправить', ['class' => 'button modal-button']) ?>
-            <?php ActiveForm::end() ?>
-            <?php Pjax::end() ?>
-
-            <?= Html::button('Закрыть', ['class' => 'form-modal-close']) ?>
+            ?>
 
         </section>
         <section class="modal completion-form form-modal" id="complete-form">
 
-            <?= $this->render('_complete', [
+            <?= $this->render('_completeForm', [
                 'completionForm' => $completionForm
             ]) ?>
 
         </section>
         <section class="modal form-modal refusal-form" id="refuse-form">
-            <h2>Отказ от задания</h2>
-            <p>
-                Вы собираетесь отказаться от выполнения задания.
-                Это действие приведёт к снижению вашего рейтинга.
-                Вы уверены?
-            </p>
-            <button class="button__form-modal button" id="close-modal"
-                    type="button">Отмена
-            </button>
-            <button class="button__form-modal refusal-button button"
-                    type="button">Отказаться
-            </button>
-            <button class="form-modal-close" type="button">Закрыть</button>
+            <?= $this->render('_refuseForm', [
+                    'task' => $task
+            ]) ?>
         </section>
 </div>
