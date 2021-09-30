@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use frontend\models\Tasks;
 use Yii;
 use frontend\models\Users;
 use yii\filters\AccessControl;
@@ -61,6 +62,7 @@ class SiteController extends SecuredController
     public function actionIndex()
     {
         $loginForm = new LoginForm();
+        $lastTasks = Tasks::find()->orderBy('dt_add DESC')->limit(4)->all();
 
         if (\Yii::$app->request->getIsPost()) {
             $loginForm->load(\Yii::$app->request->post());
@@ -71,7 +73,8 @@ class SiteController extends SecuredController
         }
 
         return $this->render('landing', [
-            'model' => $loginForm
+            'model' => $loginForm,
+            'tasks' => $lastTasks
         ]);
     }
 

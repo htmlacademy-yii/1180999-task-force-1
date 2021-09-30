@@ -3,6 +3,7 @@
  * @var object $user пользователь
  */
 
+use frontend\models\Reviews;
 use yii\helpers\Url;
 
 ?>
@@ -56,7 +57,7 @@ use yii\helpers\Url;
             <h2>Отзывы<span> (<?= count($user->reviews) ?>)</span></h2>
             <div class="content-view__feedback-wrapper reviews-wrapper">
 
-                <?php foreach ($user->reviews as $review): ?>
+                <?php foreach (Reviews::find()->where(['user_id' => $user->id])->orderBy('dt_add DESC')->all() as $review): ?>
                     <div class="feedback-card__reviews">
                         <p class="link-task link">Задание
                             <a href="<?= Url::to(['tasks/view', 'id' => $review->task_id]) ?>" class="link-regular">
@@ -73,7 +74,9 @@ use yii\helpers\Url;
                                 </p>
                             </div>
                             <div class="card__review-rate">
-                                <p class="five-rate big-rate"><?= $review->score ?><span></span></p>
+                                <p class="five-rate big-rate">
+                                    <?= $review->score ? $review->score. '<span></span>' : ''?>
+                                </p>
                             </div>
                         </div>
                     </div>

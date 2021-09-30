@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use frontend\models\forms\TaskFilterForm;
+use taskforce\Task;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\Tasks;
@@ -49,7 +50,9 @@ class TasksSearch extends Tasks
 
         if (!empty($modelForm->category_ids)) {
             $query->leftJoin('categories', 'category_id = tasks.category_id')
-                ->where(['category_id' => $modelForm->category_ids]);
+                ->where([
+                    'category_id' => $modelForm->category_ids
+                ]);
         }
 
         if ($modelForm->remote) {
@@ -77,6 +80,9 @@ class TasksSearch extends Tasks
                     $query->andWhere(['between', 'dt_add', date('Y-m-d', strtotime('-1 month')), date('Y-m-d')]);
             }
         }
+
+        $query->andWhere(['status' => Task::STATUS_NEW]);
+        $query->orderBy('dt_add DESC');
 
         return $dataProvider;
     }

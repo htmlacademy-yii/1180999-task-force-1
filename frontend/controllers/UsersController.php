@@ -27,7 +27,7 @@ class UsersController extends SecuredController
                     [
                         'actions' => ['index', 'view'],
                         'allow' => true,
-                        'roles' => ['@']
+                        'roles' => ['@', '?']
                     ]
                 ],
                 'denyCallback' => function ($rule, $action) {
@@ -50,7 +50,7 @@ class UsersController extends SecuredController
             $dataProvider = $userSearch->search($modelForm);
             $users = $dataProvider->getModels();
         } else {
-            $users = Users::find()->all();
+            $users = Users::find()->where(['is_executor' => 1])->orderBy('dt_add DESC')->all();
         }
 
         return $this->render(

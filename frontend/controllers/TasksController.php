@@ -43,6 +43,14 @@ class TasksController extends SecuredController
                         ],
                         'allow' => true,
                         'roles' => ['@']
+                    ],
+                    [
+                        'actions' => [
+                            'index',
+                            'view'
+                        ],
+                        'allow' => true,
+                        'roles' => ['?']
                     ]
                 ],
                 'denyCallback' => function ($rule, $action) {
@@ -66,7 +74,7 @@ class TasksController extends SecuredController
             $dataProvider = $taskSearch->search($modelForm);
             $tasks = $dataProvider->getModels();
         } else {
-            $tasks = Tasks::find()->orderBy('dt_add DESC')->all();
+            $tasks = Tasks::find()->where(['status' => Task::STATUS_NEW])->orderBy('dt_add DESC')->all();
         }
 
         return $this->render(

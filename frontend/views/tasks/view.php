@@ -70,27 +70,27 @@ use yii\widgets\Pjax;
                     </div>
                 </div>
             </div>
+            <?php if (!Yii::$app->user->isGuest): ?>
             <div class="content-view__action-buttons">
 
-                <?php if ($task->status === Task::STATUS_NEW || $task->status === Task::STATUS_IN_WORK): ?>
+                    <?php if ($task->status === Task::STATUS_NEW || $task->status === Task::STATUS_IN_WORK): ?>
 
-                    <?php if ($task->status != Task::STATUS_IN_WORK || $task->status === Task::STATUS_NEW): ?>
-                        <button class=" button button__big-color response-button open-modal"
-                                type="button" data-for="response-form">Откликнуться
-                        </button>
-                    <?php endif; ?>
-                    <?php if (Yii::$app->user->identity->getId() === $task->user_id): ?>
-                        <?php if ($task->status != Task::STATUS_IN_WORK): ?>
-                            <button class="button button__big-color refusal-button open-modal"
-                                    type="button" data-for="refuse-form">Отказаться
+                        <?php if ($task->status != Task::STATUS_IN_WORK || $task->status === Task::STATUS_NEW): ?>
+                            <button class=" button button__big-color response-button open-modal"
+                                    type="button" data-for="response-form">Откликнуться
                             </button>
                         <?php endif; ?>
-                        <button class="button button__big-color request-button open-modal"
-                                type="button" data-for="complete-form">Завершить
-                        </button>
+                        <?php if (Yii::$app->user->identity->getId() === $task->user_id): ?>
+                            <?php if ($task->status != Task::STATUS_IN_WORK): ?>
+                                <button class="button button__big-color refusal-button open-modal"
+                                        type="button" data-for="refuse-form">Отказаться
+                                </button>
+                            <?php endif; ?>
+                            <button class="button button__big-color request-button open-modal"
+                                    type="button" data-for="complete-form">Завершить
+                            </button>
+                        <?php endif; ?>
                     <?php endif; ?>
-
-                <?php endif; ?>
             </div>
         </div>
 
@@ -104,6 +104,7 @@ use yii\widgets\Pjax;
             }
         }
         ?>
+        <?php endif;?>
 
     </section>
     <section class="connect-desk">
