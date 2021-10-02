@@ -59,19 +59,11 @@ class TasksSearch extends Tasks
             $query->andWhere(['city_id' => null]);
         }
 
-        if ($modelForm->noExecutor == 1) {
-            $query->andWhere(['executor_id' => null]);
-        }
-
-        if ($modelForm->search) {
-            $query->andWhere(['like', 'tasks.name', $modelForm->search]);
-        }
-
         if ($modelForm->interval) {
 
             switch ($modelForm->interval) {
                 case 1:
-                    $query->andWhere(['dt_add' => date('Y-m-d')]);
+                    $query->andWhere(['between', 'dt_add', date('Y-m-d'), date('Y-m-d')]);
                     break;
                 case 2:
                     $query->andWhere(['between', 'dt_add', date('Y-m-d', strtotime('-7 days')), date('Y-m-d')]);
@@ -81,7 +73,17 @@ class TasksSearch extends Tasks
             }
         }
 
+        if ($modelForm->noResponses) {
+            $query->leftJoin('responses', 'responses.task_id = tasks.id')
+                ->where('responses.task_id IS NULL');
+        }
+
         $query->andWhere(['status' => Task::STATUS_NEW]);
+
+        if ($modelForm->search) {
+            $query->andWhere(['like', 'tasks.name', $modelForm->search]);
+        }
+
         $query->orderBy('dt_add DESC');
 
         return $dataProvider;

@@ -2,6 +2,7 @@
 
 namespace frontend\models\forms;
 
+use Yii;
 use yii\base\Model;
 
 class ResponseForm extends Model

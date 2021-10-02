@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "responses".
  *
  * @property int $id
- * @property string $dt_add
+ * @property string|null $dt_add
  * @property int $executor_id
  * @property int $task_id
  * @property string|null $description
@@ -34,8 +34,8 @@ class Responses extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['dt_add', 'executor_id', 'task_id', 'price'], 'required'],
             [['dt_add'], 'safe'],
+            [['executor_id', 'task_id', 'price'], 'required'],
             [['executor_id', 'task_id', 'price'], 'integer'],
             [['description'], 'string'],
             [['refuse'], 'string', 'max' => 255],
@@ -78,5 +78,18 @@ class Responses extends \yii\db\ActiveRecord
     public function getTask()
     {
         return $this->hasOne(Tasks::className(), ['id' => 'task_id']);
+    }
+
+    /**
+     * @param bool $insert
+     * @return bool|void
+     */
+    public function beforeSave($insert)
+    {
+        parent::beforeSave($insert);
+        if ($this->isNewRecord) {
+            $this->dt_add = date('Y-m-d H:i:s');
+        }
+        return true;
     }
 }

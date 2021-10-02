@@ -6,7 +6,7 @@ use yii\base\Model;
 class TaskFilterForm extends Model
 {
     public $category_ids;
-    public $noExecutor;
+    public $noResponses;
     public $remote;
     public $interval;
     public $search;
@@ -23,7 +23,7 @@ class TaskFilterForm extends Model
     {
         return [
             'category_ids' => 'Категория',
-            'noExecutor' => 'Без исполнителя',
+            'noResponses' => 'Без откликов',
             'remote' => 'Удаленная работа',
             'interval' => 'Период',
             'search' => 'Поиск по названию'
@@ -36,7 +36,7 @@ class TaskFilterForm extends Model
     public function rules(): array
     {
         return [
-            [['category_ids', 'noExecutor', 'remote', 'interval', 'search'],'safe']
+            [['category_ids', 'noResponses', 'remote', 'interval', 'search'],'safe']
         ];
     }
 

@@ -98,16 +98,15 @@ class TaskCreateForm extends Tasks
         }
     }
 
-
     /**
      * Загрузка файлов на сервер
      * @return bool|array
      */
-    public function uploadFiles()
+    public function uploadFiles() //TODO: по хорошему лучше перенести этот метод в сервис, генерация имен файлов
     {
         $taskFiles = [];
 
-        $url = 'uploads/' . date("Y-m-d") .'_'. date("H-m-s") . '/';
+        $url = 'uploads/' . date("Y-m-d") . '_' . date("H-m-s") . '/'; //TODO: echo Yii::getAlias('@anyname');
         if (!is_dir($url)) {
             mkdir($url, 0777);
         }

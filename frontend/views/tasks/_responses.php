@@ -9,7 +9,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 ?>
-<div class="content-view__feedback">
     <h2>Отклики <span>(<?= count($task->responses) ?>)</span></h2>
     <div class="content-view__feedback-wrapper">
 
@@ -56,4 +55,3 @@ use yii\helpers\Url;
             </div>
         <?php endforeach; ?>
     </div>
-</div>

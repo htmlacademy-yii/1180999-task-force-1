@@ -57,7 +57,7 @@ use yii\helpers\Url;
             <h2>Отзывы<span> (<?= count($user->reviews) ?>)</span></h2>
             <div class="content-view__feedback-wrapper reviews-wrapper">
 
-                <?php foreach (Reviews::find()->where(['user_id' => $user->id])->orderBy('dt_add DESC')->all() as $review): ?>
+                <?php foreach (Reviews::find()->where(['executor_id' => $user->id])->orderBy('dt_add DESC')->all() as $review): ?>
                     <div class="feedback-card__reviews">
                         <p class="link-task link">Задание
                             <a href="<?= Url::to(['tasks/view', 'id' => $review->task_id]) ?>" class="link-regular">

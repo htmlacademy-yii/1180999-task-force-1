@@ -1,6 +1,7 @@
 <?php
 /**
  * @var object $task Данные задачи
+ * @var object $executors Данные задачи
  * @var object $responseForm Форма добавления отклика
  * @var object $completionForm Модель формы завершения задачи
  */
@@ -10,8 +11,6 @@ use taskforce\Task;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use frontend\models\Files;
-use yii\widgets\ActiveForm;
-use yii\widgets\Pjax;
 
 ?>
 
@@ -43,8 +42,8 @@ use yii\widgets\Pjax;
                     <h3 class="content-view__h3">Вложения</h3>
 
                     <?php
-                    $taskFiles = TasksFiles::find()
-                        ->where(['task_id' => $task->id])
+                    $taskFiles = TasksFiles::find()     // TODO: во вью нельзя обращаться к базе
+                    ->where(['task_id' => $task->id])
                         ->select('file_id')->column();
                     foreach ($taskFiles as $file_id) {
                         print Html::a(
@@ -71,40 +70,41 @@ use yii\widgets\Pjax;
                 </div>
             </div>
             <?php if (!Yii::$app->user->isGuest): ?>
-            <div class="content-view__action-buttons">
+            <?php if ($task->status === Task::STATUS_IN_WORK || $task->status === Task::STATUS_NEW): ?>
 
-                    <?php if ($task->status === Task::STATUS_NEW || $task->status === Task::STATUS_IN_WORK): ?>
-
-                        <?php if ($task->status != Task::STATUS_IN_WORK || $task->status === Task::STATUS_NEW): ?>
+                <div class="content-view__action-buttons">
+                    <?php if ($task->status === Task::STATUS_NEW): ?>
+                        <?php if (!in_array(Yii::$app->user->getId(), $executors)): ?>
                             <button class=" button button__big-color response-button open-modal"
                                     type="button" data-for="response-form">Откликнуться
                             </button>
                         <?php endif; ?>
-                        <?php if (Yii::$app->user->identity->getId() === $task->user_id): ?>
-                            <?php if ($task->status != Task::STATUS_IN_WORK): ?>
-                                <button class="button button__big-color refusal-button open-modal"
-                                        type="button" data-for="refuse-form">Отказаться
-                                </button>
-                            <?php endif; ?>
-                            <button class="button button__big-color request-button open-modal"
-                                    type="button" data-for="complete-form">Завершить
+                    <?php endif; ?>
+                    <?php if (Yii::$app->user->getId() === $task->user_id): ?>
+                        <?php if ($task->status != Task::STATUS_IN_WORK): ?>
+                            <button class="button button__big-color refusal-button open-modal"
+                                    type="button" data-for="refuse-form">Отказаться
                             </button>
                         <?php endif; ?>
+                        <button class="button button__big-color request-button open-modal"
+                                type="button" data-for="complete-form">Завершить
+                        </button>
                     <?php endif; ?>
-            </div>
+                </div>
+            <?php endif; ?>
         </div>
-
-        <?php
-
-        if ($task->status === Task::STATUS_NEW) {
-            if (count($task->responses) > 0 && $task->user_id === Yii::$app->user->identity->getId()) {
-                print $this->render('_responses', [
-                    'task' => $task
-                ]);
+        <div class="content-view__feedback">
+            <?php
+            if ($task->status === Task::STATUS_NEW) {
+                if (count($task->responses) > 0 && $task->user_id === Yii::$app->user->identity->getId()) {
+                    print $this->render('_responses', [
+                        'task' => $task
+                    ]);
+                }
             }
-        }
-        ?>
-        <?php endif;?>
+            ?>
+            <?php endif; ?>
+        </div>
 
     </section>
     <section class="connect-desk">
@@ -126,22 +126,16 @@ use yii\widgets\Pjax;
             <!--                    добавьте сюда атрибут task с указанием в нем id текущего задания-->
             <chat class="connect-desk__chat"></chat>
         </div>
-
         <section class="modal response-form form-modal" id="response-form">
-
             <?= $this->render('responseForm', [
                 'responseForm' => $responseForm
             ])
-
             ?>
-
         </section>
         <section class="modal completion-form form-modal" id="complete-form">
-
             <?= $this->render('_completeForm', [
                 'completionForm' => $completionForm
             ]) ?>
-
         </section>
         <section class="modal form-modal refusal-form" id="refuse-form">
             <?= $this->render('_refuseForm', [

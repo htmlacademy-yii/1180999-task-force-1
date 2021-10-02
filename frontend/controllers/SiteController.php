@@ -48,7 +48,7 @@ class SiteController extends SecuredController
                     ]
                 ],
                 'denyCallback' => function ($rule, $action) {
-                    return $this->redirect('tasks');
+                    return $this->redirect(['tasks/index']);
                 },
             ]
         ];

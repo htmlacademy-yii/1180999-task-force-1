@@ -40,9 +40,9 @@ use frontend\models\forms\TaskFilterForm;
 
     <fieldset class="search-task__categories">
         <legend>Дополнительно</legend>
-        <?= $form->field($modelForm, 'noExecutor', [
+        <?= $form->field($modelForm, 'noResponses', [
             'template' => '<label class="checkbox__legend">{input}
-                  <span>Без исполнителя</span>
+                  <span>Без откликов</span>
                 </label>'])
             ->checkbox(['class' => 'visually-hidden checkbox__input'], false) ?>
 

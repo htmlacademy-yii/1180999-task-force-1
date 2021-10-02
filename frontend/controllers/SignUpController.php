@@ -7,6 +7,7 @@ use frontend\models\forms\SingUpForm;
 use frontend\models\Users;
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\Url;
 use yii\web\Controller;
 
 /**
@@ -27,7 +28,7 @@ class SignUpController extends Controller
                         'roles' => ['?']
                     ],
                     [
-                        'allow' => true,
+                        'allow' => false,
                         'roles' => ['@']
                     ]
                 ]
@@ -55,11 +56,13 @@ class SignUpController extends Controller
             $user->city_id = $model->city;
             $user->password = Yii::$app->getSecurity()->generatePasswordHash($model->password);
             $user->save();
-            $this->goHome();
 
+            if ($user->save()) {
+                $this->goHome();
+            }
         }
-            return $this->render('index', [
-                'model' => $model
-            ]);
+        return $this->render('index', [
+            'model' => $model
+        ]);
     }
 }
