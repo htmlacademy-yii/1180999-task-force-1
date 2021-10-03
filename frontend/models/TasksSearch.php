@@ -40,7 +40,7 @@ class TasksSearch extends Tasks
      *
      * @return ActiveDataProvider
      */
-    public function search(TaskFilterForm $modelForm)
+    public function search(TaskFilterForm $modelForm): ActiveDataProvider
     {
         $query = Tasks::find();
 
@@ -49,15 +49,15 @@ class TasksSearch extends Tasks
         ]);
 
         if (!empty($modelForm->category_ids)) {
-            $query->leftJoin('categories', 'category_id = tasks.category_id')
-                ->where([
+            $query->leftJoin('categories', 'categories.id = tasks.category_id')
+                ->andWhere([
                     'category_id' => $modelForm->category_ids
                 ]);
         }
 
         if ($modelForm->noResponses) {
             $query->leftJoin('responses', 'responses.task_id = tasks.id')
-                ->Where('responses.task_id IS NULL');
+                ->andWhere('responses.task_id IS NULL');
         }
 
         if ($modelForm->remote) {
