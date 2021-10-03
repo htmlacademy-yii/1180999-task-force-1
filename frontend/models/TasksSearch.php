@@ -55,33 +55,33 @@ class TasksSearch extends Tasks
                 ]);
         }
 
-        if ($modelForm->remote) {
-            $query->andWhere(['city_id' => null]);
-        }
-
-        if ($modelForm->interval) {
-
-            switch ($modelForm->interval) {
-                case 1:
-                    $query->andWhere(['between', 'dt_add', date('Y-m-d'), date('Y-m-d')]);
-                    break;
-                case 2:
-                    $query->andWhere(['between', 'dt_add', date('Y-m-d', strtotime('-7 days')), date('Y-m-d')]);
-                    break;
-                case 3:
-                    $query->andWhere(['between', 'dt_add', date('Y-m-d', strtotime('-1 month')), date('Y-m-d')]);
-            }
-        }
-
         if ($modelForm->noResponses) {
             $query->leftJoin('responses', 'responses.task_id = tasks.id')
-                ->where('responses.task_id IS NULL');
+                ->Where('responses.task_id IS NULL');
+        }
+
+        if ($modelForm->remote) {
+            $query->andWhere('location IS NULL');
         }
 
         $query->andWhere(['status' => Task::STATUS_NEW]);
 
         if ($modelForm->search) {
             $query->andWhere(['like', 'tasks.name', $modelForm->search]);
+        }
+
+        if ($modelForm->interval) {
+
+            switch ($modelForm->interval) {
+                case 1:
+                    $query->andFilterWhere(['>=', 'tasks.dt_add', date('Y-m-d')]);
+                    break;
+                case 2:
+                    $query->andFilterWhere(['>=', 'tasks.dt_add', date('Y-m-d', strtotime('-1 week'))]);
+                    break;
+                case 3:
+                    $query->andFilterWhere(['>=', 'tasks.dt_add', date('Y-m-d', strtotime('-1 month'))]);
+            }
         }
 
         $query->orderBy('dt_add DESC');
