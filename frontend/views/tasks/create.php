@@ -62,7 +62,7 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'files[]', [
                 'template' => "{label}\n<div class='create__file'>
                     {input}
-                </div>",
+                </div><span class='hint-block'>{error}</span>",
                 'options' => [
                     'class' => 'field-container',
                 ],

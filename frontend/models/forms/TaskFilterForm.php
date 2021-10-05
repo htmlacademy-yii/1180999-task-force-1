@@ -17,7 +17,7 @@ class TaskFilterForm extends Model
     const INTERVAL_MONTH = 3;
 
     /**
-     * @return string[] названия полей формы
+     * @return string[] Названия полей формы
      */
     public function attributeLabels(): array
     {
@@ -31,7 +31,7 @@ class TaskFilterForm extends Model
     }
 
     /**
-     * @return array[] поля формы
+     * @return array[] Поля формы
      */
     public function rules(): array
     {
@@ -41,7 +41,7 @@ class TaskFilterForm extends Model
     }
 
     /**
-     * @return string[] список интервалов
+     * @return string[] Список интервалов
      */
     public static function getIntervalName(): array
     {

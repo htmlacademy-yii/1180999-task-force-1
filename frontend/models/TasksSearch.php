@@ -45,7 +45,15 @@ class TasksSearch extends Tasks
         $query = Tasks::find();
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 5,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'dt_add' => SORT_DESC
+                ]
+            ],
         ]);
 
         if (!empty($modelForm->category_ids)) {

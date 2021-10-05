@@ -12,7 +12,7 @@ class m211002_234940_change_column_city_from_tasks_table extends Migration
      */
     public function safeUp()
     {
-
+        $this->alterColumn('tasks', 'location', $this->integer()->null());
     }
 
     /**
@@ -20,9 +20,7 @@ class m211002_234940_change_column_city_from_tasks_table extends Migration
      */
     public function safeDown()
     {
-        echo "m211002_234940_change_column_city_from_tasks_table cannot be reverted.\n";
-
-        return false;
+        $this->alterColumn('tasks', 'location', $this->integer()->notNull());
     }
 
     /*

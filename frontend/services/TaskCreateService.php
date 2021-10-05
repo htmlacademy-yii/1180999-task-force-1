@@ -6,7 +6,6 @@ use frontend\models\Files;
 use frontend\models\forms\TaskCreateForm;
 use frontend\models\Tasks;
 use frontend\models\TasksFiles;
-use taskforce\Task;
 use Yii;
 use yii\web\UploadedFile;
 
@@ -15,6 +14,7 @@ class TaskCreateService
     private TaskCreateForm $form;
 
     /**
+     * Создание новой задачи
      * @param array $data
      * @return int|null
      */
@@ -26,15 +26,12 @@ class TaskCreateService
         }
 
         $task = new Tasks();
-        $task->dt_add = date('Y-m-d');
         $task->user_id = Yii::$app->user->id;
         $task->category_id = $this->form->category;
         $task->name = $this->form->name;
         $task->description = $this->form->description;
         $task->cost = $this->form->cost;
         $task->deadline = $this->form->deadline;
-        $task->location = 1;
-        $task->status = Task::STATUS_NEW;
         $task->save();
 
         $this->uploadFiles($task);
@@ -50,28 +47,31 @@ class TaskCreateService
     }
 
     /**
-     * @param Tasks $task
+     * Сохраняет загруженные в форму файлы на сервер в директорию ~/web/uploads
+     * Сохраняют информацию в БД: имя, путь и связь с задачей
+     * Имена загруженных файлов генерируются автоматически
+     * @param Tasks $task Данные формы создания задачи
      */
     private function uploadFiles(Tasks $task)
     {
-        $this->form->files = UploadedFile::getInstances($this->form, 'files');
+        $uploadFiles = UploadedFile::getInstances($this->form, 'files');
 
-        if ($this->form->uploadFiles()) {
+        if (!empty($uploadFiles)) {
 
-            $taskFiles = $this->form->uploadFiles();
-            foreach ($taskFiles as $files) {
-                foreach ($files as $name => $path) {
+            foreach ($uploadFiles as $file) {
 
-                    $files = new Files();
-                    $files->name = $name;
-                    $files->path = $path;
-                    $files->save();
+                $files = new Files();
+                $fileName = uniqid();
+                $files->name = "$file->baseName.$file->extension";
+                $files->path = 'uploads/' . $fileName . '.' . $file->extension;
+                $files->save();
 
-                    $taskFiles = new TasksFiles();
-                    $taskFiles->task_id = $task->id;
-                    $taskFiles->file_id = $files->id;
-                    $taskFiles->save();
-                }
+                $file->saveAs("uploads/$fileName.$file->extension") ;
+
+                $taskFiles = new TasksFiles();
+                $taskFiles->task_id = $task->id;
+                $taskFiles->file_id = $files->id;
+                $taskFiles->save();
             }
         }
     }

@@ -29,8 +29,8 @@ use frontend\models\Files;
                             <?= date('Y-m-d', strtotime($task->dt_add)) ?>
                         </span>
                     </div>
-                    <b class="new-task__price new-task__price--clean content-view-price"><?= $task->cost ?><b> ₽</b></b>
-                    <div class="new-task__icon new-task__icon--clean content-view-icon"></div>
+                    <b class="new-task__price new-task__price--<?= $task->category->code ?> content-view-price"><?= $task->cost ?><b> ₽</b></b>
+                    <div class="new-task__icon new-task__icon--<?= $task->category->code ?> content-view-icon"></div>
                 </div>
                 <div class="content-view__description">
                     <h3 class="content-view__h3">Общее описание</h3>

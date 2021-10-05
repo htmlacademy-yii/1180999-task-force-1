@@ -13,6 +13,10 @@ return [
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
+        'formatter' => [
+            'class' => 'yii\i18n\Formatter',
+            'defaultTimeZone' => 'Europe/Moscow'
+            ],
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],

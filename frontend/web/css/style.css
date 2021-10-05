@@ -449,7 +449,11 @@ footer {
   height: 50px;
   border: 3px solid transparent;
   border-radius: 10px;
-  margin-top: 33px; }
+  margin-top: 33px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 35px;
+}
 
 .new-task__icon--translation {
   background-image: url("../img/man-running.png");

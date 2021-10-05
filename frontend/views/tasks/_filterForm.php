@@ -1,14 +1,14 @@
 <?php
 /**
- * @var \frontend\models\Categories[] $categories
- * @var \frontend\models\TasksSearch $modelForm
+ * @var TasksSearch $modelForm
  * @var array[] $items
  */
 
 use frontend\models\Categories;
-use yii\bootstrap\ActiveForm;
-use yii\helpers\Html;
 use frontend\models\forms\TaskFilterForm;
+use frontend\models\TasksSearch;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 
 ?>
 

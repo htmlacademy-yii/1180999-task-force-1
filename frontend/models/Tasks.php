@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 
+use taskforce\Task;
 use Yii;
 
 /**
@@ -44,7 +45,7 @@ class Tasks extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['dt_add', 'user_id', 'category_id', 'name', 'description'], 'required'],
+            [['user_id', 'category_id', 'name', 'description'], 'required'],
             [['dt_add', 'deadline'], 'safe'],
             [['user_id', 'executor_id', 'category_id', 'location', 'cost'], 'integer'],
             [['description'], 'string'],
@@ -165,6 +166,7 @@ class Tasks extends \yii\db\ActiveRecord
         parent::beforeSave($insert);
         if ($this->isNewRecord) {
             $this->dt_add = date('Y-m-d H:i:s');
+            $this->status = Task::STATUS_NEW;
         }
         return true;
     }

@@ -10,6 +10,7 @@ use frontend\models\Users;
 use frontend\services\TaskGetService;
 use frontend\services\TaskCompletionService;
 use frontend\services\TaskResponseService;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
 use yii\filters\AccessControl;
 use Yii;
@@ -73,26 +74,35 @@ class TasksController extends SecuredController
     public function actionIndex(): string
     {
         $categories = Categories::find()->all();
+        $query = Tasks::find()->where(['status' => Task::STATUS_NEW]);
         $modelForm = new TaskFilterForm();
+
+        $provider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 5,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'dt_add' => SORT_DESC
+                ]
+            ],
+        ]);
+
+        $tasks = $provider->getModels();
 
         if ($modelForm->load(Yii::$app->request->get())) {
             $taskSearch = new TasksSearch();
-            $dataProvider = $taskSearch->search($modelForm);
-            $tasks = $dataProvider->getModels();
-        } else {
-            $tasks = Tasks::find()
-                ->where(['status' => Task::STATUS_NEW])
-                ->orderBy('dt_add DESC')
-                ->all();
+            $provider = $taskSearch->search($modelForm);
+            $tasks = $provider->getModels();
         }
 
-        return $this->render(
-            'tasks', [
-                'modelForm' => $modelForm,
-                'tasks' => $tasks,
-                'categories' => $categories
-            ]
-        );
+
+        return $this->render('index', [
+            'dataProvider' => $provider,
+            'modelForm' => $modelForm,
+            'categories' => $categories
+        ]);
     }
 
     /**
