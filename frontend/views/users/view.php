@@ -1,9 +1,11 @@
 <?php
 /**
- * @var object $user пользователь
+ * @var Users $user пользователь
  */
 
+
 use frontend\models\Reviews;
+use frontend\models\Users;
 use yii\helpers\Url;
 
 ?>

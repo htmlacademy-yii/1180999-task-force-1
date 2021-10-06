@@ -12,10 +12,7 @@ use yii\helpers\Url;
     <h2>Отклики <span>(<?= count($task->responses) ?>)</span></h2>
     <div class="content-view__feedback-wrapper">
 
-        <?php foreach (Responses::find()
-                           ->where(['task_id' => $task->id])
-                           ->orderBy('dt_add DESC')
-                           ->all() as $response): ?>
+        <?php foreach ($task->responses as $response): ?>
             <div class="content-view__feedback-card">
                 <div class="feedback-card__top">
                     <a href="<?= Url::to(['users/view', 'id' => $response->executor_id]) ?>">
@@ -28,7 +25,7 @@ use yii\helpers\Url;
                                 class="star-disabled"></span>
                         <b>4.25</b>
                     </div>
-                    <span class="new-task__time"><?= $response->dt_add ?></span>
+                    <span class="new-task__time"><?= Yii::$app->formatter->format($response->dt_add, 'relativeTime') ?></span>
                 </div>
                 <div class="feedback-card__content">
                     <p>

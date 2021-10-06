@@ -1,21 +1,13 @@
 <?php
 /**
- * @var object $modelForm
+ * @var object $filterForm
  * @var object $categories
  */
 
+use frontend\models\Categories;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
-use frontend\models\forms\UserFilterForm;
-
-$items = [];
-
-foreach ($categories as $category) {
-    $items[] = $category->name;
-}
-if (count($items) > 0) {
-    $items = array_combine(range(1, count($items)), array_values($items));
-}
 
 ?>
 <?php $form = ActiveForm::begin([
@@ -32,10 +24,10 @@ if (count($items) > 0) {
 
 <fieldset class="search-task__categories">
     <legend>Категории</legend>
-    <?= $form->field($modelForm, 'category_ids', ['template' => '{input}'])
-        ->checkboxList($items, [
-            'item' => function ($index, $label, $name, $checked, $value)  {
-                $checked = $checked ? 'checked':'';
+    <?= $form->field($filterForm, 'category_ids', ['template' => '{input}'])
+        ->checkboxList(Categories::find()->select(['name', 'id'])->indexBy('id')->column(), [
+            'item' => function ($index, $label, $name, $checked, $value) {
+                $checked = $checked ? 'checked' : '';
                 return "
                     <label class='checkbox__legend' for='{$index}'>
                         <input class=\"visually-hidden checkbox__input\" id='{$index}' type='checkbox' name='{$name}' value='{$value}' $checked >
@@ -47,7 +39,7 @@ if (count($items) > 0) {
 
 <fieldset class="search-task__categories">
     <legend>Дополнительно</legend>
-    <?= $form->field($modelForm, 'isFree', [
+    <?= $form->field($filterForm, 'isFree', [
         'template' => '<label class="checkbox__legend">
                                     {input}
                             <span>Сейчас свободен</span>
@@ -56,7 +48,7 @@ if (count($items) > 0) {
         'class' => 'visually-hidden checkbox__input',
     ],
         false); ?>
-    <?= $form->field($modelForm, 'online', [
+    <?= $form->field($filterForm, 'online', [
         'template' => '<label class="checkbox__legend">
                                     {input}
                             <span>Сейчас онлайн</span>
@@ -65,7 +57,7 @@ if (count($items) > 0) {
         'class' => 'visually-hidden checkbox__input',
     ],
         false); ?>
-    <?= $form->field($modelForm, 'review', [
+    <?= $form->field($filterForm, 'review', [
         'template' => '<label class="checkbox__legend">
                                     {input}
                             <span>Есть отзывы</span>
@@ -74,7 +66,7 @@ if (count($items) > 0) {
         'class' => 'visually-hidden checkbox__input',
     ],
         false); ?>
-    <?= $form->field($modelForm, 'favorite', [
+    <?= $form->field($filterForm, 'favorite', [
         'template' => '<label class="checkbox__legend">
                                     {input}
                             <span>В избранном</span>
@@ -85,18 +77,27 @@ if (count($items) > 0) {
         false); ?>
 </fieldset>
 
-    <?= $form->field($modelForm, 'nameSearch', [
-        'template' => "{label}\n{input}\n",
-        'options' => ['class' => 'field-container'],
-        'labelOptions' => ['class' => 'search-task__name']
-    ])->input('text', ['class' => 'input-middle input']) ?>
+<?= $form->field($filterForm, 'nameSearch', [
+    'template' => "{label}\n{input}\n",
+    'options' => ['class' => 'field-container'],
+    'labelOptions' => ['class' => 'search-task__name']
+])->input('text', ['class' => 'input-middle input']) ?>
 
 
 
-<?= Html::submitButton('Поиск', [
-    'type' => 'submit',
-    'class' => 'button mt-3'
-]) ?>
+<fieldset class="search-task__categories" style="flex-direction: row-reverse; justify-content: space-between">
+    <?= Html::submitButton('Поиск', [
+        'type' => 'submit',
+        'class' => 'button'
+    ]) ?>
+
+    <a href="<?= Url::to(['users']) ?>">
+        <?= Html::button('Очистить', [
+            'type' => 'button',
+            'class' => 'button reset-button'
+        ]) ?>
+    </a>
+</fieldset>
 
 <?php ActiveForm::end() ?>
 

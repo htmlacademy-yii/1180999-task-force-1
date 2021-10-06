@@ -17,6 +17,7 @@ use Yii;
 use frontend\models\Tasks;
 use taskforce\Task;
 use frontend\services\TaskCreateService;
+use yii\web\NotFoundHttpException;
 
 class TasksController extends SecuredController
 {
@@ -73,7 +74,6 @@ class TasksController extends SecuredController
      */
     public function actionIndex(): string
     {
-        $categories = Categories::find()->all();
         $query = Tasks::find()->where(['status' => Task::STATUS_NEW]);
         $modelForm = new TaskFilterForm();
 
@@ -101,7 +101,6 @@ class TasksController extends SecuredController
         return $this->render('index', [
             'dataProvider' => $provider,
             'modelForm' => $modelForm,
-            'categories' => $categories
         ]);
     }
 
@@ -109,11 +108,17 @@ class TasksController extends SecuredController
      * Показ страницы задачи
      * @param $id
      * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
      */
     public function actionView($id)
     {
         $getTaskService = new TaskGetService();
+
         $task = $getTaskService->getTask($id);
+
+        if (!$task) {
+            throw new NotFoundHttpException("Пользователь с id $id не найден");
+        }
 
         $respondService = new TaskResponseService();
         $respondId = $respondService->execute(Yii::$app->request->post(), $task->id);

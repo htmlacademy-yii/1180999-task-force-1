@@ -6,7 +6,6 @@
  * @var object $completionForm Модель формы завершения задачи
  */
 
-use frontend\models\TasksFiles;
 use taskforce\Task;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -41,18 +40,13 @@ use frontend\models\Files;
                 <div class="content-view__attach">
                     <h3 class="content-view__h3">Вложения</h3>
 
-                    <?php
-                    $taskFiles = TasksFiles::find()     // TODO: во вью нельзя обращаться к базе
-                    ->where(['task_id' => $task->id])
-                        ->select('file_id')->column();
-                    foreach ($taskFiles as $file_id) {
-                        print Html::a(
-                            Files::findOne(['id' => $file_id])->name,
-                            Url::base() . '/' . Files::findOne(['id' => $file_id])->path,
+                    <?php foreach ($task->tasksFiles as $file): ?>
+                        <?=Html::a(
+                            Files::findOne(['id' => $file->id])->name,
+                            Url::base() . '/' . Files::findOne(['id' => $file->id])->path,
                             ['target' => '_blank']
-                        );
-                    }
-                    ?>
+                        ); ?>
+                    <?php endforeach; ?>
                 </div>
                 <div class="content-view__location">
                     <h3 class="content-view__h3">Расположение</h3>

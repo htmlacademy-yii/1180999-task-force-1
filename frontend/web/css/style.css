@@ -842,6 +842,12 @@ footer {
   background-color: #3366ff;
 }
 
+.reset-button {
+  padding: 15px;
+  color: white;
+  background-color: #7e7e7e;
+}
+
 
 .button__chat {
   width: 32px;

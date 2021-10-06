@@ -3,6 +3,7 @@
 namespace frontend\services;
 
 use frontend\models\Tasks;
+use yii\web\NotFoundHttpException;
 
 class TaskGetService
 {
@@ -16,7 +17,13 @@ class TaskGetService
      */
     public function getTask(int $id): ?Tasks
     {
-        $this->task = Tasks::findOne($id);
+        $task = Tasks::findOne($id);
+        if (!$task) {
+            throw new NotFoundHttpException('Задача не найдена');
+        }
+
+        $this->task = $task;
+
         return $this->task;
     }
 

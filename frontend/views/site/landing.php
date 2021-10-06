@@ -108,7 +108,7 @@ use yii\helpers\Html;
                 <h2>Последние задания на сайте</h2>
                 <?php foreach ($tasks as $task): ?>
                     <div class="landing-task">
-                        <div class="landing-task-top task-courier"></div>
+                        <div class="landing-task-top task-<?= $task->category->code ?>"></div>
                         <div class="landing-task-description">
                             <h3>
                                 <?= Html::a(
@@ -135,9 +135,9 @@ use yii\helpers\Html;
                                         )
                                     ?>
                                 </p>
-                                <p><?= $task->dt_add?></p>
+                                <p><?= Yii::$app->formatter->format($task->dt_add, 'relativeTime') ?></p>
                             </div>
-                            <span><?= $task->cost ?><b>₽</b></span>
+                            <span><?= $task->cost ? $task->cost . '<b>₽</b>' : ''?></span>
                         </div>
                     </div>
                 <?php endforeach; ?>
