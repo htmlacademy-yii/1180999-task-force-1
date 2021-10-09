@@ -13,6 +13,10 @@ return [
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
+        'formatter' => [
+            'class' => 'yii\i18n\Formatter',
+            'defaultTimeZone' => 'Europe/Moscow'
+            ],
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
@@ -49,6 +53,9 @@ return [
                 'sign-up' => 'sign-up/index',
                 'user/<id:\d+>' => 'users/view',
                 'task/<id:\d+>' => 'tasks/view',
+                'refuse/<id:\d+>' => 'tasks/refuse',
+                'accept/<id:\d+>' => 'tasks/accept',
+                'cancel/<id:\d+>' => 'tasks/cancel',
             ],
         ],
 

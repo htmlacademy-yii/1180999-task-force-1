@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "reviews".
  *
  * @property int $id
- * @property string $dt_add
+ * @property string|null $dt_add
  * @property int $user_id
  * @property int $executor_id
  * @property int $task_id
@@ -35,8 +35,8 @@ class Reviews extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['dt_add', 'user_id', 'executor_id', 'task_id'], 'required'],
             [['dt_add'], 'safe'],
+            [['user_id', 'executor_id', 'task_id'], 'required'],
             [['user_id', 'executor_id', 'task_id', 'score'], 'integer'],
             [['text'], 'string'],
             [['executor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['executor_id' => 'id']],
@@ -89,5 +89,18 @@ class Reviews extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(Users::className(), ['id' => 'user_id']);
+    }
+
+    /**
+     * @param bool $insert
+     * @return bool|void
+     */
+    public function beforeSave($insert)
+    {
+        parent::beforeSave($insert);
+        if ($this->isNewRecord) {
+            $this->dt_add = date('Y-m-d H:i:s');
+        }
+        return true;
     }
 }

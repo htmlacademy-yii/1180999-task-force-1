@@ -1,9 +1,12 @@
 <?php
 /**
- * @var object $task данные задачи
+ * @var object $task Данные задачи
+ * @var object $executors Данные задачи
+ * @var object $responseForm Форма добавления отклика
+ * @var object $completionForm Модель формы завершения задачи
  */
 
-use frontend\models\TasksFiles;
+use taskforce\Task;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use frontend\models\Files;
@@ -25,8 +28,8 @@ use frontend\models\Files;
                             <?= date('Y-m-d', strtotime($task->dt_add)) ?>
                         </span>
                     </div>
-                    <b class="new-task__price new-task__price--clean content-view-price"><?= $task->cost ?><b> ₽</b></b>
-                    <div class="new-task__icon new-task__icon--clean content-view-icon"></div>
+                    <b class="new-task__price new-task__price--<?= $task->category->code ?> content-view-price"><?= $task->cost ?><b> ₽</b></b>
+                    <div class="new-task__icon new-task__icon--<?= $task->category->code ?> content-view-icon"></div>
                 </div>
                 <div class="content-view__description">
                     <h3 class="content-view__h3">Общее описание</h3>
@@ -37,18 +40,13 @@ use frontend\models\Files;
                 <div class="content-view__attach">
                     <h3 class="content-view__h3">Вложения</h3>
 
-                    <?php
-                    $taskFiles = TasksFiles::find()
-                        ->where(['task_id' => $task->id])
-                        ->select('file_id')->column();
-                    foreach ($taskFiles as $file_id) {
-                        print Html::a(
-                            Files::findOne(['id' => $file_id])->name,
-                            Url::base() . '/' . Files::findOne(['id' => $file_id])->path,
+                    <?php foreach ($task->tasksFiles as $file): ?>
+                        <?=Html::a(
+                            Files::findOne(['id' => $file->id])->name,
+                            Url::base() . '/' . Files::findOne(['id' => $file->id])->path,
                             ['target' => '_blank']
-                        );
-                    }
-                    ?>
+                        ); ?>
+                    <?php endforeach; ?>
                 </div>
                 <div class="content-view__location">
                     <h3 class="content-view__h3">Расположение</h3>
@@ -65,53 +63,43 @@ use frontend\models\Files;
                     </div>
                 </div>
             </div>
-            <div class="content-view__action-buttons">
-                <button class=" button button__big-color response-button open-modal"
-                        type="button" data-for="response-form">Откликнуться
-                </button>
-                <button class="button button__big-color refusal-button open-modal"
-                        type="button" data-for="refuse-form">Отказаться
-                </button>
-                <button class="button button__big-color request-button open-modal"
-                        type="button" data-for="complete-form">Завершить
-                </button>
-            </div>
+            <?php if (!Yii::$app->user->isGuest): ?>
+            <?php if ($task->status === Task::STATUS_IN_WORK || $task->status === Task::STATUS_NEW): ?>
+
+                <div class="content-view__action-buttons">
+                    <?php if ($task->status === Task::STATUS_NEW): ?>
+                        <?php if (!in_array(Yii::$app->user->getId(), $executors)): ?>
+                            <button class=" button button__big-color response-button open-modal"
+                                    type="button" data-for="response-form">Откликнуться
+                            </button>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                    <?php if (Yii::$app->user->getId() === $task->user_id): ?>
+                        <?php if ($task->status != Task::STATUS_IN_WORK): ?>
+                            <button class="button button__big-color refusal-button open-modal"
+                                    type="button" data-for="refuse-form">Отказаться
+                            </button>
+                        <?php endif; ?>
+                        <button class="button button__big-color request-button open-modal"
+                                type="button" data-for="complete-form">Завершить
+                        </button>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
         </div>
         <div class="content-view__feedback">
-            <h2>Отклики <span>(<?= count($task->responses) ?>)</span></h2>
-            <div class="content-view__feedback-wrapper">
-
-                <?php foreach ($task->responses as $response): ?>
-                    <div class="content-view__feedback-card">
-                        <div class="feedback-card__top">
-                            <a href="<?= Url::to(['users/view', 'id' => $response->executor_id]) ?>">
-                                <img src="<?= $user->avatarFile->path ?? 'https://via.placeholder.com/1.png' ?>"
-                                     width="55" height="55"></a>
-                            <div class="feedback-card__top--name">
-                                <p><a href="<?= Url::to(['users/view', 'id' => $response->executor_id]) ?>"
-                                      class="link-regular"><?= $response->executor->name ?></a></p>
-                                <span></span><span></span><span></span><span></span><span class="star-disabled"></span>
-                                <b>4.25</b>
-                            </div>
-                            <span class="new-task__time"><?= $response->dt_add ?></span>
-                        </div>
-                        <div class="feedback-card__content">
-                            <p>
-                                <?= $response->description ?>
-                            </p>
-                            <span><?= $response->price ?> ₽</span>
-                        </div>
-                        <div class="feedback-card__actions">
-                            <a class="button__small-color response-button button"
-                               type="button">Подтвердить</a>
-                            <a class="button__small-color refusal-button button"
-                               type="button">Отказать</a>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-
-            </div>
+            <?php
+            if ($task->status === Task::STATUS_NEW) {
+                if (count($task->responses) > 0 && $task->user_id === Yii::$app->user->identity->getId()) {
+                    print $this->render('_responses', [
+                        'task' => $task
+                    ]);
+                }
+            }
+            ?>
+            <?php endif; ?>
         </div>
+
     </section>
     <section class="connect-desk">
         <div class="connect-desk__profile-mini">
@@ -132,5 +120,20 @@ use frontend\models\Files;
             <!--                    добавьте сюда атрибут task с указанием в нем id текущего задания-->
             <chat class="connect-desk__chat"></chat>
         </div>
-    </section>
+        <section class="modal response-form form-modal" id="response-form">
+            <?= $this->render('responseForm', [
+                'responseForm' => $responseForm
+            ])
+            ?>
+        </section>
+        <section class="modal completion-form form-modal" id="complete-form">
+            <?= $this->render('_completeForm', [
+                'completionForm' => $completionForm
+            ]) ?>
+        </section>
+        <section class="modal form-modal refusal-form" id="refuse-form">
+            <?= $this->render('_refuseForm', [
+                'task' => $task
+            ]) ?>
+        </section>
 </div>

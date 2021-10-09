@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use frontend\models\forms\TaskFilterForm;
+use taskforce\Task;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\Tasks;
@@ -39,26 +40,39 @@ class TasksSearch extends Tasks
      *
      * @return ActiveDataProvider
      */
-    public function search(TaskFilterForm $modelForm)
+    public function search(TaskFilterForm $modelForm): ActiveDataProvider
     {
         $query = Tasks::find();
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 5,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'dt_add' => SORT_DESC
+                ]
+            ],
         ]);
 
         if (!empty($modelForm->category_ids)) {
-            $query->leftJoin('categories', 'category_id = tasks.category_id')
-                ->where(['category_id' => $modelForm->category_ids]);
+            $query->leftJoin('categories', 'categories.id = tasks.category_id')
+                ->andWhere([
+                    'category_id' => $modelForm->category_ids
+                ]);
+        }
+
+        if ($modelForm->noResponses) {
+            $query->leftJoin('responses', 'responses.task_id = tasks.id')
+                ->andWhere('responses.task_id IS NULL');
         }
 
         if ($modelForm->remote) {
-            $query->andWhere(['city_id' => null]);
+            $query->andWhere('location IS NULL');
         }
 
-        if ($modelForm->noExecutor == 1) {
-            $query->andWhere(['executor_id' => null]);
-        }
+        $query->andWhere(['status' => Task::STATUS_NEW]);
 
         if ($modelForm->search) {
             $query->andWhere(['like', 'tasks.name', $modelForm->search]);
@@ -68,15 +82,17 @@ class TasksSearch extends Tasks
 
             switch ($modelForm->interval) {
                 case 1:
-                    $query->andWhere(['dt_add' => date('Y-m-d')]);
+                    $query->andFilterWhere(['>=', 'tasks.dt_add', date('Y-m-d')]);
                     break;
                 case 2:
-                    $query->andWhere(['between', 'dt_add', date('Y-m-d', strtotime('-7 days')), date('Y-m-d')]);
+                    $query->andFilterWhere(['>=', 'tasks.dt_add', date('Y-m-d', strtotime('-1 week'))]);
                     break;
                 case 3:
-                    $query->andWhere(['between', 'dt_add', date('Y-m-d', strtotime('-1 month')), date('Y-m-d')]);
+                    $query->andFilterWhere(['>=', 'tasks.dt_add', date('Y-m-d', strtotime('-1 month'))]);
             }
         }
+
+        $query->orderBy('dt_add DESC');
 
         return $dataProvider;
     }

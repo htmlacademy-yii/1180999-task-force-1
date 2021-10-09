@@ -6,7 +6,7 @@ use yii\base\Model;
 class TaskFilterForm extends Model
 {
     public $category_ids;
-    public $noExecutor;
+    public $noResponses;
     public $remote;
     public $interval;
     public $search;
@@ -17,13 +17,13 @@ class TaskFilterForm extends Model
     const INTERVAL_MONTH = 3;
 
     /**
-     * @return string[] названия полей формы
+     * @return string[] Названия полей формы
      */
     public function attributeLabels(): array
     {
         return [
             'category_ids' => 'Категория',
-            'noExecutor' => 'Без исполнителя',
+            'noResponses' => 'Без откликов',
             'remote' => 'Удаленная работа',
             'interval' => 'Период',
             'search' => 'Поиск по названию'
@@ -31,17 +31,17 @@ class TaskFilterForm extends Model
     }
 
     /**
-     * @return array[] поля формы
+     * @return array[] Поля формы
      */
     public function rules(): array
     {
         return [
-            [['category_ids', 'noExecutor', 'remote', 'interval', 'search'],'safe']
+            [['category_ids', 'noResponses', 'remote', 'interval', 'search'],'safe']
         ];
     }
 
     /**
-     * @return string[] список интервалов
+     * @return string[] Список интервалов
      */
     public static function getIntervalName(): array
     {

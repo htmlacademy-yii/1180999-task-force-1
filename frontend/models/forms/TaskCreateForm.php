@@ -2,7 +2,9 @@
 
 namespace frontend\models\forms;
 
+use frontend\helpers\GetCfgVar;
 use frontend\models\Tasks;
+use Yii;
 
 
 class TaskCreateForm extends Tasks
@@ -47,7 +49,9 @@ class TaskCreateForm extends Tasks
                 'message' => 'Обязательное поле'],
             [['files'],
                 'file',
-                'maxFiles' => 10
+                'maxFiles' => 10,
+                'maxSize' => GetCfgVar::getSizeLimits(),
+
             ],
             [['category'], 'integer'],
             [['name'], 'forName'],
@@ -96,29 +100,5 @@ class TaskCreateForm extends Tasks
         if ($this->deadline < date('Y-m-d')) {
             $this->addError('deadline', 'Указана дата раньше текущей');
         }
-    }
-
-
-    /**
-     * Загрузка файлов на сервер
-     * @return bool|array
-     */
-    public function uploadFiles()
-    {
-        $taskFiles = [];
-
-        $url = 'uploads/' . date("Y-m-d") .'_'. date("H-m-s") . '/';
-        if (!is_dir($url)) {
-            mkdir($url, 0777);
-        }
-
-        if ($this->validate()) {
-            foreach ($this->files as $file) {
-                $file->saveAs($url . $file->baseName . '.' . $file->extension);
-                $taskFiles[] = ["$file->baseName.$file->extension" => $url . $file->baseName . '.' . $file->extension];
-            }
-            return $taskFiles;
-        }
-        return false;
     }
 }

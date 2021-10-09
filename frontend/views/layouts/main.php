@@ -194,7 +194,7 @@ use yii\helpers\Url;
             <div class="page-footer__copyright">
                 <a>
                     <img class="copyright-logo"
-                         src="./img/academy-logo.png"
+                         src="/img/academy-logo.png"
                          width="185" height="63"
                          alt="Логотип HTML Academy">
                 </a>
@@ -218,7 +218,9 @@ use yii\helpers\Url;
     </footer>
 
 </div>
-
+<div class="overlay"></div>
+<script src="/js/main.js"></script>
+<script src="/js/messenger.js"></script>
 <?php $this->endBody(); ?>
 
 </body>

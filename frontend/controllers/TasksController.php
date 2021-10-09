@@ -3,141 +3,210 @@
 namespace frontend\controllers;
 
 use frontend\models\Categories;
-use frontend\models\Files;
-use frontend\models\forms\TaskCreateForm;
 use frontend\models\forms\TaskFilterForm;
 use frontend\models\Responses;
-use frontend\models\TasksFiles;
 use frontend\models\TasksSearch;
 use frontend\models\Users;
-use yii\db\Exception;
-use yii\filters\AccessControl;
-use yii\helpers\Html;
+use frontend\services\TaskGetService;
+use frontend\services\TaskCompletionService;
+use frontend\services\TaskResponseService;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
-use yii\web\Controller;
+use yii\filters\AccessControl;
 use Yii;
 use frontend\models\Tasks;
 use taskforce\Task;
+use frontend\services\TaskCreateService;
 use yii\web\NotFoundHttpException;
-use yii\web\UploadedFile;
 
 class TasksController extends SecuredController
 {
     /**
      * @return array[]
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'access' => [
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'delete'],
+                        'actions' => [
+                            'index',
+                            'view',
+                            'create',
+                            'cancel',
+                            'response',
+                            'refuse',
+                            'accept'
+                        ],
                         'allow' => true,
                         'roles' => ['@']
+                    ],
+                    [
+                        'actions' => [
+                            'index',
+                            'view'
+                        ],
+                        'allow' => true,
+                        'roles' => ['?']
+                    ],
+                    [
+                        'actions' => [
+                            'create'
+                        ],
+                        'allow' => false,
+                        'roles' => ['?']
                     ]
                 ],
                 'denyCallback' => function ($rule, $action) {
-                    return $this->goBack();
+                    if (Yii::$app->user->isGuest) {
+                        $this->redirect(Url::to(['sign-up/index']));
+                    }
                 },
             ]
         ];
     }
 
     /**
+     * Показ всех новых задач
      * @return string
      */
     public function actionIndex(): string
     {
-        $categories = Categories::find()->all();
+        $query = Tasks::find()->where(['status' => Task::STATUS_NEW]);
         $modelForm = new TaskFilterForm();
 
-        if ($modelForm->load(Yii::$app->request->get())) {
+        $provider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 5,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'dt_add' => SORT_DESC
+                ]
+            ],
+        ]);
 
+        $tasks = $provider->getModels();
+
+        if ($modelForm->load(Yii::$app->request->get())) {
             $taskSearch = new TasksSearch();
-            $dataProvider = $taskSearch->search($modelForm);
-            $tasks = $dataProvider->getModels();
-        } else {
-            $tasks = Tasks::find()->orderBy('dt_add DESC')->all();
+            $provider = $taskSearch->search($modelForm);
+            $tasks = $provider->getModels();
         }
 
-        return $this->render(
-            'tasks', [
-                'modelForm' => $modelForm,
-                'tasks' => $tasks,
-                'categories' => $categories
-            ]
-        );
+
+        return $this->render('index', [
+            'dataProvider' => $provider,
+            'modelForm' => $modelForm,
+        ]);
     }
 
     /**
+     * Показ страницы задачи
      * @param $id
-     * @return string
+     * @return string|\yii\web\Response
      * @throws NotFoundHttpException
      */
-    public function actionView($id): string
+    public function actionView($id)
     {
-        $task = Tasks::findOne($id);
+        $getTaskService = new TaskGetService();
+
+        $task = $getTaskService->getTask($id);
 
         if (!$task) {
-            throw new NotFoundHttpException("Задачи с id = $id не существует");
+            throw new NotFoundHttpException("Пользователь с id $id не найден");
         }
+
+        $respondService = new TaskResponseService();
+        $respondId = $respondService->execute(Yii::$app->request->post(), $task->id);
+
+        $TaskCompletionService = new TaskCompletionService;
+        $reviewId = $TaskCompletionService->execute(Yii::$app->request->post(), $task);
+
+
+        if ($respondId) {
+            return $this->redirect(Url::to(['tasks/view', 'id' => $task->id]));
+        }
+
+        if ($reviewId) {
+            return $this->redirect(Url::to(['tasks']));
+        }
+
         return $this->render('view', [
-            'task' => $task
+            'task' => $task,
+            'executors' => $getTaskService->getExecutors(),
+            'responseForm' => $respondService->getForm(),
+            'completionForm' => $TaskCompletionService->getForm()
         ]);
     }
 
     /**
      * Действие создания новой задачи
-     * @return int|string
+     * @return string
      */
-    public function actionCreate()
+    public function actionCreate(): string
     {
-        $model = new TaskCreateForm();
-
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-
-            $newTask = new Tasks();
-            $newTask->dt_add = date('Y-m-d h:i:s');
-            $newTask->user_id = Yii::$app->user->id;
-            $newTask->category_id = $model->category;
-            $newTask->name = $model->name;
-            $newTask->description = $model->description;
-            $newTask->cost = $model->cost;
-            $newTask->deadline = $model->deadline;
-            $newTask->location = 1;
-            $newTask->status = Task::STATUS_NEW;
-            $newTask->save();   // Task done
-
-
-            $model->files = UploadedFile::getInstances($model, 'files');
-
-            if ($model->uploadFiles()) {
-
-                $taskFiles = $model->uploadFiles();
-                foreach ($taskFiles as $files) {
-                    foreach ($files as $name => $path) {
-
-                        $files = new Files();
-                        $files->name = $name;
-                        $files->path = $path;
-                        $files->save();
-
-                        $taskFiles = new TasksFiles();
-                        $taskFiles->task_id = $newTask->id;
-                        $taskFiles->file_id = $files->id;
-                        $taskFiles->save();
-                    }
-                }
-            }
-            if ($newTask->id) {
-                $this->redirect("task/$newTask->id");
-            }
+        $service = new TaskCreateService();
+        $taskId = $service->execute(Yii::$app->request->post());
+        if ($taskId) {
+            $this->redirect("task/$taskId");
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'model' => $service->getForm(),
         ]);
+    }
+
+    /**
+     * Действие помечает отклик как отказанный
+     * @param $id int Id отклика
+     */
+    public function actionRefuse(int $id)
+    {
+        $response = Responses::findOne($id);
+        $response->refuse = Task::ACTION_STATUS_MAP['Refuse'];
+        $response->save();
+
+        $this->redirect("/task/$response->task_id");
+    }
+
+    /**
+     * Действие запуска задачи
+     * @param int $id
+     */
+    public function actionAccept(int $id)
+    {
+        $response = Responses::findOne($id);
+        $executor = Users::findOne($response->executor_id);
+        $task = Tasks::findOne($response->task_id);
+
+        $task->executor_id = $response->executor_id;
+        $task->status = Task::STATUS_IN_WORK;
+        $task->save();
+
+        $executor->is_executor = 1;
+        $executor->save();
+
+        $this->redirect("/task/$task->id");
+    }
+
+    /**
+     * Действие отмены задачи
+     * @param int $id
+     */
+    public function actionCancel(int $id)
+    {
+        $task = Tasks::findOne($id);
+        $task->status = Task::STATUS_FAIL;
+        $task->save();
+
+        $user = Users::findOne($task->user_id);
+        $user->failed_count++;
+        $user->save();
+
+        $this->redirect("/task/$task->id");
     }
 }

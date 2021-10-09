@@ -190,6 +190,9 @@ class UsersSearch extends \yii\db\ActiveRecord
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 5
+            ]
         ]);
 
         if ($modelForm->category_ids) {

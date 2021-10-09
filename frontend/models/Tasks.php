@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 
+use taskforce\Task;
 use Yii;
 
 /**
@@ -13,7 +14,7 @@ use Yii;
  * @property int $user_id
  * @property int|null $executor_id
  * @property int $category_id
- * @property int $location
+ * @property int|null $location
  * @property string|null $status
  * @property string $name
  * @property string $description
@@ -44,7 +45,7 @@ class Tasks extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['dt_add', 'user_id', 'category_id', 'location', 'name', 'description'], 'required'],
+            [['user_id', 'category_id', 'name', 'description'], 'required'],
             [['dt_add', 'deadline'], 'safe'],
             [['user_id', 'executor_id', 'category_id', 'location', 'cost'], 'integer'],
             [['description'], 'string'],
@@ -154,5 +155,19 @@ class Tasks extends \yii\db\ActiveRecord
     public function getUsersMessages()
     {
         return $this->hasMany(UsersMessages::className(), ['task_id' => 'id']);
+    }
+
+    /**
+     * @param bool $insert
+     * @return bool|void
+     */
+    public function beforeSave($insert)
+    {
+        parent::beforeSave($insert);
+        if ($this->isNewRecord) {
+            $this->dt_add = date('Y-m-d H:i:s');
+            $this->status = Task::STATUS_NEW;
+        }
+        return true;
     }
 }

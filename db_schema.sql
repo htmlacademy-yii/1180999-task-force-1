@@ -80,7 +80,7 @@ CREATE TABLE users_files
 CREATE TABLE tasks
 (
     id          INT AUTO_INCREMENT,
-    dt_add      DATETIME      NOT NULL,
+    dt_add      DATETIME      NULL,
     deadline    DATETIME      NOT NULL,
     user_id     INT           NOT NULL,
     executor_id INT           NULL,
