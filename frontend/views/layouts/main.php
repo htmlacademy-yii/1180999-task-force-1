@@ -21,6 +21,9 @@ use yii\helpers\Url;
     <title><?= Html::encode($this->title) ?></title>
     <link rel="stylesheet" href="/css/normalize.css">
     <link rel="stylesheet" href="/css/style.css">
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=<?= Yii::$app->params['yandexApiKey']?>>&lang=ru_RU" type="text/javascript">
+    </script>
+
 </head>
 <body>
 
@@ -221,6 +224,7 @@ use yii\helpers\Url;
 <div class="overlay"></div>
 <script src="/js/main.js"></script>
 <script src="/js/messenger.js"></script>
+<script src="/js/ymap.js"></script>
 <?php $this->endBody(); ?>
 
 </body>

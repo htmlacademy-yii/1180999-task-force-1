@@ -18,6 +18,9 @@ return [
             'defaultTimeZone' => 'Europe/Moscow'
             ],
         'request' => [
+                'parsers' => [
+                    'application/json' => 'yii\web\JsonParser'
+                ],
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
@@ -44,8 +47,10 @@ return [
 
         'urlManager' => [
             'enablePrettyUrl' => true,
+            'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                'test' => 'test/index',
                 '/' => 'site/index',
                 'users' => 'users/index',
                 'tasks' => 'tasks/index',
@@ -56,6 +61,11 @@ return [
                 'refuse/<id:\d+>' => 'tasks/refuse',
                 'accept/<id:\d+>' => 'tasks/accept',
                 'cancel/<id:\d+>' => 'tasks/cancel',
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'api',
+                    'pluralize' => false
+                ]
             ],
         ],
 

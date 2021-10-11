@@ -1,15 +1,28 @@
 <?php
 
-$model = new \frontend\services\TaskGetService();
-$task = $model->getTask(176);
 
-foreach ($task->reviews as $review) {
-    print "Задача: " . $review->task->name . "<br>";
-    print "Отзыв: " . $review->text . "<br>";
-    print "Оценка (1-5): " . $review->score . "<br>";
-    print "Отправлено: " . Yii::$app->formatter->format($review->dt_add, 'relativeTime') . "<br>";
-}
+use yii\helpers\ArrayHelper;
 
-foreach ($task->tasksFiles as $files) {
-    var_dump($files);
-}
+$model = new \frontend\models\forms\TaskCreateForm();
+
+    $cities = \frontend\models\Cities::find()->select(['id', 'name'])->limit(10)->all();
+
+$arrayData = ArrayHelper::toArray($cities, [
+    'frontend\models\Cities' => [
+        "name"
+    ],
+]);
+
+$items = ArrayHelper::getColumn($arrayData, 'name');
+
+var_dump($items);
+
+    $form = \yii\widgets\ActiveForm::begin();
+
+print    $form->field($model, 'location')->widget(\yii\jui\AutoComplete::className(), [
+    'clientOptions' => [
+        'source' => $items,
+    ],
+]);
+
+    \yii\widgets\ActiveForm::end();

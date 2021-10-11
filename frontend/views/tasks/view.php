@@ -51,9 +51,7 @@ use frontend\models\Files;
                 <div class="content-view__location">
                     <h3 class="content-view__h3">Расположение</h3>
                     <div class="content-view__location-wrapper">
-                        <div class="content-view__map">
-                            <a href="#"><img src="../img/map.jpg" width="361" height="292"
-                                             alt="Москва, Новый арбат, 23 к. 1"></a>
+                        <div class="content-view__map" id="map" style="width: 600px; height: 400px">
                         </div>
                         <div class="content-view__address">
                             <span class="address__town">Москва</span><br>
