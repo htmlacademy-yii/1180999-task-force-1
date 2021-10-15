@@ -22,6 +22,6 @@ use frontend\models\Tasks;
         <?= mb_strimwidth($model->description, 0, 90, "..."); ?>
     </p>
     <b class="new-task__price new-task__price--<?= $model->category->code?>"><?= $model->cost ? $model->cost.'₽': ''?><b> </b></b>
-    <p class="new-task__place"><?= $model->location ?? 'Санкт-Петербург, Центральный район' ?></p>
+    <p class="new-task__place"><?= $model->city->name ?? '<br>'?></p>
     <span class="new-task__time"><?= Yii::$app->formatter->format($model->dt_add, 'relativeTime') ?></span>
 </div>

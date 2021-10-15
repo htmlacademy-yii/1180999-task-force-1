@@ -13,7 +13,7 @@ class TaskCreateForm extends Tasks
     public $description;
     public $category;
     public $files;
-    public $location;
+    public $city;
     public $cost;
     public $deadline;
     public $path;
@@ -29,7 +29,7 @@ class TaskCreateForm extends Tasks
             'description' => 'Подробности задания',
             'category' => 'Категория',
             'files' => 'Файлы',
-            'location' => 'Локация',
+            'city' => 'Локация',
             'cost' => 'Бюджет',
             'deadline' => 'Сроки исполнения'
         ];
@@ -42,7 +42,7 @@ class TaskCreateForm extends Tasks
     public function rules()
     {
         return [
-            [['name', 'description', 'category', 'files', 'location', 'cost', 'deadline'],
+            [['name', 'description', 'category', 'files', 'city', 'cost', 'deadline'],
                 'safe'],
             [['name', 'description', 'category'],
                 'required',

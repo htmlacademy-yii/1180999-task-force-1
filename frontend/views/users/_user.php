@@ -18,8 +18,7 @@ use yii\helpers\Url;
         <p class="link-name">
             <a href="<?= Url::to(['users/view', 'id' => $model->id])?>" class="link-regular"><?= $model->name ?></a>
         </p>
-        <span></span><span></span><span></span><span></span><span class="star-disabled"></span>
-        <b>4.25</b>
+        <?= \frontend\widgets\rating\RatingWidget::widget(['rating' => $model->calcRatingScore()]) ?>
         <p class="user__search-content">
             <?= $model->about_me ?>
         </p>

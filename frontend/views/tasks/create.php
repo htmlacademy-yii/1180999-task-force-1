@@ -9,10 +9,8 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\forms\TaskCreateForm */
 /* @var $form ActiveForm */
-
-
-$query = \frontend\models\Cities::find()->all();
-$cities = \yii\helpers\ArrayHelper::getColumn($query, 'name');
+/* @var $cities array Список городов для поля локация*/
+/* @var $categories array Список категорий для поля категория*/
 
 ?>
 
@@ -63,7 +61,7 @@ $cities = \yii\helpers\ArrayHelper::getColumn($query, 'name');
                     'size' => '1'
                 ]
             ])
-                ->dropDownList(Categories::find()->select(['name', 'id'])->indexBy('id')->column())
+                ->dropDownList($categories)
                 ->hint('Выберите категорию') ?>
 
             <?= $form->field($model, 'files[]', [
@@ -80,7 +78,7 @@ $cities = \yii\helpers\ArrayHelper::getColumn($query, 'name');
             ])->fileInput()
             ?>
 
-            <?= $form->field($model, 'location', [
+            <?= $form->field($model, 'city', [
                 'template' => "{label}{input}<span>{hint}</span>",
                 'options' => [
                     'class' => 'field-container'

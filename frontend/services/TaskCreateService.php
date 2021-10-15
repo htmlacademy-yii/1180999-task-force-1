@@ -2,10 +2,12 @@
 
 namespace frontend\services;
 
+use frontend\models\Cities;
 use frontend\models\Files;
 use frontend\models\forms\TaskCreateForm;
 use frontend\models\Tasks;
 use frontend\models\TasksFiles;
+use frontend\services\api\GeoCoderApi;
 use Yii;
 use yii\web\UploadedFile;
 
@@ -32,6 +34,7 @@ class TaskCreateService
         $task->description = $this->form->description;
         $task->cost = $this->form->cost;
         $task->deadline = $this->form->deadline;
+        $task->city_id = $this->getCityID($this->form->city);
         $task->save();
 
         $this->uploadFiles($task);
@@ -74,5 +77,22 @@ class TaskCreateService
                 $taskFiles->save();
             }
         }
+    }
+
+    private function getCityID($name)
+    {
+        $address = new GeoCoderApi();
+        $geoData = $address->getData($name);
+        $cityId = Cities::findOne(['name' => $name]);
+        if (!$cityId) {
+            $record = new Cities();
+            $record->name = $geoData['city'] . $geoData['street'];
+            $record->latitude = $geoData['points']['latitude'];
+            $record->longitude = $geoData['points']['longitude'];
+            $record->save();
+
+            return $record->id;
+        }
+        return $cityId->id;
     }
 }

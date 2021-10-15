@@ -2,11 +2,17 @@
 
 namespace frontend\controllers;
 
-use yii\base\Controller;
+use frontend\services\api\GeoCoderApi;
+use yii\web\Controller;
 
 class TestController extends Controller
 {
-    public function actionIndex() {
-        return $this->render('index');
+
+    public function actionIndex()
+    {
+        $service = new GeoCoderApi();
+        $geoData = $service->getData('');
+
+        var_dump($geoData);
     }
 }
