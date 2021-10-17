@@ -69,7 +69,7 @@ use frontend\models\Files;
             <?php if ($task->status === Task::STATUS_IN_WORK || $task->status === Task::STATUS_NEW): ?>
 
                 <div class="content-view__action-buttons">
-                    <?php if ($task->status === Task::STATUS_NEW): ?>
+                    <?php if ($task->status === Task::STATUS_NEW && $task->user_id !== Yii::$app->user->getId()): ?>
                         <?php if (!in_array(Yii::$app->user->getId(), $executors)): ?>
                             <button class=" button button__big-color response-button open-modal"
                                     type="button" data-for="response-form">Откликнуться

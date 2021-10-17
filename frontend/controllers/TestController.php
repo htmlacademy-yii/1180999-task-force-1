@@ -2,17 +2,22 @@
 
 namespace frontend\controllers;
 
-use frontend\services\api\GeoCoderApi;
+use frontend\models\forms\SingUpForm;
 use yii\web\Controller;
+
 
 class TestController extends Controller
 {
-
     public function actionIndex()
     {
-        $service = new GeoCoderApi();
-        $geoData = $service->getData('');
+        $model = new SingUpForm();
 
-        var_dump($geoData);
+        if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
+            var_dump($model);
+        }
+
+        return $this->render('index',
+            compact('model')
+        );
     }
 }

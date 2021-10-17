@@ -6,7 +6,8 @@
 
 use frontend\models\Tasks;
 
-$address = "{$address['points']['latitude']}, {$address['points']['longitude']}";
+$points = "{$address['points']['latitude']}, {$address['points']['longitude']}";
+
 ?>
 
 <script type="text/javascript">
@@ -15,7 +16,7 @@ $address = "{$address['points']['latitude']}, {$address['points']['longitude']}"
     function init() {
 
         var myMap = new ymaps.Map("map", {
-                center: [<?=  $address ?>],
+                center: [<?=  $points ?>],
                 zoom: 17,
                 controls: ['zoomControl']
 
@@ -24,15 +25,15 @@ $address = "{$address['points']['latitude']}, {$address['points']['longitude']}"
             }),
 
             myPieChart = new ymaps.Placemark([
-                [<?= $address ?>]
+                [<?= $points ?>]
             ], );
 
         myMap.geoObjects
             // .add(myGeoObject)
 
-            .add(new ymaps.Placemark([<?= $address ?>], {
+            .add(new ymaps.Placemark([<?= $points ?>], {
                 balloonContent:
-                    "<?= $task->name ?>"
+                    "<?= $address['street'] ?>"
             }, {
                 preset: 'islands#icon',
                 iconColor: '#1e90fe'

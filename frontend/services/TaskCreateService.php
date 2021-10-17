@@ -7,6 +7,7 @@ use frontend\models\Files;
 use frontend\models\forms\TaskCreateForm;
 use frontend\models\Tasks;
 use frontend\models\TasksFiles;
+use frontend\models\Users;
 use frontend\services\api\GeoCoderApi;
 use Yii;
 use yii\web\UploadedFile;
@@ -34,7 +35,13 @@ class TaskCreateService
         $task->description = $this->form->description;
         $task->cost = $this->form->cost;
         $task->deadline = $this->form->deadline;
-        $task->city_id = $this->getCityID($this->form->city);
+
+        if (!$this->form->city) {
+            $task->city_id = Users::findOne(Yii::$app->user->id)->city_id;
+        } else {
+            $task->city_id = $this->getCityID($this->form->city);
+        }
+
         $task->save();
 
         $this->uploadFiles($task);
@@ -79,14 +86,20 @@ class TaskCreateService
         }
     }
 
-    private function getCityID($name)
+    /**
+     * Функция находит координаты объекта по его адресу,
+     * записывает объект в БД и возвращает ID
+     * @param $city
+     * @return int
+     */
+    private function getCityID($city): int
     {
         $address = new GeoCoderApi();
-        $geoData = $address->getData($name);
-        $cityId = Cities::findOne(['name' => $name]);
+        $geoData = $address->getData($city);
+        $cityId = Cities::findOne(['name' => $city]);
         if (!$cityId) {
             $record = new Cities();
-            $record->name = $geoData['city'] . $geoData['street'];
+            $record->name = $geoData['city'] . ', ' . $geoData['street'];
             $record->latitude = $geoData['points']['latitude'];
             $record->longitude = $geoData['points']['longitude'];
             $record->save();

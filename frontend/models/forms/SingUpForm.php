@@ -3,6 +3,7 @@
 
 namespace frontend\models\forms;
 
+use frontend\models\Cities;
 use yii\base\Model;
 
 /**
@@ -16,6 +17,8 @@ class SingUpForm extends Model
     public $name;
     public $city;
     public $password;
+
+    private $_city;
 
     /**
      * @return string[]
@@ -63,7 +66,29 @@ class SingUpForm extends Model
                 'password', 'string',
                 'min' => 8,
                 'tooShort' => 'Длина пароля от 8 символов'
-            ]
+            ],
+             'city' => ['city', 'forCity']
         ];
+    }
+
+    /**
+     * City field validation
+     */
+    public function forCity()
+    {
+        $this->_city = Cities::findOne(['name' => $this->city]);
+
+        if (!$this->_city) {
+            $this->addError('city', 'Город не найден');
+        }
+    }
+
+    /**
+     * Get city id
+     * @return int
+     */
+    public function getCityId(): int
+    {
+        return $this->_city->id;
     }
 }

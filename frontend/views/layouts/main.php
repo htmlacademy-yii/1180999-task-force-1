@@ -27,7 +27,6 @@ use yii\helpers\Url;
 <body>
 
 <?php $this->beginBody() ?>
-
 <div class="table-layout">
     <header class="page-header">
         <div class="main-container page-header__container">
@@ -147,8 +146,9 @@ use yii\helpers\Url;
                             <a href="#">Настройки</a>
                         </li>
                         <li>
-                            <?= Html::a('Выход', '/site/logout', [
-                                'data' => ['method' => 'post']
+                            <?= Html::a('Выход',
+                                Url::to(['site/logout']),
+                                ['data' => ['method' => 'post']
                             ]) ?>
                         </li>
                     </ul>
@@ -222,8 +222,7 @@ use yii\helpers\Url;
 </div>
 <div class="overlay"></div>
 <script src="/js/main.js"></script>
-<script src="/js/messenger.js"></script>
-<!--<script src="/js/ymap.js"></script>-->
+<!--<script src="/js/messenger.js"></script>-->
 <?php $this->endBody(); ?>
 
 </body>

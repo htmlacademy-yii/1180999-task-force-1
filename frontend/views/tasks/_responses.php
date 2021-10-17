@@ -5,6 +5,7 @@
  */
 
 use frontend\models\Responses;
+use frontend\widgets\rating\RatingWidget;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -21,9 +22,8 @@ use yii\helpers\Url;
                     <div class="feedback-card__top--name">
                         <p><a href="<?= Url::to(['users/view', 'id' => $response->executor_id]) ?>"
                               class="link-regular"><?= $response->executor->name ?></a></p>
-                        <span></span><span></span><span></span><span></span><span
-                                class="star-disabled"></span>
-                        <b>4.25</b>
+                        <?= RatingWidget::widget(['rating' => $response->executor->calcRatingScore()]) ?>
+
                     </div>
                     <span class="new-task__time"><?= Yii::$app->formatter->format($response->dt_add, 'relativeTime') ?></span>
                 </div>
