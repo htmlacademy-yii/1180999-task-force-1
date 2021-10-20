@@ -5,6 +5,7 @@
  */
 
 use frontend\models\Cities;
+use yii\jui\AutoComplete;
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
 
@@ -46,7 +47,17 @@ use yii\helpers\Html;
                         <span class='registration__text-error'>{error}</span>",
                     'inputOptions' => ['class' => 'multiple-select input town-select registration-town'],
                     'options' => ['class' => 'field-container field-container--registration']
-                ])->dropDownList(Cities::find()->select(['name', 'id'])->indexBy('id')->column()) ?>
+                ])->widget(
+                    AutoComplete::className(), [
+                    'clientOptions' => [
+                        'source' => \yii\helpers\ArrayHelper::getColumn(Cities::find()->all(), 'name')
+                    ],
+                    'options' => [
+                        'class' => 'input-navigation input-middle input',
+                        'placeholder' => 'Санкт-Петербург, Калининский район',
+                        'type' => 'search',
+                    ]
+                ]) ?>
 
                 <?= $form->field($model, 'password', [
                     'template' => "

@@ -1,15 +1,23 @@
 <?php
+/**
+ * @var SingUpForm $model
+ */
 
-$model = new \frontend\services\TaskGetService();
-$task = $model->getTask(176);
+use frontend\models\forms\SingUpForm;
 
-foreach ($task->reviews as $review) {
-    print "Задача: " . $review->task->name . "<br>";
-    print "Отзыв: " . $review->text . "<br>";
-    print "Оценка (1-5): " . $review->score . "<br>";
-    print "Отправлено: " . Yii::$app->formatter->format($review->dt_add, 'relativeTime') . "<br>";
-}
+?>
 
-foreach ($task->tasksFiles as $files) {
-    var_dump($files);
-}
+<?php $form = \yii\widgets\ActiveForm::begin([
+    'options' => [
+        'data' => ['pjax' => true]
+    ]
+]) ?>
+    <?= $form->field($model, 'name') ?>
+    <?= $form->field($model, 'email') ?>
+<?php \yii\widgets\Pjax::begin() ?>
+    <?= $form->field($model, 'city') ?>
+<?php \yii\widgets\Pjax::end() ?>
+    <?= $form->field($model, 'password') ?>
+<?= \yii\helpers\Html::submitButton('send') ?>
+<?php \yii\widgets\ActiveForm::end()?>
+

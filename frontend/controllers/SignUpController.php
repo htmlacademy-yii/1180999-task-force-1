@@ -5,13 +5,15 @@ namespace frontend\controllers;
 use frontend\models\Cities;
 use frontend\models\forms\SingUpForm;
 use frontend\models\Users;
+use frontend\services\api\GeoCoderApi;
 use Yii;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
 use yii\web\Controller;
 
 /**
- * Контроллер формы регистрации
+ * Контроллер регистрации пользователей
+ * После проверки введенных данных авторизует и перенаправляет на главную страницу
  * Class SignUpController
  * @package frontend\controllers
  */
@@ -49,15 +51,18 @@ class SignUpController extends Controller
         $model = new SingUpForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
             $user = new Users();
             $user->dt_add = date('Y-m-d h-i-s');
             $user->name = $model->name;
             $user->email = $model->email;
-            $user->city_id = $model->city;
+            $user->city_id = $model->getCityId();
             $user->password = Yii::$app->getSecurity()->generatePasswordHash($model->password);
             $user->save();
 
             if ($user->save()) {
+
+                Yii::$app->user->login(Users::findIdentity($user->id));
                 $this->goHome();
             }
         }
@@ -65,4 +70,5 @@ class SignUpController extends Controller
             'model' => $model
         ]);
     }
+
 }

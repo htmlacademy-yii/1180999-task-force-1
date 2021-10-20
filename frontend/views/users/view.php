@@ -6,6 +6,7 @@
 
 use frontend\models\Reviews;
 use frontend\models\Users;
+use frontend\widgets\timeFormatter\TimeFormatterWidget;
 use yii\helpers\Url;
 
 ?>
@@ -25,7 +26,10 @@ use yii\helpers\Url;
                     <b class="done-task">Выполнил 5 заказов</b><b class="done-review">Получил 6 отзывов</b>
                 </div>
                 <div class="content-view__headline user__card-bookmark user__card-bookmark--current">
-                    <span>Был на сайте <?= $user->last_active_time ?></span>
+                    <span><?= TimeFormatterWidget::widget([
+                            'time' => $user->last_active_time,
+                            'format' => TimeFormatterWidget::USER_FORMAT
+                        ])?></span>
                     <a href="#"><b></b></a>
                 </div>
             </div>
@@ -56,7 +60,7 @@ use yii\helpers\Url;
             </div>
         </div>
         <div class="content-view__feedback">
-            <h2>Отзывы<span> (<?= count($user->reviews) ?>)</span></h2>
+            <h2>Отзывы<span> (<?= count($user->reviewsByExecuted) ?>)</span></h2>
             <div class="content-view__feedback-wrapper reviews-wrapper">
 
                 <?php foreach (Reviews::find()->where(['executor_id' => $user->id])->orderBy('dt_add DESC')->all() as $review): ?>

@@ -2,11 +2,16 @@
 
 use frontend\models\Categories;
 use yii\helpers\Html;
+use yii\jui\AutoComplete;
 use yii\widgets\ActiveForm;
+
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\forms\TaskCreateForm */
 /* @var $form ActiveForm */
+/* @var $cities array Список городов для поля локация*/
+/* @var $categories array Список категорий для поля категория*/
+
 ?>
 
 <div class="main-container page-container">
@@ -56,7 +61,7 @@ use yii\widgets\ActiveForm;
                     'size' => '1'
                 ]
             ])
-                ->dropDownList(Categories::find()->select(['name', 'id'])->indexBy('id')->column())
+                ->dropDownList($categories)
                 ->hint('Выберите категорию') ?>
 
             <?= $form->field($model, 'files[]', [
@@ -73,18 +78,22 @@ use yii\widgets\ActiveForm;
             ])->fileInput()
             ?>
 
-            <?= $form->field($model, 'location', [
-                'template' => "{label}\n{input}\n<span>{hint}</span>",
+            <?= $form->field($model, 'city', [
+                'template' => "{label}{input}<span>{hint}</span>",
                 'options' => [
                     'class' => 'field-container'
-                ],
-                'inputOptions' => [
-                    'type' => 'search',
-                    'class' => 'input-navigation input-middle input',
-                    'placeholder' => 'Санкт-Петербург, Калининский район'
                 ]
-            ])
-                ->hint('Укажите адрес исполнения, если задание требует присутствия') ?>
+            ])->widget(
+                AutoComplete::className(), [
+                'clientOptions' => [
+                    'source' => $cities
+                ],
+                'options' => [
+                    'class' => 'input-navigation input-middle input',
+                    'placeholder' => 'Санкт-Петербург, Калининский район',
+                    'type' => 'search',
+                ]
+            ])->hint('Укажите адрес исполнения, если задание требует присутствия') ?>
 
             <div class="create__price-time">
                 <?= $form->field($model, 'cost', [

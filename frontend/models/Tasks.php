@@ -14,7 +14,7 @@ use Yii;
  * @property int $user_id
  * @property int|null $executor_id
  * @property int $category_id
- * @property int|null $location
+ * @property int|null $city_id
  * @property string|null $status
  * @property string $name
  * @property string $description
@@ -23,7 +23,7 @@ use Yii;
  * @property Responses[] $responses
  * @property Reviews[] $reviews
  * @property Categories $category
- * @property Cities $location0
+ * @property Cities $city
  * @property Users $executor
  * @property Users $user
  * @property TasksFiles[] $tasksFiles
@@ -47,11 +47,11 @@ class Tasks extends \yii\db\ActiveRecord
         return [
             [['user_id', 'category_id', 'name', 'description'], 'required'],
             [['dt_add', 'deadline'], 'safe'],
-            [['user_id', 'executor_id', 'category_id', 'location', 'cost'], 'integer'],
+            [['user_id', 'executor_id', 'category_id', 'city_id', 'cost'], 'integer'],
             [['description'], 'string'],
             [['status', 'name'], 'string', 'max' => 255],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['category_id' => 'id']],
-            [['location'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['location' => 'id']],
+            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
             [['executor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['executor_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -69,7 +69,7 @@ class Tasks extends \yii\db\ActiveRecord
             'user_id' => 'User ID',
             'executor_id' => 'Executor ID',
             'category_id' => 'Category ID',
-            'location' => 'Location',
+            'city_id' => 'Location',
             'status' => 'Status',
             'name' => 'Name',
             'description' => 'Description',
@@ -108,13 +108,13 @@ class Tasks extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Location0]].
+     * Gets query for [[Location]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getLocation0()
+    public function getCity()
     {
-        return $this->hasOne(Cities::className(), ['id' => 'location']);
+        return $this->hasOne(Cities::className(), ['id' => 'city_id']);
     }
 
     /**

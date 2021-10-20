@@ -1,11 +1,13 @@
 <?php
 /**
- * @var object $task Данные задачи
+ * @var Tasks $task Данные задачи
  * @var object $executors Данные задачи
  * @var object $responseForm Форма добавления отклика
  * @var object $completionForm Модель формы завершения задачи
+ * @var array $address Город, адрес, координаты
  */
 
+use frontend\models\Tasks;
 use taskforce\Task;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -48,26 +50,26 @@ use frontend\models\Files;
                         ); ?>
                     <?php endforeach; ?>
                 </div>
+                <?php if (!empty($address)): ?>
                 <div class="content-view__location">
                     <h3 class="content-view__h3">Расположение</h3>
                     <div class="content-view__location-wrapper">
-                        <div class="content-view__map">
-                            <a href="#"><img src="../img/map.jpg" width="361" height="292"
-                                             alt="Москва, Новый арбат, 23 к. 1"></a>
+                        <div class="content-view__map" id="map" style="width: 600px; height: 400px">
                         </div>
                         <div class="content-view__address">
-                            <span class="address__town">Москва</span><br>
-                            <span>Новый арбат, 23 к. 1</span>
-                            <p>Вход под арку, код домофона 1122</p>
+
+                            <span class="address__town"><?= $address['city']?></span><br>
+                            <span><?= $address['street']?></span>
                         </div>
                     </div>
                 </div>
+                <?php endif; ?>
             </div>
             <?php if (!Yii::$app->user->isGuest): ?>
             <?php if ($task->status === Task::STATUS_IN_WORK || $task->status === Task::STATUS_NEW): ?>
 
                 <div class="content-view__action-buttons">
-                    <?php if ($task->status === Task::STATUS_NEW): ?>
+                    <?php if ($task->status === Task::STATUS_NEW && $task->user_id !== Yii::$app->user->getId()): ?>
                         <?php if (!in_array(Yii::$app->user->getId(), $executors)): ?>
                             <button class=" button button__big-color response-button open-modal"
                                     type="button" data-for="response-form">Откликнуться
@@ -137,3 +139,8 @@ use frontend\models\Files;
             ]) ?>
         </section>
 </div>
+
+<?= $this->render('_map', [
+        'address' => $address,
+        'task' => $task
+]) ?>

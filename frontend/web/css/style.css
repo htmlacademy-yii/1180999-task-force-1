@@ -538,7 +538,8 @@ footer {
   font-size: 13px;
   padding-left: 19px; }
 
-.new-task__card span::before {
+.new-task__card span::before
+{
   position: absolute;
   content: "";
   width: 12px;
@@ -2637,3 +2638,8 @@ footer {
 .has-error span {
   color: #FF116E; }
 /*# sourceMappingURL=style.css.map */
+
+.separator {
+  border-bottom: 2px solid lightgrey !important;
+  margin: 20px 0 20px;
+}

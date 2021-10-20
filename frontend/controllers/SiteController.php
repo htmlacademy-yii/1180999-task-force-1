@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use frontend\models\Tasks;
 use Yii;
 use frontend\models\Users;
+use yii\console\Response;
 use yii\filters\AccessControl;
 use frontend\models\forms\LoginForm;
 
@@ -85,8 +86,8 @@ class SiteController extends SecuredController
     {
         if (!Yii::$app->user->isGuest) {
             Yii::$app->user->logout();
-            return $this->goHome();
         }
+        $this->goHome();
     }
 
     /**

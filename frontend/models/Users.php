@@ -107,9 +107,9 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * Gets query for [[Reviews]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery|Reviews[]
      */
-    public function getReviews()
+    public function getReviewsByExecuted()
     {
         return $this->hasMany(Reviews::className(), ['executor_id' => 'id']);
     }
@@ -119,7 +119,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getReviews0()
+    public function getReviewsByCreated()
     {
         return $this->hasMany(Reviews::className(), ['user_id' => 'id']);
     }
@@ -224,4 +224,19 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
         return \Yii::$app->security->validatePassword($password, $this->password);
     }
 
+    public function calcRatingScore()
+    {
+        $countReviews = 0;
+
+        $sum = 0;
+        foreach ($this->reviewsByExecuted as $review) {
+            $sum = $sum + $review->score;
+            $countReviews++;
+        }
+        if ($countReviews === 0) {
+            return 0;
+        }
+
+        return $sum/count($this->reviewsByExecuted);
+    }
 }

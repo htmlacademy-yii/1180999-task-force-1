@@ -3,14 +3,18 @@
 namespace frontend\controllers;
 
 use frontend\models\Categories;
+use frontend\models\Cities;
 use frontend\models\forms\TaskFilterForm;
 use frontend\models\Responses;
 use frontend\models\TasksSearch;
 use frontend\models\Users;
+use frontend\services\api\GeoCoderApi;
 use frontend\services\TaskGetService;
 use frontend\services\TaskCompletionService;
 use frontend\services\TaskResponseService;
+use GuzzleHttp\Exception\GuzzleException;
 use yii\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\filters\AccessControl;
 use Yii;
@@ -18,6 +22,7 @@ use frontend\models\Tasks;
 use taskforce\Task;
 use frontend\services\TaskCreateService;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class TasksController extends SecuredController
 {
@@ -107,18 +112,20 @@ class TasksController extends SecuredController
     /**
      * Показ страницы задачи
      * @param $id
-     * @return string|\yii\web\Response
+     * @return string|Response
      * @throws NotFoundHttpException
      */
     public function actionView($id)
     {
+
         $getTaskService = new TaskGetService();
-
         $task = $getTaskService->getTask($id);
-
         if (!$task) {
             throw new NotFoundHttpException("Пользователь с id $id не найден");
         }
+        $city = $task->city->name ?? '';
+
+        $geoData = new GeoCoderApi();
 
         $respondService = new TaskResponseService();
         $respondId = $respondService->execute(Yii::$app->request->post(), $task->id);
@@ -139,16 +146,21 @@ class TasksController extends SecuredController
             'task' => $task,
             'executors' => $getTaskService->getExecutors(),
             'responseForm' => $respondService->getForm(),
-            'completionForm' => $TaskCompletionService->getForm()
-        ]);
+            'completionForm' => $TaskCompletionService->getForm(),
+            'address' => $geoData->getData($city)
+            ]
+        );
     }
 
     /**
      * Действие создания новой задачи
      * @return string
      */
-    public function actionCreate(): string
+    public
+    function actionCreate(): string
     {
+        $categories = Categories::find()->select(['name', 'id'])->indexBy('id')->column();
+        $cities = ArrayHelper::getColumn(Cities::find()->all(), 'name');
         $service = new TaskCreateService();
         $taskId = $service->execute(Yii::$app->request->post());
         if ($taskId) {
@@ -157,6 +169,8 @@ class TasksController extends SecuredController
 
         return $this->render('create', [
             'model' => $service->getForm(),
+            'cities' => $cities,
+            'categories' => $categories
         ]);
     }
 
@@ -164,7 +178,8 @@ class TasksController extends SecuredController
      * Действие помечает отклик как отказанный
      * @param $id int Id отклика
      */
-    public function actionRefuse(int $id)
+    public
+    function actionRefuse(int $id)
     {
         $response = Responses::findOne($id);
         $response->refuse = Task::ACTION_STATUS_MAP['Refuse'];
@@ -177,7 +192,8 @@ class TasksController extends SecuredController
      * Действие запуска задачи
      * @param int $id
      */
-    public function actionAccept(int $id)
+    public
+    function actionAccept(int $id)
     {
         $response = Responses::findOne($id);
         $executor = Users::findOne($response->executor_id);
@@ -197,7 +213,8 @@ class TasksController extends SecuredController
      * Действие отмены задачи
      * @param int $id
      */
-    public function actionCancel(int $id)
+    public
+    function actionCancel(int $id)
     {
         $task = Tasks::findOne($id);
         $task->status = Task::STATUS_FAIL;

@@ -4,6 +4,7 @@
  * @var $model Tasks;
  */
 
+use frontend\widgets\timeFormatter\TimeFormatterWidget;
 use yii\helpers\Url;
 use frontend\models\Tasks;
 
@@ -22,6 +23,9 @@ use frontend\models\Tasks;
         <?= mb_strimwidth($model->description, 0, 90, "..."); ?>
     </p>
     <b class="new-task__price new-task__price--<?= $model->category->code?>"><?= $model->cost ? $model->cost.'₽': ''?><b> </b></b>
-    <p class="new-task__place"><?= $model->location ?? 'Санкт-Петербург, Центральный район' ?></p>
-    <span class="new-task__time"><?= Yii::$app->formatter->format($model->dt_add, 'relativeTime') ?></span>
+    <p class="new-task__place"><?= $model->city->name ?? '<br>'?></p>
+    <?= TimeFormatterWidget::widget([
+            'time' => $model->dt_add,
+            'format' => TimeFormatterWidget::TASK_FORMAT
+    ]) ?>
 </div>
