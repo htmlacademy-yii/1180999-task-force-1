@@ -53,7 +53,6 @@ class SignUpController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
             $user = new Users();
-            $user->dt_add = date('Y-m-d h-i-s');
             $user->name = $model->name;
             $user->email = $model->email;
             $user->city_id = $model->getCityId();
