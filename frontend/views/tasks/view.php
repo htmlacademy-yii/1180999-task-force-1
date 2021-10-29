@@ -120,7 +120,7 @@ use frontend\models\Files;
         </div>
         <div id="chat-container">
             <!--                    добавьте сюда атрибут task с указанием в нем id текущего задания-->
-            <chat class="connect-desk__chat"></chat>
+            <chat class="connect-desk__chat" task="<?php echo $task->id?>"></chat>
         </div>
         <section class="modal response-form form-modal" id="response-form">
             <?= $this->render('responseForm', [
@@ -144,3 +144,5 @@ use frontend\models\Files;
         'address' => $address,
         'task' => $task
 ]) ?>
+
+<?php $this->registerJsFile('/js/messenger.js'); ?>

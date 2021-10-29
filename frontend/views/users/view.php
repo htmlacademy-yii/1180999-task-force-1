@@ -76,7 +76,7 @@ use yii\helpers\Url;
                                 <p class="link-name link"><a href="<?= Url::to(['users/view', 'id' => $review->user_id])?>" class="link-regular">
                                         <?= $review->user->name ?></a></p>
                                 <p class="review-text">
-                                    <?= $review->text ?>
+                                    <?= $review->message ?>
                                 </p>
                             </div>
                             <div class="card__review-rate">

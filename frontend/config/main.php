@@ -17,8 +17,7 @@ return [
     'modules' => [
         'api' => [
             'class' => 'frontend\api\items\Module'
-        ],
-
+        ]
     ],
     'components' => [
         'on beforeAction' => function(){
@@ -75,7 +74,8 @@ return [
                 'accept/<id:\d+>' => 'tasks/accept',
                 'cancel/<id:\d+>' => 'tasks/cancel',
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/tasks'],
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/users']
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/users'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['api/messages'], 'pluralize' => false],
             ],
         ],
 

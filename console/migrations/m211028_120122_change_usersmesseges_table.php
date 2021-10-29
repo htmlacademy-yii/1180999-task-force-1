@@ -3,16 +3,16 @@
 use yii\db\Migration;
 
 /**
- * Class m211015_193043_change_tasks_table
+ * Class m211028_120122_change_usersmesseges_table
  */
-class m211015_193043_change_tasks_table extends Migration
+class m211028_120122_change_usersmesseges_table extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
-        $this->renameColumn('tasks', 'location', 'city_id');
+        $this->renameColumn('users_messages', 'text', 'message');
     }
 
     /**
@@ -20,7 +20,9 @@ class m211015_193043_change_tasks_table extends Migration
      */
     public function safeDown()
     {
-        $this->renameColumn('tasks', 'city_id', 'location');
+        echo "m211028_120122_change_usersmesseges_table cannot be reverted.\n";
+
+        return false;
     }
 
     /*
@@ -32,7 +34,7 @@ class m211015_193043_change_tasks_table extends Migration
 
     public function down()
     {
-        echo "m211015_193043_change_tasks_table cannot be reverted.\n";
+        echo "m211028_120122_change_usersmesseges_table cannot be reverted.\n";
 
         return false;
     }

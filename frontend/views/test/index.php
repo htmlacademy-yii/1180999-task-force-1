@@ -1,23 +1,24 @@
 <?php
 /**
  * @var SingUpForm $model
+ * @var \frontend\models\UsersMessages $data
+ * @var \frontend\models\Tasks $task
  */
 
 use frontend\models\forms\SingUpForm;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 ?>
+<div class="container">
+    <div id="chat-container">
+        <!--                    добавьте сюда атрибут task с указанием в нем id текущего задания-->
+        <chat class="connect-desk__chat" task="<?php echo $task->id?>"></chat>
+    </div>
+</div>
 
-<?php $form = \yii\widgets\ActiveForm::begin([
-    'options' => [
-        'data' => ['pjax' => true]
-    ]
-]) ?>
-    <?= $form->field($model, 'name') ?>
-    <?= $form->field($model, 'email') ?>
-<?php \yii\widgets\Pjax::begin() ?>
-    <?= $form->field($model, 'city') ?>
-<?php \yii\widgets\Pjax::end() ?>
-    <?= $form->field($model, 'password') ?>
-<?= \yii\helpers\Html::submitButton('send') ?>
-<?php \yii\widgets\ActiveForm::end()?>
+
+
+<?php $this->registerJsFile('/js/messenger.js'); ?>
 
