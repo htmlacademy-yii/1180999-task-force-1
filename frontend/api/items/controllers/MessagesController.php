@@ -14,7 +14,7 @@ class MessagesController extends BaseApiController
     public function actions()
     {
         $actions = parent::actions();
-        unset($actions['index'], $actions['create']);
+        unset($actions['index']);
 
         return $actions;
     }
@@ -25,30 +25,23 @@ class MessagesController extends BaseApiController
             return UsersMessages::find()->where(['task_id' => $task_id])->all();
         }
 
-
-        return null;
-    }
-
-    public function actionCreate()
-    {
         if (\Yii::$app->request->isPost) {
             $messageBody = json_decode(\Yii::$app->getRequest()->getRawBody(), true);
 
             $message = new UsersMessages();
             $message->dt_add = date('Y-m-d H:i:s');
             $message->sender_id = \Yii::$app->user->identity->getId();
-//            $message->sender_id = 1;
             $message->recipient_id = Tasks::findOne($messageBody['task_id'])->user->getId();
-//            $message->recipient_id = 1;
             $message->message = $messageBody['message'];
             $message->task_id = $messageBody['task_id'];
             $message->is_read = false;
             $message->save();
 
             \Yii::$app->getResponse()->setStatusCode(201);
-//            return $message;
+            return $message;
         }
 
         return null;
     }
+
 }
