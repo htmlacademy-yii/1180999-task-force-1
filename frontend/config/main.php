@@ -73,9 +73,10 @@ return [
                 'refuse/<id:\d+>' => 'tasks/refuse',
                 'accept/<id:\d+>' => 'tasks/accept',
                 'cancel/<id:\d+>' => 'tasks/cancel',
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/tasks'],
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/users'],
-                ['class' => 'yii\rest\UrlRule', 'controller' => ['api/messages'], 'pluralize' => false],
+                ['class' => 'yii\rest\UrlRule',
+                    'controller' => ['api/messages'],
+                    'pluralize' => false
+                ],
             ],
         ],
 

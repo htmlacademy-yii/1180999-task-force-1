@@ -118,10 +118,12 @@ use frontend\models\Files;
                     профиль</a>
             </div>
         </div>
+        <?php if ($task->executor_id === \Yii::$app->user->identity->getId() || $task->user_id === \Yii::$app->user->identity->getId()): ?>
         <div id="chat-container">
             <!--                    добавьте сюда атрибут task с указанием в нем id текущего задания-->
             <chat class="connect-desk__chat" task="<?php echo $task->id?>"></chat>
         </div>
+        <?php endif; ?>
         <section class="modal response-form form-modal" id="response-form">
             <?= $this->render('responseForm', [
                 'responseForm' => $responseForm
