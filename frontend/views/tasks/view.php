@@ -8,6 +8,7 @@
  */
 
 use frontend\models\Tasks;
+use frontend\models\UsersMessages;
 use taskforce\Task;
 use yii\helpers\Html;
 use yii\helpers\Url;

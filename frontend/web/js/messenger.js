@@ -6,7 +6,7 @@ Vue.component('chat', {
              <div class="chat__overflow">
                <div class="chat__message" v-for="item in messages" :class="{'chat__message--out': item.is_mine}">
                 <p class="chat__message-time">{{ item.dt_add }}</p>
-                <p class="chat__message-text">{{ item.message }}</p>
+                <p class="chat__message-text"><b>{{ item.sender }}</b><br>{{ item.message }}</p>
                </div>
               </div>
               <p class="chat__your-message">Ваше сообщение</p>

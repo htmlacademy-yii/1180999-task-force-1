@@ -103,4 +103,18 @@ class UsersMessages extends \yii\db\ActiveRecord
         }
         return true;
     }
+
+    public function fields()
+    {
+        return [
+            'dt_add',
+            'sender_id',
+            'recipient_id',
+            'message',
+            'sender' => function() {
+                return $this->sender->name;
+                }
+        ];
+
+    }
 }
