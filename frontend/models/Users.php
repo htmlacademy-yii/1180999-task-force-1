@@ -241,13 +241,12 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @param bool $insert
-     * @return bool|void
+     * @return bool
      */
-    public function beforeSave($insert)
+    public function beforeValidate(): bool
     {
-        parent::beforeSave($insert);
-        if ($this->isNewRecord) {
+        parent::beforeValidate();
+        if (!$this->dt_add) {
             $this->dt_add = date('Y-m-d H:i:s');
         }
         return true;

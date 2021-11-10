@@ -7,9 +7,11 @@ use frontend\models\forms\SingUpForm;
 use frontend\models\Users;
 use frontend\services\api\GeoCoderApi;
 use Yii;
+use yii\base\Exception;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 /**
  * Контроллер регистрации пользователей
@@ -59,11 +61,12 @@ class SignUpController extends Controller
             $user->password = Yii::$app->getSecurity()->generatePasswordHash($model->password);
             $user->save();
 
-            if ($user->save()) {
-
-                Yii::$app->user->login(Users::findIdentity($user->id));
-                $this->goHome();
+            if (!$user->save()) {
+                throw new Exception('Не удалось создать пользователя');
             }
+
+            Yii::$app->user->login(Users::findIdentity($user->id));
+            $this->goHome();
         }
         return $this->render('index', [
             'model' => $model
