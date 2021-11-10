@@ -104,16 +104,26 @@ class UsersMessages extends \yii\db\ActiveRecord
         return true;
     }
 
-    public function fields()
+    /**
+     * @return array
+     */
+    public function fields(): array
     {
         return [
-            'dt_add',
+            'dt_add' => function() {
+                return \Yii::$app->formatter->format($this->dt_add, 'relativeTime');
+            },
             'sender_id',
             'recipient_id',
             'message',
             'sender' => function() {
                 return $this->sender->name;
+                },
+            'is_mine' => function() {
+                if ($this->sender_id === \Yii::$app->user->getId()) {
+                    return 1;
                 }
+            }
         ];
 
     }

@@ -8,12 +8,10 @@
  */
 
 use frontend\models\Tasks;
-use frontend\models\UsersMessages;
 use taskforce\Task;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use frontend\models\Files;
-
 ?>
 
 <div class="main-container page-container">
@@ -119,12 +117,21 @@ use frontend\models\Files;
                     профиль</a>
             </div>
         </div>
-        <?php if ($task->executor_id === \Yii::$app->user->identity->getId() || $task->user_id === \Yii::$app->user->identity->getId()): ?>
+
+<!--        --><?php //if ($task->status === Task::STATUS_IN_WORK &&
+//                  $task->executor_id && $task->executor_id === \Yii::$app->user->identity->getId() &&
+//                  $task->user_id === \Yii::$app->user->identity->getId()): ?>
+
+        <?php if ($task->status === Task::STATUS_IN_WORK
+                    && $task->executor_id === \Yii::$app->user->getId()
+                    || $task->user_id === \Yii::$app->user->getId()): ?>
+
         <div id="chat-container">
-            <!--                    добавьте сюда атрибут task с указанием в нем id текущего задания-->
             <chat class="connect-desk__chat" task="<?php echo $task->id?>"></chat>
         </div>
+
         <?php endif; ?>
+
         <section class="modal response-form form-modal" id="response-form">
             <?= $this->render('responseForm', [
                 'responseForm' => $responseForm

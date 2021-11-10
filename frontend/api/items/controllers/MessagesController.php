@@ -32,6 +32,7 @@ class MessagesController extends BaseApiController
             if (!$task_id) {
                 throw new ForbiddenHttpException();
             }
+
             return UsersMessages::find()->where(['task_id' => $task_id])->all();
         }
     }
