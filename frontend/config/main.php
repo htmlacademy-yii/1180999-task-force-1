@@ -14,6 +14,11 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
+    'modules' => [
+        'api' => [
+            'class' => 'frontend\api\items\Module'
+        ]
+    ],
     'components' => [
         'on beforeAction' => function(){
             if(!Yii::$app->user->isGuest){
@@ -51,7 +56,6 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-
         'urlManager' => [
             'enablePrettyUrl' => true,
             'enableStrictParsing' => true,
@@ -69,15 +73,16 @@ return [
                 'refuse/<id:\d+>' => 'tasks/refuse',
                 'accept/<id:\d+>' => 'tasks/accept',
                 'cancel/<id:\d+>' => 'tasks/cancel',
-                [
-                    'class' => 'yii\rest\UrlRule',
-                    'controller' => 'api',
+                'refusal/<id:\d+>' => 'tasks/refusal',
+                ['class' => 'yii\rest\UrlRule',
+                    'controller' => ['api/messages'],
                     'pluralize' => false
-                ]
+                ],
             ],
         ],
 
     ],
     'params' => $params,
+
 ];
 

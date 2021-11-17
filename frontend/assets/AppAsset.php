@@ -15,6 +15,8 @@ class AppAsset extends AssetBundle
         'css/site.css',
     ];
     public $js = [
+        'js/messenger.js',
+        'js/main.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

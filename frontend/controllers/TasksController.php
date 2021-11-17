@@ -43,7 +43,8 @@ class TasksController extends SecuredController
                             'cancel',
                             'response',
                             'refuse',
-                            'accept'
+                            'accept',
+                            'refusal'
                         ],
                         'allow' => true,
                         'roles' => ['@']
@@ -178,8 +179,7 @@ class TasksController extends SecuredController
      * Действие помечает отклик как отказанный
      * @param $id int Id отклика
      */
-    public
-    function actionRefuse(int $id)
+    public function actionRefuse(int $id)
     {
         $response = Responses::findOne($id);
         $response->refuse = Task::ACTION_STATUS_MAP['Refuse'];
@@ -210,20 +210,28 @@ class TasksController extends SecuredController
     }
 
     /**
-     * Действие отмены задачи
+     * Действие отказа от задачи
      * @param int $id
      */
-    public
-    function actionCancel(int $id)
+    public function actionRefusal(int $id)
     {
         $task = Tasks::findOne($id);
         $task->status = Task::STATUS_FAIL;
         $task->save();
 
-        $user = Users::findOne($task->user_id);
+        $user = Users::findOne($task->executor_id);
         $user->failed_count++;
         $user->save();
 
+        $this->redirect("/task/$task->id");
+    }
+
+    public function actionCancel(int $id)
+    {
+        $task = Tasks::findOne($id);
+        $task->status = Task::STATUS_FAIL;
+        $task->save();
+        Yii::$app->session->setFlash('taskMessage', "Задача отменена");
         $this->redirect("/task/$task->id");
     }
 }

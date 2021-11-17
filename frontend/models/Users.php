@@ -239,4 +239,26 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
 
         return $sum/count($this->reviewsByExecuted);
     }
+
+    /**
+     * @return bool
+     */
+    public function beforeValidate(): bool
+    {
+        parent::beforeValidate();
+        if (!$this->dt_add) {
+            $this->dt_add = date('Y-m-d H:i:s');
+        }
+        return true;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function fields()
+    {
+        return [
+            'id', 'name', 'email'
+        ];
+    }
 }

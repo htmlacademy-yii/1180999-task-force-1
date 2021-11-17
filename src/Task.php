@@ -1,4 +1,5 @@
 <?php
+
 namespace taskforce;
 
 use taskforce\actions\AbstractAction;
@@ -18,6 +19,7 @@ class Task
     const STATUS_IN_WORK = 'В работе';
     const STATUS_SUCCESS = 'Выполнено';
     const STATUS_FAIL = 'Провалено';
+    const STATUS_COMPLETE = 'Завершено';
 
     const ACTION_STATUS_MAP = [
         'Cancel' => self::STATUS_CANCEL,

@@ -251,8 +251,12 @@
           </div>
         </div>
         <div id="chat-container">
-          <!--                    добавьте сюда атрибут task с указанием в нем id текущего задания-->
-          <chat class="connect-desk__chat"></chat>
+          <div class="connect-desk__chat">
+            <h3>Переписка</h3>
+            <div class="chat__overflow"></div>
+            <p class="chat__your-message">Ваше сообщение</p>
+            <?= $this->render('_messengerForm') ?>
+          </div>
         </div>
       </section>
     </div>
