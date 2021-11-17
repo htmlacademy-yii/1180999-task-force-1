@@ -129,7 +129,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="header__account">
                     <a class="header__account-photo">
-                        <img src="../img/user-photo.png"
+                        <img src="<?= $user->avatarFile->path ?? '/img/user-man.jpg' ?>"
                              width="43" height="44"
                              alt="Аватар пользователя">
                     </a>

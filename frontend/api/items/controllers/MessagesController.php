@@ -42,10 +42,23 @@ class MessagesController extends BaseApiController
      */
     public function actionCreate(): UsersMessages
     {
+
         $message_body = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         $message = new UsersMessages();
-        $message->sender_id = Yii::$app->user->getId();;
-        $message->recipient_id = Tasks::findOne($message_body['task_id'])->user_id;
+
+        $authorId = Tasks::findOne($message_body['task_id'])->user_id;
+        $executorId = Tasks::findOne($message_body['task_id'])->executor_id;
+        $currentUserId = Yii::$app->user->getId();
+
+        switch ($currentUserId) {
+            case $authorId: $message->recipient_id = $executorId;
+            break;
+            case $executorId: $message->recipient_id = $authorId;
+        }
+
+        $message->sender_id = $currentUserId;
+
+
         $message->task_id = $message_body['task_id'];
         $message->message = $message_body['message'];
         $message->save();

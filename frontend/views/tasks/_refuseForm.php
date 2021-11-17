@@ -18,7 +18,7 @@ use yii\helpers\Url;
 
 
 <?= Html::a('Отказаться',
-    Url::to(['tasks/cancel', 'id' => $task->id]), [
+    Url::to(['tasks/refusal', 'id' => $task->id]), [
         'class' => 'button__form-modal refusal-button button',
         'type' => 'button'
     ]
