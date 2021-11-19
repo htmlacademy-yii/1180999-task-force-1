@@ -61,7 +61,8 @@ return [
             'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
-                'test' => 'test/index',
+                'test' => 'test/run',
+                'mylist/<status:\w+>' => 'mylist/index',
                 '/' => 'site/index',
                 'users' => 'users/index',
                 'tasks' => 'tasks/index',

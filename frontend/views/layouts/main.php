@@ -140,7 +140,9 @@ use yii\helpers\Url;
                 <div class="account__pop-up">
                     <ul class="account__pop-up-list">
                         <li>
-                            <a href="#">Мои задания</a>
+                            <?= Html::a('Мои задания',
+                                        Url::to(['mylist/index', 'status' => \taskforce\Task::STATUS_NEW])
+                            )?>
                         </li>
                         <li>
                             <a href="#">Настройки</a>
@@ -163,7 +165,7 @@ use yii\helpers\Url;
         <div class="main-container page-footer__container">
             <div class="page-footer__info">
                 <p class="page-footer__info-copyright">
-                    © 2020, ООО «ТаскФорс»
+                    © 2019 - <?= date('Y') ?>, ООО «ТаскФорс»
                     Все права защищены
                 </p>
                 <p class="page-footer__info-use">

@@ -1770,11 +1770,20 @@ footer {
       align-self: center;
   color: #ffffff; }
 
+.new-status {
+  background-color: #018cd7; }
+
+.work-status {
+  background-color: #ff7f50; }
+
 .done-status {
   background-color: #00b894; }
 
-.new-status {
-  background-color: #ff7f50; }
+.fail-status {
+  background-color: #ff0000; }
+
+.hidden-status {
+  background-color: #464646; }
 
 .my-list__bottom {
   display: -webkit-box;
@@ -1874,7 +1883,8 @@ footer {
   border-left: 20px solid #1e90ff; }
 
 .menu-toggle__item svg {
-  fill: #000000; }
+  /*fill: #000000; */
+}
 
 .user__search {
   display: -webkit-box;

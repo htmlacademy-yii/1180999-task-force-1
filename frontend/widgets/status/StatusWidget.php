@@ -1,12 +1,12 @@
 <?php
 
-namespace frontend\widgets\rating;
+namespace frontend\widgets\status;
 
 use yii\base\Widget;
 
-class RatingWidget extends Widget
+class StatusWidget extends Widget
 {
-    public float $rating;
+    public string $status;
 
     public function init()
     {
@@ -15,8 +15,8 @@ class RatingWidget extends Widget
 
     public function run()
     {
-        return $this->render('stars', [
-            'rating' => $this->rating
+        return $this->render('index', [
+            'status' => $this->status
         ]);
     }
 

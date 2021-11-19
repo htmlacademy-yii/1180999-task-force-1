@@ -7,7 +7,7 @@
  * @var array $address Город, адрес, координаты
  */
 
-use frontend\models\Reviews;
+
 use frontend\models\Tasks;
 use taskforce\Task;
 use yii\helpers\Html;
@@ -22,6 +22,7 @@ use frontend\models\Files;
             <div class="content-view__card-wrapper">
                 <div class="content-view__header">
                     <div class="content-view__headline">
+                        <h3><?= Yii::$app->session->hasFlash('taskMessage') ? Yii::$app->session->getFlash('taskMessage') : '' ?></h3>
                         <h1><?= $task->name ?></h1>
                         <span>Размещено в категории
                             <a href="<?= Url::to(['tasks/index', 'TaskFilterForm' => ['category_ids' => $task->category_id]]) ?>"
@@ -67,10 +68,11 @@ use frontend\models\Files;
                     </div>
                 <?php endif; ?>
             </div>
-            <?php if (!Yii::$app->user->isGuest): ?>
-                <?php if ($task->status === Task::STATUS_IN_WORK
-                            || $task->status === Task::STATUS_NEW
-                            || $task->status === Task::STATUS_FAIL): ?>
+
+        <?php if (!Yii::$app->user->isGuest): ?>
+            <?php if ($task->status === Task::STATUS_IN_WORK
+            || $task->status === Task::STATUS_NEW
+            || $task->status === Task::STATUS_FAIL): ?>
 
             <div class="content-view__action-buttons">
                 <?php if ($task->status === Task::STATUS_NEW && $task->user_id !== Yii::$app->user->getId()): ?>
@@ -80,13 +82,13 @@ use frontend\models\Files;
                         </button>
                     <?php endif; ?>
                 <?php endif; ?>
-                <?php if ($task->executor_id === \Yii::$app->user->getId()
+                <?php if ($task->executor_id === Yii::$app->user->getId()
                     && $task->status != Task::STATUS_FAIL): ?>
                     <button class="button button__big-color refusal-button open-modal"
                             type="button" data-for="refuse-form">Отказаться
                     </button>
                 <?php endif; ?>
-                <?php if ($task->user_id === \Yii::$app->user->getId() && !$task->executor_id): ?>
+                <?php if ($task->user_id === Yii::$app->user->getId() && !$task->executor_id): ?>
                     <?php if ($task->status != Task::STATUS_FAIL): ?>
                         <?= Html::a('<button class="button button__big-color refusal-button"
                                         type="button" data-for="refuse-form">Отменить
@@ -96,16 +98,16 @@ use frontend\models\Files;
                     <?php endif; ?>
                 <?php endif; ?>
 
-                <?php if ($task->executor_id != \Yii::$app->user->getId()): ?>
+                <?php if ($task->executor_id != Yii::$app->user->getId()): ?>
                     <?php if ($task->status === Task::STATUS_IN_WORK): ?>
                         <button class="button button__big-color request-button open-modal"
                                 type="button" data-for="complete-form">Завершить
                         </button>
                     <?php endif; ?>
                 <?php endif; ?>
-            <?php endif; ?>
-                <?= Yii::$app->session->hasFlash('taskMessage') ? '<h3>Задача отменена</h3>': ''?>
             </div>
+            <?php endif; ?>
+            <?php endif; ?>
         </div>
         <div class="content-view__feedback">
             <?php if ($task->status === Task::STATUS_NEW) {
@@ -116,9 +118,7 @@ use frontend\models\Files;
                 }
             }
             ?>
-            <?php endif; ?>
         </div>
-
     </section>
     <section class="connect-desk">
         <div class="connect-desk__profile-mini">
@@ -139,8 +139,8 @@ use frontend\models\Files;
         </div>
 
         <?php if ($task->status === Task::STATUS_IN_WORK): ?>
-            <?php if ($task->executor_id === \Yii::$app->user->getId()
-                || $task->user_id === \Yii::$app->user->getId()): ?>
+            <?php if ($task->executor_id === Yii::$app->user->getId()
+                || $task->user_id === Yii::$app->user->getId()): ?>
                 <div id="chat-container">
                     <chat class="connect-desk__chat" task="<?php echo $task->id ?>"></chat>
                 </div>
@@ -148,7 +148,7 @@ use frontend\models\Files;
         <?php endif; ?>
 
         <section class="modal response-form form-modal" id="response-form">
-            <?= $this->render('responseForm', [
+            <?= $this->render('_responseForm', [
                 'responseForm' => $responseForm
             ])
             ?>
@@ -169,5 +169,4 @@ use frontend\models\Files;
     'address' => $address,
     'task' => $task
 ]) ?>
-
 <?php $this->registerJsFile('/js/messenger.js'); ?>

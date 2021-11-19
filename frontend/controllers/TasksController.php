@@ -134,6 +134,13 @@ class TasksController extends SecuredController
         $TaskCompletionService = new TaskCompletionService;
         $reviewId = $TaskCompletionService->execute(Yii::$app->request->post(), $task);
 
+        if ($task->deadline) {
+            if (strtotime($task->deadline) < time()) {
+                $task->status = Task::STATUS_HIDDEN;
+                $task->save();
+                Yii::$app->session->setFlash('taskMessage', "Задача просрочена");
+            }
+        }
 
         if ($respondId) {
             return $this->redirect(Url::to(['tasks/view', 'id' => $task->id]));
@@ -226,10 +233,14 @@ class TasksController extends SecuredController
         $this->redirect("/task/$task->id");
     }
 
+    /**
+     * Действие отмены задачи
+     * @param int $id
+     */
     public function actionCancel(int $id)
     {
         $task = Tasks::findOne($id);
-        $task->status = Task::STATUS_FAIL;
+        $task->status = Task::STATUS_CANCEL;
         $task->save();
         Yii::$app->session->setFlash('taskMessage', "Задача отменена");
         $this->redirect("/task/$task->id");
