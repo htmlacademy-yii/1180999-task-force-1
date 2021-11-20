@@ -12,14 +12,22 @@ use frontend\models\Users;
 use frontend\widgets\rating\RatingWidget;
 use frontend\widgets\status\StatusWidget;
 use taskforce\Task;
+use yii\bootstrap\Alert;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\ListView;
 
 ?>
 
 <div class="main-container page-container">
     <section class="menu-toggle">
         <ul class="menu-toggle__list">
+            <li class="menu-toggle__item menu_toggle__item--create done-status">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#fff" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+                </svg>
+                <?= Html::a('Создать', Url::to(['tasks/create']), ['style' => 'color: #fff']) ?>
+            </li>
             <li class="menu-toggle__item menu-toggle__item--completed <?= $status === Task::STATUS_SUCCESS_EN ? 'menu_toggle__item--current' : '' ?>">
                 <div class="menu-toggle__svg-wrapper">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="<?= $status === Task::STATUS_SUCCESS_EN ? '#fff' : '#000' ?>" xmlns="http://www.w3.org/2000/svg">
@@ -88,11 +96,8 @@ use yii\helpers\Url;
             </li>
             <li class="menu-toggle__item menu-toggle__item--hidden <?= $status === Task::STATUS_HIDDEN_EN ? 'menu_toggle__item--current' : '' ?>">
                 <div class="menu-toggle__svg-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="<?= $status === Task::STATUS_HIDDEN_EN ? '#fff' : '#000' ?>" xmlns="http://www.w3.org/2000/svg">
-                        <rect opacity="0.01" x="24" width="24" height="24" transform="rotate(90 24 0)" fill="black"/>
-                        <path fill-rule="evenodd" clip-rule="evenodd"
-                              d="M18 3H6C4.76379 3.00732 3.65865 3.7722 3.21635 4.92661C2.77405 6.08101 3.08517 7.38852 4 8.22V18C4 19.6569 5.34315 21 7 21H17C18.6569 21 20 19.6569 20 18V8.22C20.9148 7.38852 21.226 6.08101 20.7837 4.92661C20.3414 3.7722 19.2362 3.00732 18 3ZM15 13.13C15 13.6105 14.6105 14 14.13 14H9.87C9.38951 14 9 13.6105 9 13.13V12.87C9 12.3895 9.38951 12 9.87 12H14.13C14.6105 12 15 12.3895 15 12.87V13.13ZM6 7H18C18.5523 7 19 6.55228 19 6C19 5.44772 18.5523 5 18 5H6C5.44772 5 5 5.44772 5 6C5 6.55228 5.44772 7 6 7Z"
-                              fill=""/>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="<?= $status === Task::STATUS_HIDDEN_EN ? '#fff' : '#000' ?>" class="bi bi-alarm-fill" viewBox="0 0 16 16">
+                        <path d="M6 .5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1H9v1.07a7.001 7.001 0 0 1 3.274 12.474l.601.602a.5.5 0 0 1-.707.708l-.746-.746A6.97 6.97 0 0 1 8 16a6.97 6.97 0 0 1-3.422-.892l-.746.746a.5.5 0 0 1-.707-.708l.602-.602A7.001 7.001 0 0 1 7 2.07V1h-.5A.5.5 0 0 1 6 .5zm2.5 5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5zM.86 5.387A2.5 2.5 0 1 1 4.387 1.86 8.035 8.035 0 0 0 .86 5.387zM11.613 1.86a2.5 2.5 0 1 1 3.527 3.527 8.035 8.035 0 0 0-3.527-3.527z"/>
                     </svg>
                 </div>
                 <?= Html::a('Просроченные', Url::to(['mylist/'.Task::STATUS_HIDDEN_EN])) ?>
@@ -102,44 +107,44 @@ use yii\helpers\Url;
     <section class="my-list">
         <div class="my-list__wrapper">
             <h1>Мои задания</h1>
-            <?php if ($tasks): ?>
-                <?php foreach ($tasks as $task): ?>
-                    <div class="new-task__card">
-                        <div class="new-task__title">
-                            <?= Html::a('<h2>' . $task->name . '</h2>',
-                                Url::to(['tasks/view', 'id' => $task->id]),
-                                ['class' => 'link-regular']
-                            ) ?>
-                            <?= Html::a('<p>' . $task->category->name . '</p>',
-                                Url::to('/tasks?TaskFilterForm%5Bcategory_ids%5D=' . $task->category_id),
-                                ['class' => 'new-task__type link-regular']
-                            ) ?>
-                        </div>
-                        <div class="task-status <?= StatusWidget::widget(['status' => $task->status]) ?>">
-                            <?= $task->status ?></div>
-                        <p class="new-task_description">
-                            <?= mb_strimwidth($task->description, 0, 90, "..."); ?>
-                        </p>
-                        <?php if ($task->executor): ?>
-                            <div class="feedback-card__top">
-                                <a href="#"><img src="<?= $task->executor->avatarFile->path ?? '/img/user-man.jpg' ?>" width="36" height="36"></a>
-                                <div class="feedback-card__top--name my-list__bottom">
-                                    <p class="link-name">
-                                        <?= Html::a($task->executor->name,
-                                            Url::to(['users/view', 'id' => $task->executor_id]),
-                                            ['class' => 'link-regular']
-                                        ) ?>
-                                    </p>
-                                    <a href="#" class="my-list__bottom-chat"></a>
-                                    <?= RatingWidget::widget(['rating' => $task->executor->calcRatingScore()]) ?>
-                                </div>
-                            </div>
+            <?php if ($tasks->getTotalCount() > 0): ?>
+                <?= ListView::widget([
+                    'dataProvider' => $tasks,
+                    'itemView' => '_task',
+                    'itemOptions' => [
+                        'tag' => false,
+                    ],
+                    'options' => [
+                        'tag' => false,
+                    ],
+                    'layout' => "{items}
+                             <div class='new-task__pagination'>
+                             {pager}\n
+                             </div>",
+                    'pager' => [
 
-                        <?php endif; ?>
-                    </div>
-                <?php endforeach; ?>
+                        'options' => [
+                            'class' => 'new-task__pagination-list',
+                        ],
+                        'prevPageLabel' => '',
+                        'nextPageLabel' => '',
+                        'prevPageCssClass' => 'pagination__item',
+                        'nextPageCssClass' => 'pagination__item',
+                        'pageCssClass' => 'pagination__item',
+                        'activePageCssClass' => 'pagination__item--current',
+                    ],
+                ])
+                ?>
+            <?php else: ?>
+                <?= Alert::widget([
+                    'body' => 'Ничего не найдено',
+                    'options' => [
+                        'class' => 'alert alert-danger',
+                        'style' => 'margin-bottom: 0'
+                    ]
+                ]);
+                ?>
             <?php endif; ?>
         </div>
     </section>
-
 </div>

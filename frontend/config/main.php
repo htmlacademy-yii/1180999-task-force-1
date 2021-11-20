@@ -62,7 +62,6 @@ return [
             'showScriptName' => false,
             'rules' => [
                 'test' => 'test/run',
-                'mylist/<status:\w+>' => 'mylist/index',
                 '/' => 'site/index',
                 'users' => 'users/index',
                 'tasks' => 'tasks/index',
@@ -75,6 +74,7 @@ return [
                 'accept/<id:\d+>' => 'tasks/accept',
                 'cancel/<id:\d+>' => 'tasks/cancel',
                 'refusal/<id:\d+>' => 'tasks/refusal',
+                'mylist/<status:\w+>' => 'mylist/index',
                 ['class' => 'yii\rest\UrlRule',
                     'controller' => ['api/messages'],
                     'pluralize' => false

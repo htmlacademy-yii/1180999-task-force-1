@@ -141,7 +141,7 @@ use yii\helpers\Url;
                     <ul class="account__pop-up-list">
                         <li>
                             <?= Html::a('Мои задания',
-                                        Url::to(['mylist/index', 'status' => \taskforce\Task::STATUS_NEW])
+                                        Url::to(['mylist/index', 'status' => \taskforce\Task::STATUS_NEW_EN])
                             )?>
                         </li>
                         <li>

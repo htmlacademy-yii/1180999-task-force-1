@@ -10,6 +10,7 @@
 
 use frontend\models\Tasks;
 use taskforce\Task;
+use yii\bootstrap\Alert;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use frontend\models\Files;
@@ -18,12 +19,22 @@ use frontend\models\Files;
 
 <div class="main-container page-container">
     <section class="content-view">
+        <?php if (Yii::$app->session->hasFlash('taskMessage')): ?>
+            <?= Alert::widget([
+                'body' => Yii::$app->session->getFlash('taskMessage'),
+                'options' => [
+                    'class' => 'alert alert-danger',
+                    'style' => 'margin: 10px'
+                ]
+            ]);
+            ?>
+        <?php endif; ?>
         <div class="content-view__card">
             <div class="content-view__card-wrapper">
                 <div class="content-view__header">
                     <div class="content-view__headline">
-                        <h3><?= Yii::$app->session->hasFlash('taskMessage') ? Yii::$app->session->getFlash('taskMessage') : '' ?></h3>
-                        <h1><?= $task->name ?></h1>
+
+                        <h1><?= mb_strimwidth($task->name, 0, 30, "...") ?></h1>
                         <span>Размещено в категории
                             <a href="<?= Url::to(['tasks/index', 'TaskFilterForm' => ['category_ids' => $task->category_id]]) ?>"
                                class="link-regular">
@@ -70,6 +81,7 @@ use frontend\models\Files;
             </div>
 
         <?php if (!Yii::$app->user->isGuest): ?>
+
             <?php if ($task->status === Task::STATUS_IN_WORK
             || $task->status === Task::STATUS_NEW
             || $task->status === Task::STATUS_FAIL): ?>
