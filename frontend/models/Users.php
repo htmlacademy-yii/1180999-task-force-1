@@ -23,6 +23,8 @@ use yii\web\IdentityInterface;
  * @property string|null $about_me
  * @property int $notification_new_message
  * @property int $notification_task_action
+ * @property int $hide_profile
+ * @property int|null $notification_new_review
  * @property int|null $failed_count
  * @property int $show_contacts
  * @property int $city_id
@@ -55,7 +57,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['is_executor', 'notification_new_message', 'notification_task_action', 'failed_count', 'show_contacts', 'city_id', 'avatar_file_id'], 'integer'],
+            [['is_executor', 'notification_new_message', 'notification_task_action', 'notification_new_review', 'hide_profile', 'failed_count', 'show_contacts', 'city_id', 'avatar_file_id'], 'integer'],
             [['dt_add', 'name', 'email', 'password', 'city_id'], 'required'],
             [['dt_add', 'last_active_time', 'birthday'], 'safe'],
             [['about_me'], 'string'],
@@ -87,6 +89,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
             'about_me' => 'About Me',
             'notification_new_message' => 'Notification New Message',
             'notification_task_action' => 'Notification Task Action',
+            'hide_profile' => 'Hide Profile',
             'failed_count' => 'Failed Count',
             'show_contacts' => 'Show Contacts',
             'city_id' => 'City ID',

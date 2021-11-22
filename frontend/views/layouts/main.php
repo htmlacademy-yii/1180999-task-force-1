@@ -145,7 +145,9 @@ use yii\helpers\Url;
                             )?>
                         </li>
                         <li>
-                            <a href="#">Настройки</a>
+                            <?= Html::a('Настройки',
+                                Url::to(['account/index'])
+                            )?>
                         </li>
                         <li>
                             <?= Html::a('Выход',

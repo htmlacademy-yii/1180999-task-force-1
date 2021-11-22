@@ -14,12 +14,12 @@ use taskforce\exceptions\TaskStatusException;
 
 class Task
 {
-    const STATUS_NEW = 'новый';
-    const STATUS_CANCEL = 'отмена';
+    const STATUS_NEW = 'Новое';
+    const STATUS_CANCEL = 'Отменено';
     const STATUS_IN_WORK = 'в работе';
-    const STATUS_SUCCESS = 'завершено';
-    const STATUS_FAIL = 'провалено';
-    const STATUS_HIDDEN = 'просрочено';
+    const STATUS_SUCCESS = 'Выполнено';
+    const STATUS_FAIL = 'Провалено';
+    const STATUS_HIDDEN = 'Просрочено';
 
     const STATUS_NEW_EN = 'new';
     const STATUS_CANCEL_EN = 'canceled';
