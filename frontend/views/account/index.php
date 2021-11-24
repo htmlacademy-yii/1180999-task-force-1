@@ -2,6 +2,7 @@
 
 /**
  * @var $user Users
+ * @var $dataProvider ActiveDataProvider
  * @var $userForm AccountForm
  */
 
@@ -9,19 +10,22 @@ use frontend\models\Categories;
 use frontend\models\Cities;
 use frontend\models\forms\AccountForm;
 use frontend\models\Users;
-use yii\bootstrap\ActiveForm;
-use yii\bootstrap\Html;
+
+use yii\bootstrap\Alert;
+use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\jui\AutoComplete;
+use yii\widgets\ActiveForm;
+use yii\widgets\ListView;
+use yii\widgets\MaskedInput;
 
 ?>
 
 <div class="main-container page-container">
     <section class="account__redaction-wrapper">
         <h1>Редактирование настроек профиля</h1>
-        <?php $form = ActiveForm::begin([
-
-        ]) ?>
+        <?php $form = ActiveForm::begin() ?>
         <div class="account__redaction-section">
             <h3 class="div-line">Настройки аккаунта</h3>
             <div class="account__redaction-section-wrapper">
@@ -42,7 +46,7 @@ use yii\jui\AutoComplete;
                             ],
                             'inputOptions' => [
                                 'class' => 'input textarea',
-                                'placeholder' => $user->name,
+                                'value' => $user->name,
                                 'disabled' => true
                             ]
                         ]
@@ -54,7 +58,7 @@ use yii\jui\AutoComplete;
                             ],
                             'inputOptions' => [
                                 'class' => 'input textarea',
-                                'placeholder' => $user->email,
+                                'value' => $user->email,
                             ]
                         ]
                     ) ?>
@@ -62,7 +66,7 @@ use yii\jui\AutoComplete;
                     <?= $form->field($userForm, 'city', [
                             'options' => [
                                 'class' => 'field-container account__input account__input--address'
-                            ],
+                            ]
                         ]
                     )->widget(
                         AutoComplete::className(), [
@@ -71,7 +75,7 @@ use yii\jui\AutoComplete;
                         ],
                         'options' => [
                             'class' => 'input textarea',
-                            'placeholder' => $user->city->name,
+                            'value' => $user->city->name,
                             'type' => 'search',
                         ]
                     ]) ?>
@@ -82,7 +86,7 @@ use yii\jui\AutoComplete;
                             ],
                             'inputOptions' => [
                                 'class' => 'input-middle input input-date',
-                                'placeholder' => $user->birthday,
+                                'value' => $user->birthday,
                                 'onfocus' => "(this.type='date')"
                             ]
                         ]
@@ -94,7 +98,7 @@ use yii\jui\AutoComplete;
                             ],
                             'inputOptions' => [
                                 'class' => 'input textarea',
-                                'placeholder' => $user->about_me,
+                                'value' => $user->about_me,
                                 'rows' => '7'
                             ]
                         ]
@@ -127,8 +131,7 @@ use yii\jui\AutoComplete;
                 ],
                 'inputOptions' => [
                     'class' => 'input textarea',
-                    'type' => 'password',
-                    'placeholder' => '********'
+                    'type' => 'password'
                 ]
             ]) ?>
             <?= $form->field($userForm, 'passwordRepeat', [
@@ -138,23 +141,54 @@ use yii\jui\AutoComplete;
                 'inputOptions' => [
                     'class' => 'input textarea',
                     'type' => 'password',
-                    'placeholder' => '********'
                 ]
             ]) ?>
         </div>
 
         <h3 class="div-line">Фото работ</h3>
+
         <div class="account__redaction-section-wrapper account__redaction">
-            <span class="dropzone">Выбрать фотографии</span>
+            <?= ListView::widget([
+                'dataProvider' => $dataProvider,
+                'layout' => '{items}',
+                'itemView' => '_img',
+                'options' => [
+                    'style' => [
+                        'width' => '100%',
+                        'display' => 'flex',
+                        'flex-direction' => 'inherit',
+                        'justify-content' => 'space-between',
+                        'align-items' => 'center',
+                        'margin-bottom' => '20px'
+                    ]
+                ]
+            ]) ?>
         </div>
 
+        <?= $form->field($userForm, 'images[]', [
+            'labelOptions' => ['class' => 'link-regular'],
+            'inputOptions' => ['style' => 'display: none']
+        ])->fileInput(['multiple' => true, 'accept' => 'image/*'])
+        ?>
+        <?php if (Yii::$app->session->hasFlash('fileMessage')): ?>
+            <?= Alert::widget([
+                'options' => [
+                    'class' => 'alert alert-info',
+                    'style' => [
+                        'text-align' => 'center',
+                        'width' => '20%'
+                    ]
+                ],
+                'body' => 'Файл удален'
+            ]) ?>
+        <?php endif; ?>
         <h3 class="div-line">Контакты</h3>
         <div class="account__redaction-section-wrapper account__redaction">
             <?= $form->field($userForm, 'phone', [
                 'template' => "<div class='field-container account__input'>" . " {label}{input}<span>{error}</span> </div>",
 
-            ])->widget(\yii\widgets\MaskedInput::className(), [
-                'mask' => '9 (999) 999 99 99',
+            ])->widget(MaskedInput::className(), [
+                'mask' => '+7 (999) 999-99-99',
                 'clientOptions' => [
                     'removeMaskOnSubmit' => true,
                 ]
@@ -246,7 +280,6 @@ use yii\jui\AutoComplete;
             ])->checkbox([
                 'class' => 'visually-hidden checkbox__input',
                 'checked' => (bool)$user->show_contacts
-
             ],
                 false)->label(false); ?>
 
@@ -265,10 +298,11 @@ use yii\jui\AutoComplete;
             ],
                 false)->label(false); ?>
         </div>
-        <?= Html::submitButton('Сохранить изменения', ['class' => 'button']) ?>
+
+        <?= Html::submitButton('Сохранить изменения', [
+            'class' => 'button'
+        ]) ?>
 
         <?php ActiveForm::end() ?>
-
     </section>
-
 </div>

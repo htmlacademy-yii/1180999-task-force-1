@@ -264,4 +264,13 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
             'id', 'name', 'email'
         ];
     }
+
+    /**
+     * @param $value
+     */
+    public function setCity($value)
+    {
+        $this->city_id = $value;
+    }
+
 }

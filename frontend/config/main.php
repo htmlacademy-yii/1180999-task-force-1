@@ -76,6 +76,7 @@ return [
                 'refusal/<id:\d+>' => 'tasks/refusal',
                 'mylist/<status:\w+>' => 'mylist/index',
                 'account' => 'account/index',
+                'delete/<id:\d+>' => 'files/delete',
                 ['class' => 'yii\rest\UrlRule',
                     'controller' => ['api/messages'],
                     'pluralize' => false

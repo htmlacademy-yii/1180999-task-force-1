@@ -2063,18 +2063,20 @@ footer {
           flex-direction: column;
   -ms-flex-item-align: start;
       align-self: flex-start;
-  width: 310px;
+  width: 280px;
   margin-right: 20px; }
 
 .account__input--name {
-  width: 445px; }
+  width: 360px;
+}
 
 .account__input--email {
   width: 382px;
   margin-right: 0; }
 
 .account__input--address {
-  width: 605px; }
+  width: 520px;
+}
 
 .account__input--date {
   width: 222px;

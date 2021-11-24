@@ -49,7 +49,7 @@ class TaskCreateForm extends Tasks
                 'message' => 'Обязательное поле'],
             [['files'],
                 'file',
-                'maxFiles' => 10,
+                'maxFiles' => 6,
                 'maxSize' => GetCfgVar::getSizeLimits(),
 
             ],

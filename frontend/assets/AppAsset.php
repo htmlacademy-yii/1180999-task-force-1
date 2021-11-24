@@ -16,7 +16,8 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         'js/messenger.js',
-        'js/main.js'
+        'js/main.js',
+        'js/dropzone.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',
