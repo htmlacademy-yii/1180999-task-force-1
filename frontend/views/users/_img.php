@@ -4,10 +4,10 @@
  * @var $model UsersFiles
  */
 
+
 use frontend\models\UsersFiles;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
-use yii\helpers\Url;
 
 ?>
 
@@ -17,10 +17,10 @@ use yii\helpers\Url;
     'toggleButton' => ['label' => Html::a(
         Html::img($model->file->path, [
             'style' => [
-                'width' => '120px',
-                'min-height' => '120px'
+                'width' => '85px',
+                'min-height' => '86px'
             ],
-                'alt' => $model->file->name
+            'alt' => $model->file->name
 
         ]),
     ), 'class' => 'btn-img']
@@ -33,10 +33,7 @@ print Html::img($model->file->path, [
     ],
 ]);
 
-print Html::a('Удалить файл',
-        Url::to(['files/delete', 'id' => $model->id]),
-        ['class' => 'btn btn-danger']
-);
+Modal::end()
 
-Modal::end() ?>
+?>
 

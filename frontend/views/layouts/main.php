@@ -5,6 +5,7 @@ use yii\helpers\Html;
 use yii\web\View;
 use yii\helpers\Url;
 
+
 /* @var $this View */
 
 /* @var $content string */
@@ -129,9 +130,11 @@ use yii\helpers\Url;
                 </div>
                 <div class="header__account">
                     <a class="header__account-photo">
-                        <img src="<?= $user->avatarFile->path ?? '/img/user-man.jpg' ?>"
-                             width="43" height="44"
-                             alt="Аватар пользователя">
+                        <?= Html::img(Yii::$app->user->identity->avatarFile->path ?? '/img/no-photos-white.png', [
+                                'width' => 43,
+                                'height' => 44,
+                                'alt' => 'Аватар пользователя',
+                        ])?>
                     </a>
                     <span class="header__account-name">
                  <?= Yii::$app->user->identity->name ?>

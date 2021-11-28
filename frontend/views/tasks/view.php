@@ -1,6 +1,7 @@
 <?php
 /**
  * @var Tasks $task Данные задачи
+ * @var Tasks $user Данные пользователя
  * @var object $executors Данные задачи
  * @var object $responseForm Форма добавления отклика
  * @var object $completionForm Модель формы завершения задачи
@@ -9,6 +10,7 @@
 
 
 use frontend\models\Tasks;
+use frontend\widgets\customerInfo\CustomerInfo;
 use taskforce\Task;
 use yii\bootstrap\Alert;
 use yii\helpers\Html;
@@ -58,8 +60,8 @@ use frontend\models\Files;
 
                     <?php foreach ($task->tasksFiles as $file): ?>
                         <?= Html::a(
-                            Files::findOne(['id' => $file->id])->name,
-                            Url::base() . '/' . Files::findOne(['id' => $file->id])->path,
+                            Files::findOne(['id' => $file->file->id])->name,
+                            Url::base() . '/' . Files::findOne(['id' => $file->file->id])->path,
                             ['target' => '_blank']
                         ); ?>
                     <?php endforeach; ?>
@@ -137,14 +139,16 @@ use frontend\models\Files;
             <div class="profile-mini__wrapper">
                 <h3>Заказчик</h3>
                 <div class="profile-mini__top">
-                    <img src="<?= $user->avatarFile->path ?? '/img/user-man.jpg' ?>"
-                         width="62" height="62"
-                         alt="Аватар заказчика">
+                    <?= Html::img($user->avatarFile->path ?? '/img/no-photos.png', [
+                        'width' => 62,
+                        'height' => 62,
+                        'alt' => 'Аватар заказчика',
+                    ])?>
                     <div class="profile-mini__name five-stars__rate">
-                        <p><?= $task->user->name ?></p>
+                        <p><?= $user->name ?></p>
                     </div>
                 </div>
-                <p class="info-customer"><span>12 заданий</span><span class="last-">2 года на сайте</span></p>
+                <?= CustomerInfo::widget(['userId' => $user->id])?>
                 <a href="<?= Url::to(['users/view', 'id' => $task->user->id]) ?>" class="link-regular">Смотреть
                     профиль</a>
             </div>

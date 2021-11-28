@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use Yii;
+use yii\db\ActiveQuery;
 use yii\web\IdentityInterface;
 
 /**
@@ -30,6 +31,7 @@ use yii\web\IdentityInterface;
  * @property int $city_id
  * @property int|null $avatar_file_id
  *
+ * @property UsersCategories[] $categories
  * @property Responses[] $responses
  * @property Reviews[] $reviews
  * @property Reviews[] $reviews0
@@ -197,6 +199,15 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
         return $this->hasMany(UsersMessages::className(), ['sender_id' => 'id']);
     }
 
+    /**
+     * Получения списка специализаций пользователя
+     * @return ActiveQuery
+     */
+    public function getCategories(): ActiveQuery
+    {
+        return $this->hasMany(UsersCategories::class, ['user_id' => 'id']);
+    }
+
     public static function findIdentity($id)
     {
         return self::findOne($id);
@@ -243,6 +254,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
         return $sum/count($this->reviewsByExecuted);
     }
 
+
     /**
      * @return bool
      */
@@ -272,5 +284,6 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     {
         $this->city_id = $value;
     }
+
 
 }

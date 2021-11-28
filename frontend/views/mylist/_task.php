@@ -29,7 +29,7 @@ use yii\helpers\Url;
             </p>
             <?php if ($model->executor): ?>
                 <div class="feedback-card__top">
-                    <a href="#"><img src="<?= $model->executor->avatarFile->path ?? '/img/user-man.jpg' ?>" width="36" height="36"></a>
+                    <a href="#"><img src="<?= $model->executor->avatarFile->path ?? '/img/no-photos.png' ?>" width="36" height="36"></a>
                     <div class="feedback-card__top--name my-list__bottom">
                         <p class="link-name">
                             <?= Html::a($model->executor->name,

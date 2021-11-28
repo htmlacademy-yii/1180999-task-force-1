@@ -118,9 +118,10 @@ class TasksController extends SecuredController
      */
     public function actionView($id)
     {
-
         $getTaskService = new TaskGetService();
         $task = $getTaskService->getTask($id);
+        $user = Users::findOne($task->user_id);
+
         if (!$task) {
             throw new NotFoundHttpException("Пользователь с id $id не найден");
         }
@@ -152,6 +153,7 @@ class TasksController extends SecuredController
 
         return $this->render('view', [
             'task' => $task,
+            'user' => $user,
             'executors' => $getTaskService->getExecutors(),
             'responseForm' => $respondService->getForm(),
             'completionForm' => $TaskCompletionService->getForm(),

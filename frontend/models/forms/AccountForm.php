@@ -12,7 +12,7 @@ class AccountForm extends Model
     public $city;
     public $birthday;
     public $aboutMe;
-    public $category;
+    public $category_ids = [];
     public $avatar;
     public $password;
     public $passwordRepeat;
@@ -50,6 +50,7 @@ class AccountForm extends Model
     {
         return [
             [[
+                'category_ids',
                 'name',
                 'email',
                 'city',
@@ -70,13 +71,6 @@ class AccountForm extends Model
                 'hide_profile'
             ], 'safe'],
 
-            [
-                'passwordRepeat',
-                'compare',
-                'compareAttribute'=>'password',
-                'message' => 'Пароли не совпадают'
-            ],
-
             [['images'],
                 'file',
                 'skipOnEmpty' => true,
@@ -91,6 +85,17 @@ class AccountForm extends Model
                 'skipOnEmpty' => true,
                 'extensions' => 'png, jpg',
                 'maxFiles' => 1
+            ],
+
+            ['password', 'string',
+                'min' => 8,
+                'tooShort' => 'Длина пароля от 8 символов'
+            ],
+
+            ['passwordRepeat',
+                'compare',
+                'compareAttribute' => 'password',
+                'message' => 'Пароли не совпадают'
             ],
 
         ];

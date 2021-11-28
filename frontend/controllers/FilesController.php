@@ -18,9 +18,10 @@ class FilesController extends SecuredController
         if ($file && $file->user_id === \Yii::$app->user->getId()) {
             $file->delete();
             $file->file->delete();
-            unlink($file->file->path);
-            \Yii::$app->session->setFlash('fileMessage', 'Файл удален');
+            if (file_exists($file->file->path)) {
+                unlink($file->file->path);
             }
+        }
         return $this->redirect(Url::to(['account/index']));
     }
 }

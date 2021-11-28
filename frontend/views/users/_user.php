@@ -4,17 +4,17 @@
  * @var $model \frontend\models\Users;
  */
 
+use frontend\widgets\executorInfo\ExecutorInfo;
 use frontend\widgets\rating\RatingWidget;
 use frontend\widgets\timeFormatter\TimeFormatterWidget;
+use yii\helpers\Html;
 use yii\helpers\Url;
 
 ?>
 
 <div class="feedback-card__top">
     <div class="user__search-icon">
-        <a href="user.html"><img src="./img/man-glasses.jpg" width="65" height="65"></a>
-        <span>17 заданий</span>
-        <span>6 отзывов</span>
+    <?= ExecutorInfo::widget(['id' => $model->id]) ?>
     </div>
     <div class="feedback-card__top--name user__search-card">
         <p class="link-name">
@@ -31,9 +31,16 @@ use yii\helpers\Url;
     ?>
     </div>
 <div class="link-specialization user__search-link--bottom">
-    <a href="../views/site/browse.html" class="link-regular">Ремонт</a>
-    <a href="../views/site/browse.html" class="link-regular">Курьер</a>
-    <a href="../views/site/browse.html" class="link-regular">Оператор ПК</a>
+    <?php foreach($model->categories as $spec): ?>
+        <?= Html::a($spec->category->name,
+            Url::to(['tasks/index', 'TaskFilterForm' => [
+                'category_ids' => $spec->category_id
+            ]]), [
+                'class' => 'link-regular'
+            ]
+        ) ?>
+
+    <?php endforeach; ?>
 </div>
 <div class="separator"></div>
 

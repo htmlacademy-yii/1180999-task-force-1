@@ -2,6 +2,7 @@
 
 /**
  * @var $user Users
+ * @var $categories Categories
  * @var $dataProvider ActiveDataProvider
  * @var $userForm AccountForm
  */
@@ -17,13 +18,28 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\jui\AutoComplete;
 use yii\widgets\ActiveForm;
+use yii\widgets\LinkPager;
 use yii\widgets\ListView;
 use yii\widgets\MaskedInput;
+use yii\widgets\Pjax;
 
 ?>
 
 <div class="main-container page-container">
     <section class="account__redaction-wrapper">
+
+        <?php if (Yii::$app->session->hasFlash('changeMessage')): ?>
+            <?= Alert::widget([
+                'options' => [
+                    'class' => 'alert-success',
+                    'style' => [
+                        'margin' => '20px'
+                    ]
+                ],
+                'body' => 'Профиль успешно обновлен'
+            ]) ?>
+        <?php endif; ?>
+
         <h1>Редактирование настроек профиля</h1>
         <?php $form = ActiveForm::begin() ?>
         <div class="account__redaction-section">
@@ -31,13 +47,27 @@ use yii\widgets\MaskedInput;
             <div class="account__redaction-section-wrapper">
 
                 <?= $form->field($userForm, 'avatar', [
-                    'template' => "<img src=" . ($user->avatarFile->path ?? './img/man-glasses.jpg') . " width='140' height='140'>" . "{input}{label}",
+                    'template' =>
+                        Html::img($user->avatarFile->path ?? '/img/no-photos.png', [
+                            'width' => '135px',
+                            'height' => '135px',
+                            'margin-right' => '10px'
+                        ])
+                        . "{input}{label}"
+                        . Html::submitButton('Загрузить', [
+                            'class' => 'btn',
+                            'style' => [
+                                'width' => '107px'
+                            ]
+                        ]),
                     'options' => [
                         'class' => 'account__redaction-avatar'
                     ],
                     'labelOptions' => ['class' => 'link-regular'],
                     'inputOptions' => ['style' => 'display: none']])->fileInput()
                 ?>
+
+
                 <div class="account__redaction">
 
                     <?= $form->field($userForm, 'name', [
@@ -109,9 +139,9 @@ use yii\widgets\MaskedInput;
         <h3 class="div-line">Выберите свои специализации</h3>
         <div class="account__redaction-section-wrapper">
 
-            <?= $form->field($userForm, 'category', [
+            <?= $form->field($userForm, 'category_ids', [
                 'template' => '{input}'
-            ])->checkboxList(Categories::find()->select(['name', 'id'])->indexBy('id')->column(), [
+            ])->checkboxList($categories, [
                 'class' => 'search-task__categories account_checkbox--bottom',
                 'item' => function ($index, $label, $name, $checked, $value) {
                     $checked = $checked ? 'checked' : '';
@@ -145,43 +175,60 @@ use yii\widgets\MaskedInput;
             ]) ?>
         </div>
 
-        <h3 class="div-line">Фото работ</h3>
+        <?php if (Yii::$app->session->hasFlash('userPassword')): ?>
+            <?= Alert::widget([
+                'options' => [
+                    'class' => 'alert-info'
+                ],
+                'body' => 'Пароль обновлен'
+            ]) ?>
+        <?php endif; ?>
 
+        <h3 class="div-line">Фото работ</h3>
+        <?php Pjax::begin()?>
         <div class="account__redaction-section-wrapper account__redaction">
+
             <?= ListView::widget([
                 'dataProvider' => $dataProvider,
-                'layout' => '{items}',
+                'layout' => "{items}",
                 'itemView' => '_img',
                 'options' => [
                     'style' => [
                         'width' => '100%',
                         'display' => 'flex',
                         'flex-direction' => 'inherit',
-                        'justify-content' => 'space-between',
+                        'justify-content' => 'flex-start',
                         'align-items' => 'center',
                         'margin-bottom' => '20px'
                     ]
                 ]
             ]) ?>
-        </div>
 
+        </div>
+        <?=
+        LinkPager::widget([
+            'pagination' => $dataProvider->getPagination(),
+            'options' => [
+                'class' => 'pagination',
+                'style' => [
+                    'width' => '100%',
+                    'display' => 'flex',
+                    'justify-content' => 'center'
+                ]
+            ]
+        ]);
+        ?>
+        <?php Pjax::end() ?>
         <?= $form->field($userForm, 'images[]', [
             'labelOptions' => ['class' => 'link-regular'],
             'inputOptions' => ['style' => 'display: none']
         ])->fileInput(['multiple' => true, 'accept' => 'image/*'])
         ?>
-        <?php if (Yii::$app->session->hasFlash('fileMessage')): ?>
-            <?= Alert::widget([
-                'options' => [
-                    'class' => 'alert alert-info',
-                    'style' => [
-                        'text-align' => 'center',
-                        'width' => '20%'
-                    ]
-                ],
-                'body' => 'Файл удален'
-            ]) ?>
-        <?php endif; ?>
+
+        <?= Html::submitButton('Загрузить', [
+            'class' => 'btn'
+        ]) ?>
+
         <h3 class="div-line">Контакты</h3>
         <div class="account__redaction-section-wrapper account__redaction">
             <?= $form->field($userForm, 'phone', [
@@ -306,3 +353,13 @@ use yii\widgets\MaskedInput;
         <?php ActiveForm::end() ?>
     </section>
 </div>
+
+<!--bootstrap4 form style-->
+<?= Alert::widget([
+    'options' => [
+        'style' => [
+            'display' => 'none'
+        ]
+    ]
+]) ?>
+

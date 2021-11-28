@@ -4,6 +4,8 @@ namespace frontend\controllers;
 
 use frontend\models\forms\UserFilterForm;
 use frontend\models\Reviews;
+use frontend\models\UsersCategories;
+use frontend\models\UsersFiles;
 use frontend\models\UsersSearch;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -63,20 +65,33 @@ class UsersController extends SecuredController
         ]);
     }
 
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionView($id)
     {
         $user = Users::findOne($id);
+        $dataProvider = new ActiveDataProvider([
+            'query' => UsersFiles::find()->where(['user_id' => $user->id]),
+            'pagination' => [
+                'pageSize' => 3
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_DESC
+                ]
+            ]
+        ]);
+
         if (!$user) {
             throw new NotFoundHttpException("Пользователь с id $id не найден");
         }
 
-        $reviews = Reviews::find()->where(['executor_id' => $user->id])->all();
-
-
-        return $this->render('view', [
-            'user' => $user,
-            'reviews' => $reviews
-        ]);
+        return $this->render('view', compact(
+            'user', 'dataProvider'
+        ));
     }
 
 }

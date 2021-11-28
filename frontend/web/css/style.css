@@ -1239,16 +1239,16 @@ footer {
   position: relative;
   padding-right: 40px; }
 
-.profile-mini__wrapper p span:first-child::after {
-  position: absolute;
-  content: "";
-  width: 5px;
-  height: 5px;
-  color: #333438;
-  border-radius: 10px;
-  top: 8px;
-  right: 18px;
-  background-color: #606060; }
+/*.profile-mini__wrapper p span:first-child::after {*/
+/*  position: absolute;*/
+/*  content: "";*/
+/*  width: 5px;*/
+/*  height: 5px;*/
+/*  color: #333438;*/
+/*  border-radius: 10px;*/
+/*  top: 8px;*/
+/*  right: 18px;*/
+/*  background-color: #606060; }*/
 
 .profile-mini__wrapper a {
   font-family: "Myriad Pro", sans-serif; }
@@ -2001,7 +2001,7 @@ footer {
           flex-direction: column; }
   .account__redaction-avatar img {
     margin-left: -8px;
-    margin-right: 5px; }
+    margin-right: 10px; }
 
 #upload-avatar {
   display: none;
@@ -2665,4 +2665,12 @@ footer {
 .separator {
   border-bottom: 2px solid lightgrey !important;
   margin: 20px 0 20px;
+}
+
+.btn-img {
+  border: none;
+}
+
+.btn-img:hover {
+  box-shadow: 0 5px 10px #7e7e7e;
 }
