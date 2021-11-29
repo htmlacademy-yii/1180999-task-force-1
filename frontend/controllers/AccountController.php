@@ -20,6 +20,11 @@ class AccountController extends SecuredController
         $userForm = new AccountForm();
         $userFiles = UsersFiles::find()
             ->where(['user_id' => $user->id]);
+        $categories = Categories::find()
+            ->select(['name', 'id'])
+            ->indexBy('id')->column();
+        $userCategories = UsersCategories::find()->select('category_id')
+            ->where(['user_id' => $user->id]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $userFiles,
@@ -33,18 +38,44 @@ class AccountController extends SecuredController
             ]
         ]);
 
-        $userCategories = UsersCategories::find()->select('category_id')
-            ->where(['user_id' => $user->id])->column();
-        $userForm->category_ids = $userCategories;
+//        Записываем id категорий в форму с полем специализаций
+        $userForm->category_ids = $userCategories->indexBy('category_id')->column();
 
-        $categories = Categories::find()
-            ->select(['name','id'])
-            ->indexBy('id')->column();;
+//        Назначаем пользователя мастером, если у него выбрана хотя бы одна специализация
+        if ($userCategories->count() < 1) {
+            $user->is_executor = 0;
+        } else {
+            $user->is_executor = 1;
+        }
+        $user->save();
 
         if (\Yii::$app->request->isPost) {
 
             if ($userForm->load(\Yii::$app->request->post()) && $userForm->validate()) {
 
+//                Если специализации выбраны, то удаляем старые категории и вносим новые
+                if ($userForm->category_ids) {
+                    if (count($userForm->category_ids) != $userCategories->count()) {
+
+                        foreach ($user->categories as $category) {
+                            $category->delete();
+                        }
+
+                        foreach ($userForm->category_ids as $category_id) {
+                            $userCategories = new UsersCategories();
+                            $userCategories->user_id = $user->id;
+                            $userCategories->category_id = (int)$category_id;
+                            $userCategories->save();
+                        }
+                    }
+//                    Иначе, если чекбоксы категорий очмщены, то удаляем текущие категории
+                } else {
+                    foreach ($user->categories as $category) {
+                        $category->delete();
+                    }
+                }
+
+//                Загрузка фото для портфолио
                 $files = UploadedFile::getInstances($userForm, 'images');
                 if (!empty($files)) {
                     foreach ($files as $uplFile) {
@@ -61,6 +92,7 @@ class AccountController extends SecuredController
                     }
                 }
 
+//                Загрузка аватарки
                 $avatar = UploadedFile::getInstance($userForm, 'avatar');
                 if (!empty($avatar)) {
                     $file = new Files();
@@ -80,20 +112,6 @@ class AccountController extends SecuredController
                     \Yii::$app->session->setFlash('userPassword');
                 }
 
-                if (!empty($userForm->category_ids)) {
-                    $userCategories = UsersCategories::find()->where(['user_id' => $user->id])->all();
-                    foreach ($userCategories as $category) {
-                        $category->delete();
-                    }
-
-                    foreach ($userForm->category_ids as $category_id) {
-                        $userCategories = new UsersCategories();
-                        $userCategories->user_id = $user->id;
-                        $userCategories->category_id = (int)$category_id;
-                        $userCategories->save();
-                    }
-                }
-
                 $user->email = $userForm->email;
                 $user->birthday = $userForm->birthday;
                 $user->about_me = $userForm->aboutMe;
@@ -105,6 +123,7 @@ class AccountController extends SecuredController
                 $user->notification_task_action = (int)$userForm->notification_task_action;
                 $user->show_contacts = (int)$userForm->show_contacts;
                 $user->hide_profile = (int)$userForm->hide_profile;
+
                 $user->save();
                 \Yii::$app->session->setFlash('changeMessage');
                 return $this->redirect(['account/index']);

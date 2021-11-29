@@ -17,5 +17,14 @@ use yii\helpers\Url;
 
 print Yii::$app->security->generatePasswordHash('123');
 print '<hr>';
-$user = Users::findOne(2);
+$user = Users::findOne(1);
 
+$userCategories = UsersCategories::find()->select('category_id')
+    ->where(['user_id' => $user->id]);
+$cat_ids = $userCategories->indexBy('category_id')->column();
+
+if (count($cat_ids) > 0) {
+    print count($cat_ids);
+}
+
+print $userCategories->count();

@@ -24,7 +24,6 @@ use yii\widgets\MaskedInput;
 use yii\widgets\Pjax;
 
 ?>
-
 <div class="main-container page-container">
     <section class="account__redaction-wrapper">
 
@@ -33,7 +32,7 @@ use yii\widgets\Pjax;
                 'options' => [
                     'class' => 'alert-success',
                     'style' => [
-                        'margin' => '20px'
+                        'margin' => '20px 0'
                     ]
                 ],
                 'body' => 'Профиль успешно обновлен'
