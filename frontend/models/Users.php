@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 
+use app\models\Bookmarks;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\web\IdentityInterface;
@@ -206,6 +207,14 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     public function getCategories(): ActiveQuery
     {
         return $this->hasMany(UsersCategories::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getBookmarks(): ActiveQuery
+    {
+        return $this->hasMany(Bookmarks::class, ['favorite_id' => 'id']);
     }
 
     public static function findIdentity($id)

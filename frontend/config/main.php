@@ -69,6 +69,7 @@ return [
                 'sign-up' => 'sign-up/index',
                 'logout' => 'site/logout',
                 'user/<id:\d+>' => 'users/view',
+                'bookmark/<favorite_id:\d+>' => 'users/add-bookmark',
                 'task/<id:\d+>' => 'tasks/view',
                 'refuse/<id:\d+>' => 'tasks/refuse',
                 'accept/<id:\d+>' => 'tasks/accept',

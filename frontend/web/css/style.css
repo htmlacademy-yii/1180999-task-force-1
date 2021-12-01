@@ -536,7 +536,8 @@ footer {
   position: relative;
   font-weight: 300;
   font-size: 13px;
-  padding-left: 19px; }
+  /*padding-left: 19px; */
+}
 
 .new-task__card span::before
 {
@@ -546,7 +547,7 @@ footer {
   height: 12px;
   background-image: url("../img/clock.png");
   top: 1px;
-  left: 0; }
+  left: -17px; }
 
 .new-task__place {
   position: relative;

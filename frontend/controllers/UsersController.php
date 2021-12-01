@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use app\models\Bookmarks;
 use frontend\models\forms\UserFilterForm;
 use frontend\models\Reviews;
 use frontend\models\UsersCategories;
@@ -27,6 +28,11 @@ class UsersController extends SecuredController
                         'actions' => ['index', 'view'],
                         'allow' => true,
                         'roles' => ['@', '?']
+                    ],
+                    [
+                        'actions' => ['add-bookmark'],
+                        'allow' => true,
+                        'roles' => ['@']
                     ]
                 ],
                 'denyCallback' => function ($rule, $action) {
@@ -92,6 +98,34 @@ class UsersController extends SecuredController
         return $this->render('view', compact(
             'user', 'dataProvider'
         ));
+    }
+
+    /**
+     * @param int $favorite_id
+     * @return \yii\web\Response
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionAddBookmark(int $favorite_id): \yii\web\Response
+    {
+        $bookmarks = Bookmarks::find()->where(['follower_id' => \Yii::$app->user->id])->all();
+
+        foreach ($bookmarks as $bookmark) {
+            if ($bookmark->favorite->id === $favorite_id) {
+                if ($bookmark->delete()) {
+                    \Yii::$app->session->setFlash('bookmark-delete', 'Пользователь удален из избранного');
+                }
+                return $this->redirect(['users/view', 'id' => $favorite_id]);
+            }
+        }
+        $bookmark = new Bookmarks();
+        $bookmark->favorite_id = $favorite_id;
+        $bookmark->follower_id = \Yii::$app->user->id;
+        if ($bookmark->save()) {
+            \Yii::$app->session->setFlash('bookmark-add', 'Пользователь добавлен в избранное');
+        }
+
+        return $this->redirect(['users/view', 'id' => $favorite_id]);
     }
 
 }

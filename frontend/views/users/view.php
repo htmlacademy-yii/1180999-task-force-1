@@ -8,9 +8,10 @@
 use frontend\models\Users;
 use frontend\models\UsersCategories;
 use frontend\widgets\ageFormatter\AgeFormatter;
+use frontend\widgets\bookmark\Bookmark;
 use frontend\widgets\executorInfo\ExecutorInfo;
 use frontend\widgets\rating\RatingWidget;
-use frontend\widgets\timeFormatter\TimeFormatterWidget;
+use yii\bootstrap\Alert;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
@@ -21,6 +22,30 @@ use yii\widgets\Pjax;
 
 <div class="main-container page-container">
     <section class="content-view">
+        <?php if (Yii::$app->session->hasFlash('bookmark-add')): ?>
+            <?= Alert::widget([
+                'options' => [
+                    'class' => 'alert-success',
+                    'style' => [
+                        'margin' => '20px 20px'
+                    ]
+                ],
+                'body' => Yii::$app->session->getFlash('bookmark-add')
+            ]) ?>
+        <?php endif; ?>
+
+        <?php if (Yii::$app->session->hasFlash('bookmark-delete')): ?>
+            <?= Alert::widget([
+                'options' => [
+                    'class' => 'alert-danger',
+                    'style' => [
+                        'margin' => '20px 20px'
+                    ]
+                ],
+                'body' => Yii::$app->session->getFlash('bookmark-delete')
+            ]) ?>
+        <?php endif; ?>
+
         <div class="user__card-wrapper">
             <div class="user__card">
                 <img src="<?= $user->avatarFile->path ?? '/img/no-photos.png' ?>" width="120" height="120" alt="Аватар пользователя">
@@ -35,13 +60,9 @@ use yii\widgets\Pjax;
                     </div>
                         <?= ExecutorInfo::widget(['id' => $user->id]) ?>
                 </div>
-                <div class="content-view__headline user__card-bookmark user__card-bookmark--current">
-                    <span><?= TimeFormatterWidget::widget([
-                            'time' => $user->last_active_time,
-                            'format' => TimeFormatterWidget::USER_FORMAT
-                        ])?></span>
-                    <a href="#"><b></b></a>
-                </div>
+
+                <?= Bookmark::widget(['user' => $user]) ?>
+
             </div>
             <div class="content-view__description">
                 <p><?= $user->about_me ?></p>
@@ -64,7 +85,7 @@ use yii\widgets\Pjax;
                     <h3 class="content-view__h3">Контакты</h3>
                     <div class="user__card-link">
                         <a class="user__card-link--tel link-regular" href="tel:7<?= $user->phone ?>">
-                            +7 <?= $user->phone ?>
+                            <?= $user->phone ?>
                         </a>
                         <a class="user__card-link--email link-regular" href="mailto:<?= $user->email ?>"><?= $user->email ?></a>
                         <a class="user__card-link--skype link-regular" href="#"><?= $user->skype ?></a>
@@ -103,10 +124,6 @@ use yii\widgets\Pjax;
                     ]);
                     ?>
                     <?php Pjax::end() ?>
-
-<!--                    <a href="#"><img src="../img/rome-photo.jpg" width="85" height="86" alt="Фото работы"></a>-->
-<!--                    <a href="#"><img src="../img/smartphone-photo.png" width="85" height="86" alt="Фото работы"></a>-->
-<!--                    <a href="#"><img src="../img/dotonbori-photo.png" width="85" height="86" alt="Фото работы"></a>-->
                 </div>
             </div>
         </div>

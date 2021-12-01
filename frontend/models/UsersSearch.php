@@ -2,7 +2,10 @@
 
 namespace frontend\models;
 
+use app\models\Bookmarks;
 use frontend\models\forms\UserFilterForm;
+use frontend\widgets\bookmark\Bookmark;
+use taskforce\Task;
 use Yii;
 use yii\data\ActiveDataProvider;
 
@@ -184,9 +187,17 @@ class UsersSearch extends \yii\db\ActiveRecord
         return $this->hasMany(UsersMessages::className(), ['sender_id' => 'id']);
     }
 
+    /**
+     * @param UserFilterForm $modelForm
+     * @return ActiveDataProvider
+     */
     public function search(UserFilterForm $modelForm)
     {
-        $query = Users::find();
+        $query = Users::find()->where(['is_executor' => 1]);
+        $bookmarks = Bookmarks::find()
+            ->select('favorite_id')
+            ->where(['follower_id' => Yii::$app->user->id])
+            ->indexBy('favorite_id')->column();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -196,12 +207,35 @@ class UsersSearch extends \yii\db\ActiveRecord
         ]);
 
         if ($modelForm->category_ids) {
-            $query->where(['is_executor' => 1]);
+            $query->leftJoin('users_categories', 'users_categories.user_id = users.id')
+                ->andFilterWhere([
+                    'category_id' => $modelForm->category_ids
+                ]);
+        }
+
+        if ($modelForm->isFree) {
+            $query->leftJoin('tasks', 'tasks.executor_id = users.id')
+                ->andFilterWhere(['executor_id' => null]);
+        }
+
+        if ($modelForm->review) {
+            $query->leftJoin('reviews', 'reviews.executor_id = users.id')
+                ->andFilterWhere(['not',['executor_id' => null]]);
+        }
+
+        if ($modelForm->online) {
+            $query->andFilterWhere(['>', 'last_active_time', date('Y-m-d H:i:s', strtotime('-30 minutes'))]);
+        }
+
+        if ($modelForm->favorite) {
+
+            $query->andWhere(['id' => $bookmarks]);
         }
 
         if ($modelForm->nameSearch) {
             $query->andFilterWhere(['like', 'name', $modelForm->nameSearch]);
         }
+
 
         return $dataProvider;
     }
