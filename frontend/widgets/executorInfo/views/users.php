@@ -2,6 +2,7 @@
 /**
 * @var $info array Количество задач и отзывов
 * @var $executorId int Идентификатор исполнителя
+* @var $avatar string путь к аватарке исполнителя
 */
 
 use yii\helpers\Html;
@@ -10,7 +11,7 @@ use yii\helpers\Url;
 ?>
 
 <?= Html::a(
-        Html::img(Yii::$app->user->identity->avatarFile->path ?? '/img/no-photos.png', [
+        Html::img($info['avatar'] ?? '/img/no-photos.png', [
         'width' => 65,
         'height' => 65,
         'alt' => 'Аватар исполнителя',

@@ -7,6 +7,7 @@
 
 use frontend\models\Users;
 use frontend\models\UsersCategories;
+use frontend\widgets\ageFormatter\AgeFormatter;
 use frontend\widgets\executorInfo\ExecutorInfo;
 use frontend\widgets\rating\RatingWidget;
 use frontend\widgets\timeFormatter\TimeFormatterWidget;
@@ -25,7 +26,10 @@ use yii\widgets\Pjax;
                 <img src="<?= $user->avatarFile->path ?? '/img/no-photos.png' ?>" width="120" height="120" alt="Аватар пользователя">
                 <div class="content-view__headline">
                     <h1><?= $user->name ?></h1>
-                    <p><?= $user->city->name ?></p>
+                    <p>
+                        <?= $user->city->name ?>
+                        <?= $user->birthday ? ', ' . AgeFormatter::widget(['birthday' => $user->birthday]): ''?>
+                    </p>
                     <div class="profile-mini__name five-stars__rate">
                         <?= RatingWidget::widget(['rating' => $user->calcRatingScore()]) ?>
                     </div>

@@ -33,7 +33,8 @@ class ExecutorInfo extends \yii\base\Widget
         $user = Users::findOne($this->id);
         return [
             'tasksCount' => (int)Tasks::find()->where(['executor_id' => $user->id])->count(),
-            'reviewsCount' => (int)Reviews::find()->where(['executor_id' => $user->id])->count()
+            'reviewsCount' => (int)Reviews::find()->where(['executor_id' => $user->id])->count(),
+            'avatar' => $user->avatarFile->path
         ];
     }
 }
