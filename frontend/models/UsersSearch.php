@@ -193,7 +193,7 @@ class UsersSearch extends \yii\db\ActiveRecord
      */
     public function search(UserFilterForm $modelForm)
     {
-        $query = Users::find()->where(['is_executor' => 1]);
+        $query = Users::find()->where(['users.is_executor' => 1]);
         $bookmarks = Bookmarks::find()
             ->select('favorite_id')
             ->where(['follower_id' => Yii::$app->user->id])
@@ -201,41 +201,39 @@ class UsersSearch extends \yii\db\ActiveRecord
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => [
-                'pageSize' => 5
-            ]
+
         ]);
 
         if ($modelForm->category_ids) {
             $query->leftJoin('users_categories', 'users_categories.user_id = users.id')
                 ->andFilterWhere([
-                    'category_id' => $modelForm->category_ids
+                    'users_categories.category_id' => $modelForm->category_ids
                 ]);
         }
 
-        if ($modelForm->isFree) {
-            $query->leftJoin('tasks', 'tasks.executor_id = users.id')
-                ->andFilterWhere(['executor_id' => null]);
-        }
-
-        if ($modelForm->review) {
-            $query->leftJoin('reviews', 'reviews.executor_id = users.id')
-                ->andFilterWhere(['not',['executor_id' => null]]);
-        }
-
         if ($modelForm->online) {
-            $query->andFilterWhere(['>', 'last_active_time', date('Y-m-d H:i:s', strtotime('-30 minutes'))]);
+            $query->andWhere(['>', 'last_active_time', date('Y-m-d H:i:s', strtotime('-30 minutes'))]);
         }
 
         if ($modelForm->favorite) {
 
-            $query->andWhere(['id' => $bookmarks]);
+            $query->andWhere(['users.id' => $bookmarks]);
         }
 
         if ($modelForm->nameSearch) {
             $query->andFilterWhere(['like', 'name', $modelForm->nameSearch]);
         }
 
+        if ($modelForm->isFree) {
+            $query->leftJoin('tasks', 'tasks.executor_id = users.id')
+                ->andWhere(['tasks.executor_id' => null]);
+
+        }
+
+        if ($modelForm->review) {
+            $query->leftJoin('reviews', 'reviews.executor_id = users.id')
+                ->andWhere(['not',['reviews.executor_id' => null]]);
+        }
 
         return $dataProvider;
     }

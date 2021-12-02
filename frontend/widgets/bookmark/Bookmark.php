@@ -30,8 +30,10 @@ class Bookmark extends Widget
      */
     private function getMarker()
     {
-        if (!empty($this->user->bookmarks)) {
+        if ($this->user->bookmarks) {
             return '--current';
         }
+
+        return '';
     }
 }

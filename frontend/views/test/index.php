@@ -22,16 +22,6 @@ print Yii::$app->security->generatePasswordHash('123');
 print '<hr>';
 
 
-$users = Users::find();
-$dataProvider = new ActiveDataProvider([
-    'query' => $users,
-    'pagination' => [
-        'pageSize' => 5
-    ]
-]);
-$users->leftJoin('tasks', 'tasks.executor_id = users.id')
-    ->andWhere(['not', ['status' => [Task::STATUS_FAIL, Task::STATUS_SUCCESS]]])
+$users = Users::findOne(2);
 
-?>
-
-<?= \yii\grid\GridView::widget(['dataProvider' => $dataProvider]); ?>
+var_dump($users->bookmarks0);

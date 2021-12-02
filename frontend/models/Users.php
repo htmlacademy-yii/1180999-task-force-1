@@ -217,6 +217,11 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
         return $this->hasMany(Bookmarks::class, ['favorite_id' => 'id']);
     }
 
+    public function getBookmarks0()
+    {
+        return $this->hasMany(Bookmarks::class, ['follower_id' => 'id']);
+    }
+
     public static function findIdentity($id)
     {
         return self::findOne($id);
