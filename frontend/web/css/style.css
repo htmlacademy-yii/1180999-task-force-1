@@ -1793,12 +1793,12 @@ footer {
   -webkit-box-align: baseline;
       -ms-flex-align: baseline;
           align-items: baseline;
-  width: 710px;
+  width: 650px;
   margin-left: 15px;
   padding-bottom: 22px; }
 
 .my-list__bottom .link-name {
-  width: 440px;
+  width: 420px;
   font-size: 16px; }
 
 .my-list__bottom-chat {
@@ -2679,4 +2679,8 @@ footer {
 .lightbulb__new-task.no-notice {
   padding-left: 0;
   font-size: 14px;
+}
+
+.stars {
+  align-self: end;
 }

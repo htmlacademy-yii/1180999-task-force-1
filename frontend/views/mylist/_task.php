@@ -1,6 +1,7 @@
 <?php
 
 use frontend\models\Tasks;
+use frontend\widgets\notifications\MessengerWidget;
 use frontend\widgets\rating\RatingWidget;
 use frontend\widgets\status\StatusWidget;
 use yii\bootstrap\Html;
@@ -37,7 +38,7 @@ use yii\helpers\Url;
                                 ['class' => 'link-regular']
                             ) ?>
                         </p>
-                        <a href="#" class="my-list__bottom-chat"></a>
+                        <?= MessengerWidget::widget(['task_id' => $model->id]) ?>
                         <?= RatingWidget::widget(['rating' => $model->executor->calcRatingScore()]) ?>
                     </div>
                 </div>
