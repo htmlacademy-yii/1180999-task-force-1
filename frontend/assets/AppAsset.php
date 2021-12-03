@@ -15,6 +15,7 @@ class AppAsset extends AssetBundle
         'css/site.css',
     ];
     public $js = [
+        'js/events.js',
         'js/messenger.js',
         'js/main.js',
         'js/dropzone.js'

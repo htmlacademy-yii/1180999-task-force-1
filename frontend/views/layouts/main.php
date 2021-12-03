@@ -1,6 +1,7 @@
 <?php
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
+use frontend\widgets\notifications\NotificationsWidget;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\helpers\Url;
@@ -112,22 +113,7 @@ use yii\helpers\Url;
                         <option value="Vladivostok">Владивосток</option>
                     </select>
                 </div>
-                <div class="header__lightbulb"></div>
-                <div class="lightbulb__pop-up">
-                    <h3>Новые события</h3>
-                    <p class="lightbulb__new-task lightbulb__new-task--message">
-                        Новое сообщение в чате
-                        <a href="#" class="link-regular">«Помочь с курсовой»</a>
-                    </p>
-                    <p class="lightbulb__new-task lightbulb__new-task--executor">
-                        Выбран исполнитель для
-                        <a href="#" class="link-regular">«Помочь с курсовой»</a>
-                    </p>
-                    <p class="lightbulb__new-task lightbulb__new-task--close">
-                        Завершено задание
-                        <a href="#" class="link-regular">«Помочь с курсовой»</a>
-                    </p>
-                </div>
+                <?= NotificationsWidget::widget(['user_id' => \Yii::$app->user->identity->getId()]) ?>
                 <div class="header__account">
                     <a class="header__account-photo">
                         <?= Html::img(Yii::$app->user->identity->avatarFile->path ?? '/img/no-photos-white.png', [

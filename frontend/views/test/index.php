@@ -1,27 +1,41 @@
 <?php
+
 /**
- * @var SingUpForm $model
  * @var \frontend\models\UsersMessages $data
  * @var \frontend\models\Tasks $task
- * @var $bookmark Bookmarks
+ * @var Notifications $notification
  */
 
-use app\models\Bookmarks;
-use frontend\models\Categories;
-use frontend\models\forms\SingUpForm;
-use frontend\models\Users;
-use frontend\models\UsersCategories;
-use taskforce\Task;
-use yii\bootstrap\ActiveForm;
-use yii\data\ActiveDataProvider;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
+use app\models\Notifications;
 use yii\helpers\Url;
+use yii\web\Controller;
 
 print Yii::$app->security->generatePasswordHash('123');
 print '<hr>';
 
+$notifications = \app\models\Notifications::find()
+    ->where(['user_id' => 1])
+    ->andWhere(['and', ['is_read' => 0]])
+    ->all();
 
-$users = Users::findOne(2);
+$user = \frontend\models\Users::findOne(4);
+//
+//class EventsController extends Controller
+//{
+//    public function actionIndex()
+//    {
+//        $notifications = \app\models\Notifications::find()
+//            ->where(['user_id' => Yii::$app->user->identity->getId()])
+//            ->andWhere(['and', ['is_read' => 0]])
+//            ->all();
+//
+//        foreach ($notifications as $notification) {
+//            $notification->is_view = 1;
+//            $notification->save();
+//        }
+//    }
+//}
+?>
 
-var_dump($users->bookmarks0);
+
+<?= NotificationsWidget::widget(['user' => $user]) ?>

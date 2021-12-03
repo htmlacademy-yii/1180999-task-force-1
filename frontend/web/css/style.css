@@ -2675,3 +2675,8 @@ footer {
 .btn-img:hover {
   box-shadow: 0 5px 10px #7e7e7e;
 }
+
+.lightbulb__new-task.no-notice {
+  padding-left: 0;
+  font-size: 14px;
+}

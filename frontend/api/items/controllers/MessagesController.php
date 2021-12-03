@@ -2,6 +2,7 @@
 
 namespace frontend\api\items\controllers;
 
+use app\models\Notifications;
 use frontend\models\Tasks;
 use frontend\models\UsersMessages;
 use Yii;
@@ -46,8 +47,9 @@ class MessagesController extends BaseApiController
         $message_body = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         $message = new UsersMessages();
 
-        $authorId = Tasks::findOne($message_body['task_id'])->user_id;
-        $executorId = Tasks::findOne($message_body['task_id'])->executor_id;
+        $taskInfo = Tasks::findOne($message_body['task_id']);
+        $authorId = $taskInfo->user_id;
+        $executorId = $taskInfo->executor_id;
         $currentUserId = Yii::$app->user->getId();
 
         switch ($currentUserId) {
@@ -62,6 +64,16 @@ class MessagesController extends BaseApiController
         $message->task_id = $message_body['task_id'];
         $message->message = $message_body['message'];
         $message->save();
+
+        if ($message->id) {
+            $newNotification = new Notifications();
+            $newNotification->title = $newNotification::TITLE['newMessage'];
+            $newNotification->description = $taskInfo->name;
+            $newNotification->icon = $newNotification::ICONS['isMessage'];
+            $newNotification->user_id = $message->recipient_id;
+            $newNotification->task_id = $taskInfo->id;
+            $newNotification->save();
+        }
 
         Yii::$app->getResponse()->setStatusCode(201);
         return $message;

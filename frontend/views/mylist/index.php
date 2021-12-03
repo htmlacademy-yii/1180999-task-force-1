@@ -148,3 +148,4 @@ use yii\widgets\ListView;
         </div>
     </section>
 </div>
+<?php $this->registerJsFile('/js/events.js'); ?>

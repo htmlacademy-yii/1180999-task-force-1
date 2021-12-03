@@ -191,7 +191,7 @@ class UsersSearch extends \yii\db\ActiveRecord
      * @param UserFilterForm $modelForm
      * @return ActiveDataProvider
      */
-    public function search(UserFilterForm $modelForm)
+    public function search(UserFilterForm $modelForm): ActiveDataProvider
     {
         $query = Users::find()->where(['users.is_executor' => 1]);
         $bookmarks = Bookmarks::find()
@@ -200,8 +200,7 @@ class UsersSearch extends \yii\db\ActiveRecord
             ->indexBy('favorite_id')->column();
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-
+            'query' => $query
         ]);
 
         if ($modelForm->category_ids) {
@@ -227,7 +226,6 @@ class UsersSearch extends \yii\db\ActiveRecord
         if ($modelForm->isFree) {
             $query->leftJoin('tasks', 'tasks.executor_id = users.id')
                 ->andWhere(['tasks.executor_id' => null]);
-
         }
 
         if ($modelForm->review) {
