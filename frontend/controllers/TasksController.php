@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use app\models\Notifications;
 use frontend\models\Categories;
 use frontend\models\Cities;
 use frontend\models\forms\TaskFilterForm;
@@ -214,6 +215,14 @@ class TasksController extends SecuredController
 
         $executor->is_executor = 1;
         $executor->save();
+
+        $notice = new Notifications();
+        $notice->title = $notice::TITLE['selectExecutor'];
+        $notice->icon = $notice::ICONS['selectExecutor'];
+        $notice->description = Tasks::findOne($task->id)->name;
+        $notice->task_id = $task->id;
+        $notice->user_id = $executor->id;
+        $notice->save();
 
         $this->redirect("/task/$task->id");
     }

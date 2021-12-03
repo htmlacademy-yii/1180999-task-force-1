@@ -59,8 +59,6 @@ class MessagesController extends BaseApiController
         }
 
         $message->sender_id = $currentUserId;
-
-
         $message->task_id = $message_body['task_id'];
         $message->message = $message_body['message'];
         $message->save();
@@ -69,7 +67,7 @@ class MessagesController extends BaseApiController
             $newNotification = new Notifications();
             $newNotification->title = $newNotification::TITLE['newMessage'];
             $newNotification->description = $taskInfo->name;
-            $newNotification->icon = $newNotification::ICONS['isMessage'];
+            $newNotification->icon = $newNotification::ICONS['newMessage'];
             $newNotification->user_id = $message->recipient_id;
             $newNotification->task_id = $taskInfo->id;
             $newNotification->save();

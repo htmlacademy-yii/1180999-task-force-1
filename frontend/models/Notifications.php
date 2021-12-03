@@ -21,14 +21,15 @@ class Notifications extends \yii\db\ActiveRecord
 {
     public const TITLE = [
         'newMessage' => 'Новое сообщение в чате',
-        'newResponse' => 'Выбран исполнитель для',
-        'taskStatus' => 'Завершено задание'
+        'selectExecutor' => 'Вас выбрали исполнителем для',
+        'newResponse' => 'Новый отклик для',
+        'closeTask' => 'Завершено задание'
     ];
 
     public const ICONS = [
-        'isMessage' => '--message',
-        'isExecutor' => '--executor',
-        'isTask' => '--close'
+        'newMessage' => '--message',
+        'selectExecutor' => '--executor',
+        'closeTask' => '--close'
     ];
 
     /**
