@@ -10,6 +10,7 @@ use frontend\models\UsersCategories;
 use frontend\widgets\ageFormatter\AgeFormatter;
 use frontend\widgets\bookmark\Bookmark;
 use frontend\widgets\executorInfo\ExecutorInfo;
+use frontend\widgets\rating\CardReviewRateWidget;
 use frontend\widgets\rating\RatingWidget;
 use yii\bootstrap\Alert;
 use yii\helpers\Html;
@@ -147,11 +148,7 @@ use yii\widgets\Pjax;
                                     <?= $review->text ?? ''?>
                                 </p>
                             </div>
-                            <div class="card__review-rate">
-                                <p class="five-rate big-rate">
-                                    <?= $review->score ? $review->score. '<span></span>' : ''?>
-                                </p>
-                            </div>
+                            <?= CardReviewRateWidget::widget(['score' => $review->score]) ?>
                         </div>
                     </div>
                 <?php endforeach; ?>
