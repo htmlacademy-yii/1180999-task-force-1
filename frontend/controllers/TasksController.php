@@ -195,6 +195,14 @@ class TasksController extends SecuredController
         $response->refuse = Task::ACTION_STATUS_MAP['Refuse'];
         $response->save();
 
+        $notice = new Notifications();
+        $notice->title = $notice::TITLE['refuseResponse'];
+        $notice->icon = $notice::ICONS['refuseResponse'];
+        $notice->description = Tasks::findOne($response->task_id)->name;
+        $notice->task_id = $response->task_id;
+        $notice->user_id = $response->executor_id;
+        $notice->save();
+
         $this->redirect("/task/$response->task_id");
     }
 
@@ -240,6 +248,14 @@ class TasksController extends SecuredController
         $user = Users::findOne($task->executor_id);
         $user->failed_count++;
         $user->save();
+
+        $notice = new Notifications();
+        $notice->title = $notice::TITLE['taskRefusal'];
+        $notice->icon = $notice::ICONS['refuseResponse'];
+        $notice->description = Tasks::findOne($task->id)->name;
+        $notice->task_id = $task->id;
+        $notice->user_id = $task->user_id;
+        $notice->save();
 
         $this->redirect("/task/$task->id");
     }

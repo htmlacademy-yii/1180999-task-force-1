@@ -19,7 +19,6 @@ class EventsController extends SecuredController
             ->all();
 
         foreach ($notifications as $notification) {
-            $notification->is_read = 1;
             $notification->save();
         }
     }

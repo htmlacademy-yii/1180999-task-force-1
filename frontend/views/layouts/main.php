@@ -97,7 +97,7 @@ use yii\helpers\Url;
                     </li>
                     <?php if (!Yii::$app->user->isGuest) : ?>
                         <li class="site-list__item">
-                            <a>Мой профиль</a>
+                            <a href="<?= Url::to(['users/view', 'id' => Yii::$app->user->getId()]) ?>">Мой профиль</a>
                         </li>
                     <?php endif; ?>
                 </ul>
@@ -116,7 +116,7 @@ use yii\helpers\Url;
                 <?= NotificationsWidget::widget(['user_id' => \Yii::$app->user->identity->getId()]) ?>
                 <div class="header__account">
                     <a class="header__account-photo">
-                        <?= Html::img(Yii::$app->user->identity->avatarFile->path ?? '/img/no-photos-white.png', [
+                        <?= Html::img(Yii::$app->user->identity->avatarFile->path ?? '/img/camera.png', [
                                 'width' => 43,
                                 'height' => 44,
                                 'alt' => 'Аватар пользователя',

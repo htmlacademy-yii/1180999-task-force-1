@@ -257,6 +257,11 @@ footer {
   background-repeat: no-repeat;
   background-position: center; }
 
+.lightbulb__new-task--refuse-response::before {
+  background-image: url("../img/cross-big.png");
+  background-repeat: no-repeat;
+  background-position: center; }
+
 .account__pop-up {
   display: none;
   position: absolute;

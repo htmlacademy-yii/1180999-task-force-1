@@ -16,7 +16,7 @@ class NotificationsWidget extends Widget
     public function run()
     {
         return $this->render('notifications', [
-            'notifications' => $this->getNotifications()
+            'notifications' => $this->getNotifications(),
         ]);
     }
 

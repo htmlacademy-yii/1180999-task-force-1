@@ -23,13 +23,16 @@ class Notifications extends \yii\db\ActiveRecord
         'newMessage' => 'Новое сообщение в чате',
         'selectExecutor' => 'Вас выбрали исполнителем для',
         'newResponse' => 'Новый отклик для',
-        'closeTask' => 'Завершено задание'
+        'refuseResponse' => 'Ваш отклик отклонен в',
+        'closeTask' => 'Завершено задание',
+        'taskRefusal' => 'Исполнитель отказался от выполнения в'
     ];
 
     public const ICONS = [
         'newMessage' => '--message',
         'selectExecutor' => '--executor',
-        'closeTask' => '--close'
+        'closeTask' => '--close',
+        'refuseResponse' => '--refuse-response'
     ];
 
     /**
