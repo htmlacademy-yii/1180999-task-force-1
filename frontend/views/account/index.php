@@ -16,6 +16,7 @@ use yii\bootstrap\Alert;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\jui\AutoComplete;
 use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
@@ -54,11 +55,25 @@ use yii\widgets\Pjax;
                         ])
                         . "{input}{label}"
                         . Html::submitButton('Загрузить', [
-                            'class' => 'btn',
-                            'style' => [
-                                'width' => '107px'
+                                'class' => 'btn',
+                                'style' => [
+                                    'width' => '107px'
+                                ]
                             ]
-                        ]),
+                        )
+                        . Html::a('Удалить',
+                                Url::to('avatar-delete/' . $user->id),
+                            [
+                                'class' => 'btn',
+                                'style' => [
+                                    'display' => $user->avatarFile ? '' : 'none',
+                                    'width' => '107px',
+                                    'margin-top' => '10px',
+                                    'color' => '#fff',
+                                    'background' => 'red'
+                                ]
+                            ]
+                        ),
                     'options' => [
                         'class' => 'account__redaction-avatar'
                     ],
@@ -184,7 +199,7 @@ use yii\widgets\Pjax;
         <?php endif; ?>
 
         <h3 class="div-line">Фото работ</h3>
-        <?php Pjax::begin()?>
+        <?php Pjax::begin() ?>
         <div class="account__redaction-section-wrapper account__redaction">
 
             <?= ListView::widget([

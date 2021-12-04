@@ -3210,6 +3210,10 @@ footer {
     margin: 20px 0 20px;
 }
 
+.btn:hover {
+    filter: saturate(0.5);
+}
+
 .btn-img {
     border: none;
 }

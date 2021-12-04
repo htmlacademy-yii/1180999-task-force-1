@@ -7,11 +7,22 @@
  */
 
 use app\models\Notifications;
+use frontend\models\Files;
 use frontend\models\Users;
 use yii\helpers\Url;
 use yii\web\Controller;
 
-$user = \frontend\models\Users::findOne(1);
+$user = \frontend\models\Users::findOne(14);
 
-print $user->calcRatingScore();
+if ($user->id === \Yii::$app->user->getId()) {
+
+    $avatarFile = Files::findOne($user->avatar_file_id);
+    if (file_exists($avatarFile->path)) {
+        unlink($avatarFile->path);
+    }
+    $avatarFile->delete();
+
+//    $user->avatar_file_id = null;
+//    $user->save();
+}
 

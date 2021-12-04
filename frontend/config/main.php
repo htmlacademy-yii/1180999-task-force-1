@@ -78,6 +78,7 @@ return [
                 'mylist/<status:\w+>' => 'mylist/index',
                 'account' => 'account/index',
                 'delete/<id:\d+>' => 'files/delete',
+                'avatar-delete/<id:\d+>' => 'files/avatar-delete',
                 'events' => 'events/index',
                 ['class' => 'yii\rest\UrlRule',
                     'controller' => ['api/messages'],
