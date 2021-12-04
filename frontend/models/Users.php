@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use app\models\Bookmarks;
+use phpDocumentor\Reflection\Types\Mixed_;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\web\IdentityInterface;
@@ -252,20 +253,27 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
         return \Yii::$app->security->validatePassword($password, $this->password);
     }
 
+    /**
+     * Функция подсчета рейтинга пользователя
+     * @return float|int
+     */
     public function calcRatingScore()
     {
         $countReviews = 0;
+        $sum = [];
 
-        $sum = 0;
-        foreach ($this->reviewsByExecuted as $review) {
-            $sum = $sum + $review->score;
+        foreach ($this->getReviewsByExecuted()->all() as $item) {
+            if ($item->score != null) {
+                $sum[] = $item->score;
+            }
             $countReviews++;
         }
+
         if ($countReviews === 0) {
             return 0;
         }
 
-        return $sum/count($this->reviewsByExecuted);
+        return array_sum($sum) / count($sum);
     }
 
 

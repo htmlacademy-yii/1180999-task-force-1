@@ -10,32 +10,23 @@ use app\models\Notifications;
 use yii\helpers\Url;
 use yii\web\Controller;
 
-print Yii::$app->security->generatePasswordHash('123');
-print '<hr>';
+$user = \frontend\models\Users::findOne(1);
 
-$notifications = \app\models\Notifications::find()
-    ->where(['user_id' => 1])
-    ->andWhere(['and', ['is_read' => 0]])
-    ->all();
+$countReviews = 0;
+$sum = 0;
+$newSum = [];
 
-$user = \frontend\models\Users::findOne(4);
-//
-//class EventsController extends Controller
-//{
-//    public function actionIndex()
-//    {
-//        $notifications = \app\models\Notifications::find()
-//            ->where(['user_id' => Yii::$app->user->identity->getId()])
-//            ->andWhere(['and', ['is_read' => 0]])
-//            ->all();
-//
-//        foreach ($notifications as $notification) {
-//            $notification->is_view = 1;
-//            $notification->save();
-//        }
-//    }
-//}
-?>
+foreach ($reviews = \frontend\models\Reviews::find()->where(['executor_id' => 1])->all() as $item) {
+        if ($item->score != null) {
+            $newSum[] = $item->score;
+        }
+    $countReviews++;
+}
+
+if ($countReviews === 0) {
+    return 0;
+}
 
 
-<?= NotificationsWidget::widget(['user' => $user]) ?>
+
+print array_sum($newSum) / count($newSum);
