@@ -193,7 +193,7 @@ class UsersSearch extends \yii\db\ActiveRecord
      */
     public function search(UserFilterForm $modelForm): ActiveDataProvider
     {
-        $query = Users::find()->where(['users.is_executor' => 1]);
+        $query = Users::find()->where(['users.is_executor' => 1])->andWhere(['hide_profile' => 0]);
         $bookmarks = Bookmarks::find()
             ->select('favorite_id')
             ->where(['follower_id' => Yii::$app->user->id])

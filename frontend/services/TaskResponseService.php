@@ -39,8 +39,8 @@ class TaskResponseService
         $executor->save();
 
         $notice = new Notifications();
-        $notice->title = $notice::TITLE['newResponse'];
-        $notice->icon = $notice::ICONS['selectExecutor'];
+        $notice->title = Notifications::TITLE_NEW_RESPONSE;
+        $notice->icon = Notifications::ICONS_SELECT_EXECUTOR;
         $notice->description = Tasks::findOne($taskId)->name;
         $notice->task_id = $task->id;
         $notice->user_id = $task->user_id;

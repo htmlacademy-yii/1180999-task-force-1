@@ -4,13 +4,12 @@ namespace frontend\controllers;
 
 use app\models\Bookmarks;
 use frontend\models\forms\UserFilterForm;
-use frontend\models\Reviews;
-use frontend\models\UsersCategories;
 use frontend\models\UsersFiles;
 use frontend\models\UsersSearch;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use frontend\models\Users;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
 class UsersController extends SecuredController
@@ -47,7 +46,8 @@ class UsersController extends SecuredController
      */
     public function actionIndex(): string
     {
-        $query = Users::find()->where(['is_executor' => 1]);
+        $query = Users::find()->where(['is_executor' => 1])
+                    ->andWhere(['hide_profile' => 0]);
         $filterForm = new UserFilterForm();
 
         $provider = new ActiveDataProvider([
@@ -73,12 +73,17 @@ class UsersController extends SecuredController
 
     /**
      * @param $id
-     * @return string
+     * @return string|\yii\web\Response
      * @throws NotFoundHttpException
      */
     public function actionView($id)
     {
-        $user = Users::findOne($id);
+        $user = Users::find()->where(['id' => $id])->andWhere(['hide_profile' => 0])->one();
+
+        if (!$user) {
+            throw new NotFoundHttpException("Пользователь с id $id не найден");
+        }
+
         $dataProvider = new ActiveDataProvider([
             'query' => UsersFiles::find()->where(['user_id' => $user->id]),
             'pagination' => [
@@ -90,10 +95,6 @@ class UsersController extends SecuredController
                 ]
             ]
         ]);
-
-        if (!$user) {
-            throw new NotFoundHttpException("Пользователь с id $id не найден");
-        }
 
         return $this->render('view', compact(
             'user', 'dataProvider'

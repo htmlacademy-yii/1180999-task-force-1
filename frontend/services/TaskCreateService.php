@@ -36,10 +36,10 @@ class TaskCreateService
         $task->cost = $this->form->cost;
         $task->deadline = $this->form->deadline;
 
-        if (!$this->form->city) {
-            $task->city_id = Users::findOne(Yii::$app->user->id)->city_id;
-        } else {
+        if ($this->form->city) {
             $task->city_id = $this->getCityID($this->form->city);
+        } else {
+            $task->city_id = '';
         }
 
         $task->save();

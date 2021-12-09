@@ -4,6 +4,7 @@ namespace frontend\api\items\controllers;
 
 use app\models\Notifications;
 use frontend\models\Tasks;
+use frontend\models\Users;
 use frontend\models\UsersMessages;
 use Yii;
 use yii\web\ForbiddenHttpException;
@@ -53,9 +54,11 @@ class MessagesController extends BaseApiController
         $currentUserId = Yii::$app->user->getId();
 
         switch ($currentUserId) {
-            case $authorId: $message->recipient_id = $executorId;
-            break;
-            case $executorId: $message->recipient_id = $authorId;
+            case $authorId:
+                $message->recipient_id = $executorId;
+                break;
+            case $executorId:
+                $message->recipient_id = $authorId;
         }
 
         $message->sender_id = $currentUserId;
@@ -64,13 +67,15 @@ class MessagesController extends BaseApiController
         $message->save();
 
         if ($message->id) {
-            $newNotification = new Notifications();
-            $newNotification->title = $newNotification::TITLE['newMessage'];
-            $newNotification->description = $taskInfo->name;
-            $newNotification->icon = $newNotification::ICONS['newMessage'];
-            $newNotification->user_id = $message->recipient_id;
-            $newNotification->task_id = $taskInfo->id;
-            $newNotification->save();
+            if ($message->recipient->notification_new_message === 1) {
+                $newNotification = new Notifications();
+                $newNotification->title = Notifications::TITLE_NEW_MESSAGE;
+                $newNotification->description = $taskInfo->name;
+                $newNotification->icon = Notifications::ICONS_NEW_MESSAGE;
+                $newNotification->user_id = $message->recipient_id;
+                $newNotification->task_id = $taskInfo->id;
+                $newNotification->save();
+            }
         }
 
         Yii::$app->getResponse()->setStatusCode(201);

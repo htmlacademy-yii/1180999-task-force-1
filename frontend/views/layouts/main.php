@@ -2,6 +2,7 @@
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
 use frontend\widgets\notifications\NotificationsWidget;
+use frontend\widgets\towns\TownsWidgets;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\helpers\Url;
@@ -104,15 +105,9 @@ use yii\helpers\Url;
             </div>
 
             <?php if (!Yii::$app->user->isGuest) : ?>
-                <div class="header__town">
-                    <select class="multiple-select input town-select" size="1" name="town[]">
-                        <option value="Moscow">Москва</option>
-                        <option selected value="SPB">Санкт-Петербург</option>
-                        <option value="Krasnodar">Краснодар</option>
-                        <option value="Irkutsk">Иркутск</option>
-                        <option value="Vladivostok">Владивосток</option>
-                    </select>
-                </div>
+
+                <?= TownsWidgets::widget() ?>
+
                 <?= NotificationsWidget::widget(['user_id' => \Yii::$app->user->identity->getId()]) ?>
                 <div class="header__account">
                     <a class="header__account-photo">

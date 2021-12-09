@@ -5,6 +5,7 @@
  * @var $dataProvider \yii\data\ActiveDataProvider фотографии для портфолио
  */
 
+use frontend\models\Tasks;
 use frontend\models\Users;
 use frontend\models\UsersCategories;
 use frontend\widgets\ageFormatter\AgeFormatter;
@@ -12,6 +13,7 @@ use frontend\widgets\bookmark\Bookmark;
 use frontend\widgets\executorInfo\ExecutorInfo;
 use frontend\widgets\rating\CardReviewRateWidget;
 use frontend\widgets\rating\RatingWidget;
+use frontend\widgets\showContacts\ShowContacts;
 use yii\bootstrap\Alert;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -83,15 +85,9 @@ use yii\widgets\Pjax;
 
                         <?php endforeach; ?>
                     </div>
-                    <h3 class="content-view__h3">Контакты</h3>
-                    <div class="user__card-link">
-                        <a class="user__card-link--tel link-regular" href="tel:7<?= $user->phone ?>">
-                            <?= $user->phone ?>
-                        </a>
-                        <a class="user__card-link--email link-regular" href="mailto:<?= $user->email ?>"><?= $user->email ?></a>
-                        <a class="user__card-link--skype link-regular" href="#"><?= $user->skype ?></a>
-                        <a class="user__card-link--skype link-regular" href="#"><?= $user->skype ?></a>
-                    </div>
+
+                    <?= ShowContacts::widget(['user' => $user]) ?>
+
                 </div>
                 <div class="user__card-photo">
                     <h3 class="content-view__h3">Фото работ</h3>
@@ -157,8 +153,10 @@ use yii\widgets\Pjax;
         </div>
     </section>
     <section class="connect-desk">
-        <div class="connect-desk__chat">
-
-        </div>
+<!--        <div id="chat-container">-->
+<!--            <chat class="connect-desk__chat" recipient=""></chat>-->
+<!--        </div>-->
     </section>
 </div>
+
+<?php $this->registerJsFile('/js/messenger2.js'); ?>

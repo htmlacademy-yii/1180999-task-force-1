@@ -18,26 +18,25 @@ class MylistController extends SecuredController
      */
     public function actionIndex($status = null)
     {
-        $user = Users::findOne(\Yii::$app->user->getId());
+        $user = Users::findOne(\Yii::$app->user->identity->getId());
         $query = Tasks::find()->where(['user_id' => $user->id]);
 
         switch ($status) {
             case Task::STATUS_NEW_EN:
-                $query->andFilterWhere(['status' => Task::STATUS_NEW]);
+                $query->andWhere(['status' => Task::STATUS_NEW]);
                 break;
             case Task::STATUS_IN_WORK_EN:
-                $query->andFilterWhere(['status' => Task::STATUS_IN_WORK]);
+                $query->andWhere(['status' => Task::STATUS_IN_WORK]);
                 break;
             case Task::STATUS_CANCEL_EN:
-                $query->andFilterWhere(['status' => Task::STATUS_CANCEL]);
+                $query->andWhere(['status' => Task::STATUS_CANCEL]);
                 break;
             case Task::STATUS_SUCCESS_EN:
             case Task::STATUS_FAIL_EN:
-                $query->andFilterWhere(['status' => Task::STATUS_SUCCESS])
-                    ->orFilterWhere(['status' => Task::STATUS_FAIL]);
+                $query->andWhere(['status' => [Task::STATUS_FAIL, Task::STATUS_SUCCESS]]);
                 break;
             case Task::STATUS_HIDDEN_EN:
-                $query->andFilterWhere(['status' => Task::STATUS_HIDDEN]);
+                $query->andWhere(['status' => Task::STATUS_HIDDEN]);
         }
 
         $tasks = new ActiveDataProvider([

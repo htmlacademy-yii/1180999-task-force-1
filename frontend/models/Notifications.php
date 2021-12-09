@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "notifications".
@@ -17,23 +18,20 @@ use Yii;
  *
  */
 
-class Notifications extends \yii\db\ActiveRecord
+class Notifications extends ActiveRecord
 {
-    public const TITLE = [
-        'newMessage' => 'Новое сообщение в чате',
-        'selectExecutor' => 'Вас выбрали исполнителем для',
-        'newResponse' => 'Новый отклик для',
-        'refuseResponse' => 'Ваш отклик отклонен в',
-        'closeTask' => 'Завершено задание',
-        'taskRefusal' => 'Исполнитель отказался от выполнения в'
-    ];
+    public const TITLE_NEW_MESSAGE = 'Новое сообщение в чате';
+    public const TITLE_SELECT_EXECUTOR = 'Вас выбрали исполнителем для';
+    public const TITLE_NEW_RESPONSE = 'Новый отклик для';
+    public const TITLE_REFUSE_RESPONSE = 'Ваш отклик отклонен в';
+    public const TITLE_CLOSE_TASK = 'Завершено задание';
+    public const TITLE_TASK_REFUSAL = 'Исполнитель отказался от выполнения в';
+    public const TITLE_TASK_LOST = 'Срок исполнения истек в';
 
-    public const ICONS = [
-        'newMessage' => '--message',
-        'selectExecutor' => '--executor',
-        'closeTask' => '--close',
-        'refuseResponse' => '--refuse-response'
-    ];
+    public const ICONS_NEW_MESSAGE = '--message';
+    public const ICONS_SELECT_EXECUTOR = '--executor';
+    public const ICONS_CLOSE_TASK = '--close';
+    public const ICONS_REFUSE_RESPONSE = '--refuse-response';
 
     /**
      * {@inheritdoc}

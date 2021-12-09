@@ -8,21 +8,47 @@
 
 use app\models\Notifications;
 use frontend\models\Files;
+use frontend\models\forms\TaskFilterForm;
+use frontend\models\Tasks;
 use frontend\models\Users;
-use yii\helpers\Url;
+use frontend\services\TaskTimeService;
+use taskforce\Task;
+use yii\data\ActiveDataProvider;
+use yii\grid\GridView;use yii\helpers\Url;
 use yii\web\Controller;
+use yii\widgets\ListView;
 
-$user = \frontend\models\Users::findOne(14);
+$query = Tasks::find();
+$timeService = new TaskTimeService;
+$timeService->tasks = $query->where(['not', ['status' => Task::STATUS_FAIL ]])->all();
+$timeService->execute();
 
-if ($user->id === \Yii::$app->user->getId()) {
+//        if ($task->deadline) {
+//            if (strtotime($task->deadline) < time()) {
+//                $task->status = Task::STATUS_HIDDEN;
+//                $task->save();
+//                Yii::$app->session->setFlash('taskMessage', "Задача просрочена");
+//            }
+//        }
+//
 
-    $avatarFile = Files::findOne($user->avatar_file_id);
-    if (file_exists($avatarFile->path)) {
-        unlink($avatarFile->path);
-    }
-    $avatarFile->delete();
+$provider = new ActiveDataProvider([
+    'query' => $query,
+    'pagination' => [
+        'pageSize' => 100,
+    ],
+    'sort' => [
+        'defaultOrder' => [
+            'dt_add' => SORT_DESC
+        ]
+    ],
+]);
 
-//    $user->avatar_file_id = null;
-//    $user->save();
-}
+?>
+
+<?= ListView::widget([
+    'dataProvider' => $provider,
+    'itemView' => '_item'
+    ])
+?>
 

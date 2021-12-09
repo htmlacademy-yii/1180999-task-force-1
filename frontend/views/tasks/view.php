@@ -45,8 +45,14 @@ use frontend\models\Files;
                             <?= date('Y-m-d', strtotime($task->dt_add)) ?>
                         </span>
                     </div>
-                    <b class="new-task__price new-task__price--<?= $task->category->code ?> content-view-price"><?= $task->cost ?>
-                        <b> ₽</b></b>
+
+                    <?php if ($task->cost): ?>
+                        <b class="new-task__price new-task__price--<?= $task->category->code ?> content-view-price">
+                            <?= $task->cost ?><b> ₽</b>
+                        </b>
+                    <?php endif; ?>
+
+
                     <div class="new-task__icon new-task__icon--<?= $task->category->code ?> content-view-icon"></div>
                 </div>
                 <div class="content-view__description">
@@ -55,9 +61,10 @@ use frontend\models\Files;
                         <?= $task->description ?>
                     </p>
                 </div>
+
+                <?php if ($task->tasksFiles): ?>
                 <div class="content-view__attach">
                     <h3 class="content-view__h3">Вложения</h3>
-
                     <?php foreach ($task->tasksFiles as $file): ?>
                         <?= Html::a(
                             Files::findOne(['id' => $file->file->id])->name,
@@ -66,6 +73,8 @@ use frontend\models\Files;
                         ); ?>
                     <?php endforeach; ?>
                 </div>
+                <?php endif; ?>
+
                 <?php if (!empty($address)): ?>
                     <div class="content-view__location">
                         <h3 class="content-view__h3">Расположение</h3>
@@ -180,9 +189,10 @@ use frontend\models\Files;
             ]) ?>
         </section>
 </div>
-
+<?php if (!empty($address)): ?>
 <?= $this->render('_map', [
     'address' => $address,
     'task' => $task
 ]) ?>
+<?php endif; ?>
 <?php $this->registerJsFile('/js/messenger.js'); ?>
