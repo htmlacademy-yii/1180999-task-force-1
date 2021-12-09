@@ -2,7 +2,10 @@
 
 namespace frontend\models;
 
+use app\models\Bookmarks;
+use phpDocumentor\Reflection\Types\Mixed_;
 use Yii;
+use yii\db\ActiveQuery;
 use yii\web\IdentityInterface;
 
 /**
@@ -23,11 +26,14 @@ use yii\web\IdentityInterface;
  * @property string|null $about_me
  * @property int $notification_new_message
  * @property int $notification_task_action
+ * @property int $hide_profile
+ * @property int|null $notification_new_review
  * @property int|null $failed_count
  * @property int $show_contacts
  * @property int $city_id
  * @property int|null $avatar_file_id
  *
+ * @property UsersCategories[] $categories
  * @property Responses[] $responses
  * @property Reviews[] $reviews
  * @property Reviews[] $reviews0
@@ -55,7 +61,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['is_executor', 'notification_new_message', 'notification_task_action', 'failed_count', 'show_contacts', 'city_id', 'avatar_file_id'], 'integer'],
+            [['is_executor', 'notification_new_message', 'notification_task_action', 'notification_new_review', 'hide_profile', 'failed_count', 'show_contacts', 'city_id', 'avatar_file_id'], 'integer'],
             [['dt_add', 'name', 'email', 'password', 'city_id'], 'required'],
             [['dt_add', 'last_active_time', 'birthday'], 'safe'],
             [['about_me'], 'string'],
@@ -87,6 +93,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
             'about_me' => 'About Me',
             'notification_new_message' => 'Notification New Message',
             'notification_task_action' => 'Notification Task Action',
+            'hide_profile' => 'Hide Profile',
             'failed_count' => 'Failed Count',
             'show_contacts' => 'Show Contacts',
             'city_id' => 'City ID',
@@ -194,6 +201,28 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
         return $this->hasMany(UsersMessages::className(), ['sender_id' => 'id']);
     }
 
+    /**
+     * Получения списка специализаций пользователя
+     * @return ActiveQuery
+     */
+    public function getCategories(): ActiveQuery
+    {
+        return $this->hasMany(UsersCategories::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getBookmarks(): ActiveQuery
+    {
+        return $this->hasMany(Bookmarks::class, ['favorite_id' => 'id']);
+    }
+
+    public function getBookmarks0()
+    {
+        return $this->hasMany(Bookmarks::class, ['follower_id' => 'id']);
+    }
+
     public static function findIdentity($id)
     {
         return self::findOne($id);
@@ -224,21 +253,29 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
         return \Yii::$app->security->validatePassword($password, $this->password);
     }
 
+    /**
+     * Функция подсчета рейтинга пользователя
+     * @return float|int
+     */
     public function calcRatingScore()
     {
         $countReviews = 0;
+        $sum = [];
 
-        $sum = 0;
-        foreach ($this->reviewsByExecuted as $review) {
-            $sum = $sum + $review->score;
+        foreach ($this->getReviewsByExecuted()->all() as $item) {
+            if ($item->score != null) {
+                $sum[] = $item->score;
+            }
             $countReviews++;
         }
+
         if ($countReviews === 0) {
             return 0;
         }
 
-        return $sum/count($this->reviewsByExecuted);
+        return array_sum($sum) / count($sum);
     }
+
 
     /**
      * @return bool
@@ -261,4 +298,14 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
             'id', 'name', 'email'
         ];
     }
+
+    /**
+     * @param $value
+     */
+    public function setCity($value)
+    {
+        $this->city_id = $value;
+    }
+
+
 }

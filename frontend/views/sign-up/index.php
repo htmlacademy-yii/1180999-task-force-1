@@ -5,6 +5,7 @@
  */
 
 use frontend\models\Cities;
+use yii\helpers\ArrayHelper;
 use yii\jui\AutoComplete;
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
@@ -50,7 +51,7 @@ use yii\helpers\Html;
                 ])->widget(
                     AutoComplete::className(), [
                     'clientOptions' => [
-                        'source' => \yii\helpers\ArrayHelper::getColumn(Cities::find()->all(), 'name')
+                        'source' => ArrayHelper::getColumn(Cities::find()->all(), 'name')
                     ],
                     'options' => [
                         'class' => 'input-navigation input-middle input',

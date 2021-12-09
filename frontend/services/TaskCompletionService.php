@@ -2,6 +2,7 @@
 
 namespace frontend\services;
 
+use app\models\Notifications;
 use frontend\models\forms\CompletionForm;
 use frontend\models\Reviews;
 use frontend\models\Tasks;
@@ -37,6 +38,18 @@ class TaskCompletionService
         $review->text = $this->form->description;
         $review->score = Yii::$app->request->post('rating');
         $review->save();
+
+        if ($review->executor->notification_new_review === 1) {
+            $score = "Ваша оценка: <b>$review->score</b><br>";
+            $notice = new Notifications();
+            $notice->title = $review->score ? $score : '';
+            $notice->title .= Notifications::TITLE_CLOSE_TASK;
+            $notice->icon = Notifications::ICONS_CLOSE_TASK;
+            $notice->description = Tasks::findOne($task->id)->name;
+            $notice->task_id = $task->id;
+            $notice->user_id = $task->executor_id;
+            $notice->save();
+        }
 
         return 1;
     }

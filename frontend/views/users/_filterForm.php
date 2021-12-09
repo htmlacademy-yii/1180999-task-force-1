@@ -91,7 +91,7 @@ use yii\helpers\Html;
         'class' => 'button'
     ]) ?>
 
-    <a href="<?= Url::to(['users']) ?>">
+    <a href="<?= Url::to(['users/index']) ?>">
         <?= Html::button('Очистить', [
             'type' => 'button',
             'class' => 'button reset-button'

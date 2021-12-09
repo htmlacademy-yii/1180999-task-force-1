@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use app\models\Notifications;
 use frontend\models\Categories;
 use frontend\models\Cities;
 use frontend\models\forms\TaskFilterForm;
@@ -12,6 +13,7 @@ use frontend\services\api\GeoCoderApi;
 use frontend\services\TaskGetService;
 use frontend\services\TaskCompletionService;
 use frontend\services\TaskResponseService;
+use frontend\services\TaskTimeService;
 use GuzzleHttp\Exception\GuzzleException;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
@@ -80,7 +82,13 @@ class TasksController extends SecuredController
      */
     public function actionIndex(): string
     {
+        $lostTasks = new TaskTimeService();
+        $lostTasks->tasks = Tasks::find()->where(['not',['deadline' => null]])
+            ->andWhere(['not', ['status' => Task::STATUS_HIDDEN]]);
+        $lostTasks->execute();
+
         $query = Tasks::find()->where(['status' => Task::STATUS_NEW]);
+
         $modelForm = new TaskFilterForm();
 
         $provider = new ActiveDataProvider([
@@ -118,22 +126,25 @@ class TasksController extends SecuredController
      */
     public function actionView($id)
     {
-
         $getTaskService = new TaskGetService();
         $task = $getTaskService->getTask($id);
-        if (!$task) {
-            throw new NotFoundHttpException("Пользователь с id $id не найден");
-        }
-        $city = $task->city->name ?? '';
-
+        $user = Users::findOne($task->user_id);
         $geoData = new GeoCoderApi();
+
+        if (!$task) {
+            throw new NotFoundHttpException("Задача с id $id не найдена");
+        }
+        if ($task->city) {
+            $city = $task->city->name;
+            $address = $geoData->getData($city);
+        }
+
 
         $respondService = new TaskResponseService();
         $respondId = $respondService->execute(Yii::$app->request->post(), $task->id);
 
         $TaskCompletionService = new TaskCompletionService;
         $reviewId = $TaskCompletionService->execute(Yii::$app->request->post(), $task);
-
 
         if ($respondId) {
             return $this->redirect(Url::to(['tasks/view', 'id' => $task->id]));
@@ -145,10 +156,11 @@ class TasksController extends SecuredController
 
         return $this->render('view', [
             'task' => $task,
+            'user' => $user,
             'executors' => $getTaskService->getExecutors(),
             'responseForm' => $respondService->getForm(),
             'completionForm' => $TaskCompletionService->getForm(),
-            'address' => $geoData->getData($city)
+            'address' => $address ?? ''
             ]
         );
     }
@@ -185,6 +197,16 @@ class TasksController extends SecuredController
         $response->refuse = Task::ACTION_STATUS_MAP['Refuse'];
         $response->save();
 
+        if ($response->executor->notification_task_action === 1) {
+            $notice = new Notifications();
+            $notice->title = Notifications::TITLE_REFUSE_RESPONSE;
+            $notice->icon = Notifications::ICONS_REFUSE_RESPONSE;
+            $notice->description = Tasks::findOne($response->task_id)->name;
+            $notice->task_id = $response->task_id;
+            $notice->user_id = $response->executor_id;
+            $notice->save();
+        }
+
         $this->redirect("/task/$response->task_id");
     }
 
@@ -201,10 +223,21 @@ class TasksController extends SecuredController
 
         $task->executor_id = $response->executor_id;
         $task->status = Task::STATUS_IN_WORK;
+        $task->cost = $response->price;
         $task->save();
 
         $executor->is_executor = 1;
         $executor->save();
+
+        if ($executor->notification_task_action === 1) {
+            $notice = new Notifications();
+            $notice->title = Notifications::TITLE_SELECT_EXECUTOR;
+            $notice->icon = Notifications::ICONS_SELECT_EXECUTOR;
+            $notice->description = Tasks::findOne($task->id)->name;
+            $notice->task_id = $task->id;
+            $notice->user_id = $executor->id;
+            $notice->save();
+        }
 
         $this->redirect("/task/$task->id");
     }
@@ -223,13 +256,27 @@ class TasksController extends SecuredController
         $user->failed_count++;
         $user->save();
 
+        if ($task->user->notification_task_action === 1) {
+            $notice = new Notifications();
+            $notice->title = Notifications::TITLE_TASK_REFUSAL;
+            $notice->icon = Notifications::ICONS_REFUSE_RESPONSE;
+            $notice->description = Tasks::findOne($task->id)->name;
+            $notice->task_id = $task->id;
+            $notice->user_id = $task->user_id;
+            $notice->save();
+        }
+
         $this->redirect("/task/$task->id");
     }
 
+    /**
+     * Действие отмены задачи
+     * @param int $id
+     */
     public function actionCancel(int $id)
     {
         $task = Tasks::findOne($id);
-        $task->status = Task::STATUS_FAIL;
+        $task->status = Task::STATUS_CANCEL;
         $task->save();
         Yii::$app->session->setFlash('taskMessage', "Задача отменена");
         $this->redirect("/task/$task->id");

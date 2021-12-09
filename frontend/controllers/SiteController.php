@@ -8,6 +8,7 @@ use frontend\models\Users;
 use yii\console\Response;
 use yii\filters\AccessControl;
 use frontend\models\forms\LoginForm;
+use yii\helpers\Url;
 
 /**
  * Site controller
@@ -49,7 +50,7 @@ class SiteController extends SecuredController
                     ]
                 ],
                 'denyCallback' => function ($rule, $action) {
-                    return $this->redirect(['tasks/index']);
+                    return $this->redirect(Url::to(['tasks/index']));
                 },
             ]
         ];

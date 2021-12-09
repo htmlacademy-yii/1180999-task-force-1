@@ -27,3 +27,9 @@
 
 -- Отзывы
 ./yii migrate/create create_reviews_table --fields="dt_add:datetime:notNull,user_id:integer:notNull:foreignKey(users), executor_id:integer:notNull:foreignKey(users),task_id:integer:notNull:foreignKey(tasks),score:tinyInteger:null:defaultValue(0),text:text:null"
+
+-- Закладки
+./yii migrate/create create_bookmarks_table --fields="follower_id:integer:notNull:foreignKey(users), favorite_id:integer:notNull:foreignKey(users)"
+
+-- Уведомления
+./yii migrate/create create_notifications_table --fields="title:string(255):notNull,description:string(255):null,icon:string(255):notNull,is_read:tinyInteger:notNull:defaultValue(0),user_id:integer:notNull:foreignKey(users),task_id:integer:notNull:foreignKey(tasks)"

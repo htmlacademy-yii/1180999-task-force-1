@@ -1,9 +1,12 @@
 <?php
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
+use frontend\widgets\notifications\NotificationsWidget;
+use frontend\widgets\towns\TownsWidgets;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\helpers\Url;
+
 
 /* @var $this View */
 
@@ -95,43 +98,24 @@ use yii\helpers\Url;
                     </li>
                     <?php if (!Yii::$app->user->isGuest) : ?>
                         <li class="site-list__item">
-                            <a>Мой профиль</a>
+                            <a href="<?= Url::to(['users/view', 'id' => Yii::$app->user->getId()]) ?>">Мой профиль</a>
                         </li>
                     <?php endif; ?>
                 </ul>
             </div>
 
             <?php if (!Yii::$app->user->isGuest) : ?>
-                <div class="header__town">
-                    <select class="multiple-select input town-select" size="1" name="town[]">
-                        <option value="Moscow">Москва</option>
-                        <option selected value="SPB">Санкт-Петербург</option>
-                        <option value="Krasnodar">Краснодар</option>
-                        <option value="Irkutsk">Иркутск</option>
-                        <option value="Vladivostok">Владивосток</option>
-                    </select>
-                </div>
-                <div class="header__lightbulb"></div>
-                <div class="lightbulb__pop-up">
-                    <h3>Новые события</h3>
-                    <p class="lightbulb__new-task lightbulb__new-task--message">
-                        Новое сообщение в чате
-                        <a href="#" class="link-regular">«Помочь с курсовой»</a>
-                    </p>
-                    <p class="lightbulb__new-task lightbulb__new-task--executor">
-                        Выбран исполнитель для
-                        <a href="#" class="link-regular">«Помочь с курсовой»</a>
-                    </p>
-                    <p class="lightbulb__new-task lightbulb__new-task--close">
-                        Завершено задание
-                        <a href="#" class="link-regular">«Помочь с курсовой»</a>
-                    </p>
-                </div>
+
+                <?= TownsWidgets::widget() ?>
+
+                <?= NotificationsWidget::widget(['user_id' => \Yii::$app->user->identity->getId()]) ?>
                 <div class="header__account">
                     <a class="header__account-photo">
-                        <img src="<?= $user->avatarFile->path ?? '/img/user-man.jpg' ?>"
-                             width="43" height="44"
-                             alt="Аватар пользователя">
+                        <?= Html::img(Yii::$app->user->identity->avatarFile->path ?? '/img/camera.png', [
+                                'width' => 43,
+                                'height' => 44,
+                                'alt' => 'Аватар пользователя',
+                        ])?>
                     </a>
                     <span class="header__account-name">
                  <?= Yii::$app->user->identity->name ?>
@@ -140,10 +124,14 @@ use yii\helpers\Url;
                 <div class="account__pop-up">
                     <ul class="account__pop-up-list">
                         <li>
-                            <a href="#">Мои задания</a>
+                            <?= Html::a('Мои задания',
+                                        Url::to(['mylist/index', 'status' => \taskforce\Task::STATUS_NEW_EN])
+                            )?>
                         </li>
                         <li>
-                            <a href="#">Настройки</a>
+                            <?= Html::a('Настройки',
+                                Url::to(['account/index'])
+                            )?>
                         </li>
                         <li>
                             <?= Html::a('Выход',
@@ -160,68 +148,13 @@ use yii\helpers\Url;
         <?= $content ?? ''; ?>
     </main>
     <footer class="page-footer">
-        <div class="main-container page-footer__container">
-            <div class="page-footer__info">
-                <p class="page-footer__info-copyright">
-                    © 2020, ООО «ТаскФорс»
-                    Все права защищены
-                </p>
-                <p class="page-footer__info-use">
-                    «TaskForce» — это сервис для поиска исполнителей на разовые задачи.
-                    mail@taskforce.com
-                </p>
-            </div>
-            <div class="page-footer__links">
-                <ul class="links__list">
-                    <li class="links__item">
-                        <a href="">Задания</a>
-                    </li>
-                    <li class="links__item">
-                        <a href="">Мой профиль</a>
-                    </li>
-                    <li class="links__item">
-                        <a href="">Исполнители</a>
-                    </li>
-                    <li class="links__item">
-                        <a href="">Регистрация</a>
-                    </li>
-                    <li class="links__item">
-                        <a href="">Создать задание</a>
-                    </li>
-                    <li class="links__item">
-                        <a href="">Справка</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="page-footer__copyright">
-                <a>
-                    <img class="copyright-logo"
-                         src="/img/academy-logo.png"
-                         width="185" height="63"
-                         alt="Логотип HTML Academy">
-                </a>
-            </div>
-            <?php if (Yii::$app->request->url === '/sign-up'): ?>
-                <div class="clipart-woman">
-                    <img src="./img/clipart-woman.png" width="238" height="450">
-                </div>
-                <div class="clipart-message">
-                    <div class="clipart-message-text">
-                        <h2>Знаете ли вы, что?</h2>
-                        <p>После регистрации вам будет доступно более
-                            двух тысяч заданий из двадцати разных категорий.</p>
-                        <p>В среднем, наши исполнители зарабатывают
-                            от 500 рублей в час.</p>
-                    </div>
-                </div>
-            <?php endif; ?>
-        </div>
-
+       <?= $this->render('footer') ?>
     </footer>
 
 </div>
 <div class="overlay"></div>
 <?php $this->registerJsFile('/js/main.js'); ?>
+<?php $this->registerJsFile('/js/events.js'); ?>
 <?php $this->endBody(); ?>
 
 </body>

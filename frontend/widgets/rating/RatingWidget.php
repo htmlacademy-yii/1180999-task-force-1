@@ -20,5 +20,4 @@ class RatingWidget extends Widget
         ]);
     }
 
-
 }

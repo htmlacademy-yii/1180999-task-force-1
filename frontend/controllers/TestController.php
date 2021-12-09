@@ -7,20 +7,17 @@
 namespace frontend\controllers;
 
 use frontend\models\Tasks;
+use taskforce\Task;
 use Yii;
 use yii\web\Controller;
 
 
 class TestController extends Controller
 {
-    public function actionIndex()
+    public function actionRun()
     {
-//        Данные
-        $task_id = Yii::$app->request->get('task_id');
-        $task = Tasks::findOne($task_id);
+        $task = Tasks::findOne(\Yii::$app->request->get('id'));
 
-        return $this->render('index', [
-            'task' => $task
-        ]);
+        return $this->render('index', compact('task'));
     }
 }
