@@ -32,6 +32,9 @@ use yii\web\IdentityInterface;
  * @property int $show_contacts
  * @property int $city_id
  * @property int|null $avatar_file_id
+ * @property string|null $auth_key
+ * @property string|null $password_hash
+ * @property string|null $password_reset_token
  *
  * @property UsersCategories[] $categories
  * @property Responses[] $responses
@@ -65,7 +68,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
             [['dt_add', 'name', 'email', 'password', 'city_id'], 'required'],
             [['dt_add', 'last_active_time', 'birthday'], 'safe'],
             [['about_me'], 'string'],
-            [['name', 'email', 'password', 'contacts', 'phone', 'skype', 'other_contacts'], 'string', 'max' => 255],
+            [['name', 'email', 'password', 'contacts', 'phone', 'skype', 'other_contacts', 'auth_key', 'password_hash', 'password_reset_token'], 'string', 'max' => 255],
             [['email'], 'unique'],
             [['avatar_file_id'], 'exist', 'skipOnError' => true, 'targetClass' => Files::className(), 'targetAttribute' => ['avatar_file_id' => 'id']],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
@@ -98,6 +101,9 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
             'show_contacts' => 'Show Contacts',
             'city_id' => 'City ID',
             'avatar_file_id' => 'Avatar File ID',
+            'auth_key' => 'Auth Key',
+            'password_hash' => 'Password Hash',
+            'password_reset_token' => 'Password Reset Token',
         ];
     }
 

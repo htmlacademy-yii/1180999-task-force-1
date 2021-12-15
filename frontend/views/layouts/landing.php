@@ -77,6 +77,10 @@ use yii\helpers\Url;
                 <a href="<?= Url::to(['sign-up/index']) ?>" class="header__account-registration">
                     Регистрация
                 </a>
+                <br><br>
+                <a href="<?= Url::to(['test/run']) ?>" class="header__account-registration">
+                    Тестовая авторизация
+                </a>
             </div>
         </div>
     </header>

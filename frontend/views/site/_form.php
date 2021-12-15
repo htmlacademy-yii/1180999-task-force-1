@@ -35,6 +35,10 @@ use yii\helpers\Html;
         ]
     ]) ?>
     <?= $form->errorSummary($model) ?>
+    <?= yii\authclient\widgets\AuthChoice::widget([
+        'baseAuthUrl' => ['site/auth'],
+        'popupMode' => false,
+    ]) ?>
     <?= Html::submitButton('Войти', ['class' => 'button']) ?>
     <?php ActiveForm::end() ?>
     <?php Pjax::end() ?>
