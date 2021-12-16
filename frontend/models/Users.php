@@ -246,12 +246,12 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
 
     public function getAuthKey()
     {
-        // TODO: Implement getAuthKey() method.
+        return $this->auth_key;
     }
 
     public function validateAuthKey($authKey)
     {
-        // TODO: Implement validateAuthKey() method.
+        return $this->getAuthKey() === $authKey;
     }
 
     public function validatePassword($password)
@@ -259,6 +259,15 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
         return \Yii::$app->security->validatePassword($password, $this->password);
     }
 
+    public function generatePasswordResetToken()
+    {
+        $this->password_reset_token = Yii::$app->security->generateRandomString();
+    }
+
+    public function generateAuthKey()
+    {
+        $this->auth_key = Yii::$app->security->generateRandomString();
+    }
     /**
      * Функция подсчета рейтинга пользователя
      * @return float|int
@@ -312,6 +321,5 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     {
         $this->city_id = $value;
     }
-
 
 }

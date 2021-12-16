@@ -1,5 +1,6 @@
 <?php
 
+use frontend\widgets\headerMenu\HeaderMenuWidget;
 use yii\bootstrap\Html;
 use yii\web\View;
 use yii\helpers\Url;
@@ -71,16 +72,7 @@ use yii\helpers\Url;
                 <p>Работа там, где ты!</p>
             </div>
             <div class="header__account--index">
-                <a href="#" class="header__account-enter open-modal" data-for="enter-form">
-                    <span>Вход</span></a>
-                или
-                <a href="<?= Url::to(['sign-up/index']) ?>" class="header__account-registration">
-                    Регистрация
-                </a>
-                <br><br>
-                <a href="<?= Url::to(['test/run']) ?>" class="header__account-registration">
-                    Тестовая авторизация
-                </a>
+                <?= HeaderMenuWidget::widget() ?>
             </div>
         </div>
     </header>
