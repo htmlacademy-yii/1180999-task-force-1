@@ -58,7 +58,7 @@ return [
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'enableStrictParsing' => true,
+            'enableStrictParsing' => false,
             'showScriptName' => false,
             'rules' => [
                 'test' => 'test/run',
@@ -86,6 +86,21 @@ return [
                 ],
             ],
         ],
+
+        'authClientCollection' => [
+        'class' => 'yii\authclient\Collection',
+        'clients' => [
+            'vkontakte' => [
+                'class' => 'yii\authclient\clients\VKontakte',
+                'clientId' => '8026389',
+                'clientSecret' => 'okBY7RXypgqK3ATNtMG6',
+                'scope' => 'email',
+                'attributeNames' => [
+                    'about', 'city', 'bdate', 'photo_max'
+                ]
+            ]
+        ],
+    ]
 
     ],
     'params' => $params,

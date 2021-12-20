@@ -2,18 +2,23 @@
 
 namespace frontend\controllers;
 
+use app\models\Auth;
+use frontend\models\Cities;
+use frontend\models\Files;
 use frontend\models\Tasks;
+use frontend\services\api\GeoCoderApi;
+use frontend\services\UserRegistrationService;
 use Yii;
 use frontend\models\Users;
-use yii\console\Response;
-use yii\filters\AccessControl;
+use yii\db\Exception;
 use frontend\models\forms\LoginForm;
-use yii\helpers\Url;
+use yii\web\Controller;
+use yii\web\Response;
 
 /**
  * Site controller
  */
-class SiteController extends SecuredController
+class SiteController extends Controller
 {
     /**
      * Инициализация layouts/landing
@@ -22,38 +27,7 @@ class SiteController extends SecuredController
     {
         parent::init();
         $this->layout = '@app/views/layouts/landing';
-    }
 
-    /**
-     * @return array[]
-     */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'rules' => [
-                    [
-                        'actions' => ['index'],
-                        'allow' => true,
-                        'roles' => ['?']
-                    ],
-                    [
-                        'actions' => ['index'],
-                        'allow' => false,
-                        'roles' => ['@']
-                    ],
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@']
-                    ]
-                ],
-                'denyCallback' => function ($rule, $action) {
-                    return $this->redirect(Url::to(['tasks/index']));
-                },
-            ]
-        ];
     }
 
     /**
@@ -80,6 +54,7 @@ class SiteController extends SecuredController
         ]);
     }
 
+
     /**
      * Вывод пользователя из сессии
      */
@@ -92,13 +67,54 @@ class SiteController extends SecuredController
     }
 
     /**
-     * {@inheritdoc}
+     * @param $client
+     * @return Response
+     * @throws Exception
+     * @throws \yii\base\Exception
+     */
+    public function onAuthSuccess($client): Response
+    {
+        $attributes = $client->getUserAttributes();
+
+        /* @var $auth Auth */
+        $auth = Auth::find()->where([
+            'source' => $client->getId(),
+            'source_id' => $attributes['id'],
+        ])->one();
+
+        if (Yii::$app->user->isGuest) {
+            if ($auth) { // авторизация
+                $user = $auth->user;
+                Yii::$app->user->login(Users::findIdentity($user->id));
+
+            } else { // регистрация
+                $regService = new UserRegistrationService($attributes, $client);
+                $regService->execute();
+            }
+        } else {
+            if (!$auth) {
+                $auth = new Auth([
+                    'user_id' => Yii::$app->user->identity->getId(),
+                    'source' => $client->getId(),
+                    'source_id' => $attributes['id'],
+                ]);
+                $auth->save();
+            }
+        }
+
+        Yii::$app->session->setFlash('auth', 'Вы успешно авторизированны');
+        return $this->redirect(['tasks/index']);
+    }
+
+    /**
+     * @return array[]
      */
     public function actions()
     {
         return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
+            'auth' => [
+                'class' => 'yii\authclient\AuthAction',
+                'successCallback' => [$this, 'onAuthSuccess'],
             ],
         ];
     }

@@ -33,3 +33,8 @@
 
 -- Уведомления
 ./yii migrate/create create_notifications_table --fields="title:string(255):notNull,description:string(255):null,icon:string(255):notNull,is_read:tinyInteger:notNull:defaultValue(0),user_id:integer:notNull:foreignKey(users),task_id:integer:notNull:foreignKey(tasks)"
+
+-- Хранение авторизации
+
+ ./yii migrate/create create_auth_table --fields="user_id:integer:notNull:foreignKey(users),source:string:notNull,source_id:string:notNull"
+

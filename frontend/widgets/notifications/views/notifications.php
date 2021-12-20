@@ -12,13 +12,14 @@ use yii\helpers\Url;
 ?>
 
 <div class="header__lightbulb" style="
-<?php if (!empty($notifications)): ?>
+<?php if (!empty($notifications) || Yii::$app->session->hasFlash('auth')): ?>
         background-image: url('/img/lightbulb-white.png')
 <?php endif; ?>
         "></div>
 <div class="lightbulb__pop-up">
     <h3>Новые события</h3>
     <?php if (!empty($notifications)): ?>
+
         <?php foreach ($notifications as $notification): ?>
             <p class="lightbulb__new-task lightbulb__new-task<?= $notification->icon; ?>">
                 <?= $notification->title; ?>
@@ -33,6 +34,10 @@ use yii\helpers\Url;
             </svg>
             Прочитано</b>
         </a>
+    <?php elseif (Yii::$app->session->hasFlash('auth')): ?>
+        <p class="lightbulb__new-task lightbulb__new-task--executor">
+            <?= Yii::$app->session->getFlash('auth') ?>
+        </p>
     <?php else: ?>
         <p class="lightbulb__new-task no-notice">
 

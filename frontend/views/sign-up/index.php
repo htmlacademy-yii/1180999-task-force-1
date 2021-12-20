@@ -68,6 +68,7 @@ use yii\helpers\Html;
                     'inputOptions' => ['type' => 'password', 'class' => 'input textarea'],
                     'options' => ['class' => 'field-container field-container--registration']
                 ]) ?>
+
                 <?= Html::submitButton('Создать аккаунт', ['class' => 'button button__registration']) ?>
                 <?php ActiveForm::end() ?>
             </div>

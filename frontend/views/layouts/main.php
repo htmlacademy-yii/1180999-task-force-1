@@ -3,6 +3,7 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 
 use frontend\widgets\notifications\NotificationsWidget;
 use frontend\widgets\towns\TownsWidgets;
+use yii\bootstrap\Alert;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\helpers\Url;
@@ -28,7 +29,7 @@ use yii\helpers\Url;
     </script>
 </head>
 <body>
-
+<?= Yii::$app->session->getFlash('error') ?? '' ?>
 <?php $this->beginBody() ?>
 <div class="table-layout">
     <header class="page-header">
@@ -109,6 +110,7 @@ use yii\helpers\Url;
                 <?= TownsWidgets::widget() ?>
 
                 <?= NotificationsWidget::widget(['user_id' => \Yii::$app->user->identity->getId()]) ?>
+
                 <div class="header__account">
                     <a class="header__account-photo">
                         <?= Html::img(Yii::$app->user->identity->avatarFile->path ?? '/img/camera.png', [
@@ -120,6 +122,7 @@ use yii\helpers\Url;
                     <span class="header__account-name">
                  <?= Yii::$app->user->identity->name ?>
              </span>
+
                 </div>
                 <div class="account__pop-up">
                     <ul class="account__pop-up-list">

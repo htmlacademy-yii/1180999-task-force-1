@@ -16,26 +16,31 @@ use yii\helpers\Html;
         'action' => ['index'],
         'method' => 'post',
         'options' => [
-                'class' => '',
-                'data' => ['pjax' => true]
+            'class' => '',
+            'data' => ['pjax' => true]
         ]
     ]) ?>
 
     <?= $form->field($model, 'email', [
-            'template' => "<p>{label}\n{input}\n</p>",
-            'labelOptions' => ['class' => 'form-modal-description'],
-            'inputOptions' => ['class' => 'enter-form-email input input-middle']
+        'template' => "<p>{label}\n{input}\n</p>",
+        'labelOptions' => ['class' => 'form-modal-description'],
+        'inputOptions' => ['class' => 'enter-form-email input input-middle']
     ]) ?>
     <?= $form->field($model, 'password', [
         'template' => "<p>{label}\n{input}\n</p>",
         'labelOptions' => ['class' => 'form-modal-description'],
         'inputOptions' => [
-                'class' => 'enter-form-email input input-middle',
-                'type' => 'password'
+            'class' => 'enter-form-email input input-middle',
+            'type' => 'password'
         ]
     ]) ?>
+        <?= Html::submitButton('Войти', ['class' => 'button', 'style' => ['margin-top' => '12px']]) ?>
+        <div style="margin-bottom: 4px">Вход через соц. сети:</div>
+        <?= yii\authclient\widgets\AuthChoice::widget([
+            'baseAuthUrl' => ['site/auth'],
+            'popupMode' => false,
+        ]) ?>
     <?= $form->errorSummary($model) ?>
-    <?= Html::submitButton('Войти', ['class' => 'button']) ?>
     <?php ActiveForm::end() ?>
     <?php Pjax::end() ?>
 
