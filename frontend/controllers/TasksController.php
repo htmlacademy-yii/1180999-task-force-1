@@ -129,8 +129,6 @@ class TasksController extends SecuredController
         $getTaskService = new TaskGetService();
         $task = $getTaskService->getTask($id);
         $user = Users::findOne($task->user_id);
-        $geoCoder = new GeoCoderApi();
-        $address = $geoCoder->getData($task->address);
 
         if (!$task) {
             throw new NotFoundHttpException("Задача с id $id не найдена");
@@ -156,8 +154,7 @@ class TasksController extends SecuredController
                 'executors' => $getTaskService->getExecutors(),
                 'responseForm' => $respondService->getForm(),
                 'completionForm' => $TaskCompletionService->getForm(),
-                'address' => $address
-            ]
+                ]
         );
     }
 

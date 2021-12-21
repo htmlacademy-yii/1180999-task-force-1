@@ -2,7 +2,6 @@
 /**
  * @var Tasks $task Данные задачи
  * @var Users $user Данные пользователя
- * @var array $address Данные пользователя
  * @var object $executors Данные задачи
  * @var object $responseForm Форма добавления отклика
  * @var object $completionForm Модель формы завершения задачи
@@ -84,8 +83,7 @@ use frontend\models\Files;
                             </div>
                             <div class="content-view__address">
 
-                                <span class="address__town"><?= $address['city'] ?? ''?></span><br>
-                                <span><?= $address['street'] ?? ''?></span>
+                                <span class="address__town"><?= $task->address ?></span><br>
                             </div>
                         </div>
                     </div>
@@ -190,9 +188,9 @@ use frontend\models\Files;
             ]) ?>
         </section>
 </div>
-<?php if ($task->address): ?>
+<?php if ($task->location): ?>
 <?= $this->render('_map', [
-    'points' => $address['yMapsPoints']
+    'points' => $task->location
 ]) ?>
 <?php endif; ?>
 <?php $this->registerJsFile('/js/messenger.js'); ?>

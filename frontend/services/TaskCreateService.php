@@ -35,7 +35,9 @@ class TaskCreateService
         $task->deadline = $this->form->deadline;
 
         if ($this->form->city) {
-            $task->address = $this->saveRequest(md5($this->form->city), $this->form->city);
+            $data = $this->saveRequest(md5($this->form->city), $this->form->city);
+            $task->address = $data['city'] . ',' . $data['street'];
+            $task->location = $data['points']['latitude'] . ',' . $data['points']['longitude'];
         }
 
         $task->save();
@@ -86,17 +88,16 @@ class TaskCreateService
      * Функция ищет запрос в кэше. В случае отсутсвия ключа, создается новая запись на 24 часа
      * @param $key string запрос поиска зашифрованный в md5
      * @param $city string вводное значение поля локация
-     * @return string возвращает координаты искомого адреса
+     * @return array возвращает координаты искомого адреса
      */
-    private function saveRequest(string $key, string $city): string
+    private function saveRequest(string $key, string $city): array
     {
         if (!Yii::$app->cache->exists($key)) {
             $geoService = new GeoCoderApi();
             $data = $geoService->getData($city);
             Yii::$app->cache->set($key, $data, 86400);
         }
-        $value = Yii::$app->cache->get($key);
 
-        return "{$value['points']['longitude']}, {$value['points']['latitude']}";
+        return Yii::$app->cache->get($key);
     }
 }

@@ -13,7 +13,7 @@ class m211219_103926_change_tasks_table extends Migration
     public function safeUp()
     {
         $this->addColumn('tasks', 'address', $this->text()->null());
-        echo 'Колонка address добавлена';
+        $this->addColumn('tasks', 'location', $this->text()->null());
     }
 
     /**
@@ -22,7 +22,7 @@ class m211219_103926_change_tasks_table extends Migration
     public function safeDown()
     {
         $this->dropColumn('tasks', 'address');
-        echo 'Колонка address удалена';
+        $this->dropColumn('tasks', 'location');
     }
 
     /*
