@@ -57,11 +57,10 @@ class GeoCoderApi
             'city' => $cityKey,
             'street' => $streetKey,
             'points' => [
+                'longitude' => $points[1],
                 'latitude' => $points[0],
-                'longitude' =>  $points[1]
-            ]
+            ],
+            'yMapsPoints' => "$points[0],$points[1]"
         ];
-
     }
-
 }

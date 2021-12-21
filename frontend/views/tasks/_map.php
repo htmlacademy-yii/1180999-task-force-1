@@ -1,12 +1,10 @@
 <?php
 /**
  * @var Tasks $task Данные задачи
- * @var array $address Город, адрес, координаты
+ * @var array $points Город, адрес, координаты
  */
 
 use frontend\models\Tasks;
-
-$points = "{$address['points']['latitude']}, {$address['points']['longitude']}";
 
 ?>
 
@@ -16,7 +14,7 @@ $points = "{$address['points']['latitude']}, {$address['points']['longitude']}";
     function init() {
 
         var myMap = new ymaps.Map("map", {
-                center: [<?=  $points ?>],
+                center: [<?= $points ?>],
                 zoom: 17,
                 controls: ['zoomControl']
 
@@ -33,7 +31,7 @@ $points = "{$address['points']['latitude']}, {$address['points']['longitude']}";
 
             .add(new ymaps.Placemark([<?= $points ?>], {
                 balloonContent:
-                    "<?= $address['street'] ?>"
+                    "Место сделки"
             }, {
                 preset: 'islands#icon',
                 iconColor: '#1e90fe'
