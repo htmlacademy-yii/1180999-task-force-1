@@ -20,19 +20,19 @@ return [
         ]
     ],
     'components' => [
-        'on beforeAction' => function(){
-            if(!Yii::$app->user->isGuest){
-                Users::updateAll(['activity'=>time()],['id'=>Yii::$app->user->id]);
+        'on beforeAction' => function () {
+            if (!Yii::$app->user->isGuest) {
+                Users::updateAll(['activity' => time()], ['id' => Yii::$app->user->id]);
             }
         },
         'formatter' => [
             'class' => 'yii\i18n\Formatter',
             'defaultTimeZone' => 'Europe/Moscow'
-            ],
+        ],
         'request' => [
-                'parsers' => [
-                    'application/json' => 'yii\web\JsonParser'
-                ],
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser'
+            ],
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
@@ -88,20 +88,28 @@ return [
         ],
 
         'authClientCollection' => [
-        'class' => 'yii\authclient\Collection',
-        'clients' => [
-            'vkontakte' => [
-                'class' => 'yii\authclient\clients\VKontakte',
-                'clientId' => '8026389',
-                'clientSecret' => 'okBY7RXypgqK3ATNtMG6',
-                'scope' => 'email',
-                'attributeNames' => [
-                    'about', 'city', 'bdate', 'photo_max'
+            'class' => 'yii\authclient\Collection',
+            'clients' => [
+                'vkontakte' => [
+                    'class' => 'yii\authclient\clients\VKontakte',
+                    'clientId' => '8026389',
+                    'clientSecret' => 'okBY7RXypgqK3ATNtMG6',
+                    'scope' => 'email',
+                    'attributeNames' => [
+                        'about', 'city', 'bdate', 'photo_max'
+                    ]
                 ]
-            ]
+            ],
         ],
-    ]
-
+        'redis' => [
+            'class' => 'yii\redis\Connection',
+            'hostname' => 'localhost',
+            'port' => 6379,
+            'database' => 0,
+        ],
+        'cache' => [
+            'class' => 'yii\redis\Cache'
+        ],
     ],
     'params' => $params,
 

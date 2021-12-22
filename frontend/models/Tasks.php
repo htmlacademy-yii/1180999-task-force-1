@@ -18,6 +18,8 @@ use Yii;
  * @property string|null $status
  * @property string $name
  * @property string $description
+ * @property string $address
+ * @property string $location
  * @property int|null $cost
  *
  * @property Responses[] $responses
@@ -48,7 +50,7 @@ class Tasks extends \yii\db\ActiveRecord
             [['user_id', 'category_id', 'name', 'description'], 'required'],
             [['dt_add', 'deadline'], 'safe'],
             [['user_id', 'executor_id', 'category_id', 'city_id', 'cost'], 'integer'],
-            [['description'], 'string'],
+            [['description', 'address', 'location'], 'string'],
             [['status', 'name'], 'string', 'max' => 255],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['category_id' => 'id']],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
@@ -69,7 +71,9 @@ class Tasks extends \yii\db\ActiveRecord
             'user_id' => 'User ID',
             'executor_id' => 'Executor ID',
             'category_id' => 'Category ID',
-            'city_id' => 'Location',
+            'city_id' => 'City ID',
+            'address' => 'Address',
+            'location' => 'Location',
             'status' => 'Status',
             'name' => 'Name',
             'description' => 'Description',

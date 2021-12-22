@@ -23,7 +23,7 @@ use frontend\models\Tasks;
         <?= mb_strimwidth($model->description, 0, 90, "..."); ?>
     </p>
     <b class="new-task__price new-task__price--<?= $model->category->code?>"><?= $model->cost ? $model->cost.'₽': ''?><b> </b></b>
-    <p class="new-task__place"><?= $model->city->name ?? '<br>'?></p>
+    <p class="new-task__place"><?= $model->address ?? '<br>'?></p>
     <?= TimeFormatterWidget::widget([
             'time' => $model->dt_add,
             'format' => TimeFormatterWidget::TASK_FORMAT

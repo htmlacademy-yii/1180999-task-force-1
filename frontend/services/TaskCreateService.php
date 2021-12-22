@@ -2,12 +2,10 @@
 
 namespace frontend\services;
 
-use frontend\models\Cities;
 use frontend\models\Files;
 use frontend\models\forms\TaskCreateForm;
 use frontend\models\Tasks;
 use frontend\models\TasksFiles;
-use frontend\models\Users;
 use frontend\services\api\GeoCoderApi;
 use Yii;
 use yii\web\UploadedFile;
@@ -37,9 +35,9 @@ class TaskCreateService
         $task->deadline = $this->form->deadline;
 
         if ($this->form->city) {
-            $task->city_id = $this->getCityID($this->form->city);
-        } else {
-            $task->city_id = '';
+            $data = $this->saveRequest(md5($this->form->city), $this->form->city);
+            $task->address = $data['city'] . ',' . $data['street'];
+            $task->location = $data['points']['latitude'] . ',' . $data['points']['longitude'];
         }
 
         $task->save();
@@ -76,7 +74,7 @@ class TaskCreateService
                 $files->path = 'uploads/' . $fileName . '.' . $file->extension;
                 $files->save();
 
-                $file->saveAs("uploads/$fileName.$file->extension") ;
+                $file->saveAs("uploads/$fileName.$file->extension");
 
                 $taskFiles = new TasksFiles();
                 $taskFiles->task_id = $task->id;
@@ -87,25 +85,19 @@ class TaskCreateService
     }
 
     /**
-     * Функция находит координаты объекта по его адресу,
-     * записывает объект в БД и возвращает ID
-     * @param $city
-     * @return int
+     * Функция ищет запрос в кэше. В случае отсутсвия ключа, создается новая запись на 24 часа
+     * @param $key string запрос поиска зашифрованный в md5
+     * @param $city string вводное значение поля локация
+     * @return array возвращает координаты искомого адреса
      */
-    private function getCityID($city): int
+    private function saveRequest(string $key, string $city): array
     {
-        $address = new GeoCoderApi();
-        $geoData = $address->getData($city);
-        $cityId = Cities::findOne(['name' => $city]);
-        if (!$cityId) {
-            $record = new Cities();
-            $record->name = $geoData['city'] . ', ' . $geoData['street'];
-            $record->latitude = $geoData['points']['latitude'];
-            $record->longitude = $geoData['points']['longitude'];
-            $record->save();
-
-            return $record->id;
+        if (!Yii::$app->cache->exists($key)) {
+            $geoService = new GeoCoderApi();
+            $data = $geoService->getData($city);
+            Yii::$app->cache->set($key, $data, 86400);
         }
-        return $cityId->id;
+
+        return Yii::$app->cache->get($key);
     }
 }

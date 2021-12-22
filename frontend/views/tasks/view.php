@@ -1,15 +1,15 @@
 <?php
 /**
  * @var Tasks $task Данные задачи
- * @var Tasks $user Данные пользователя
+ * @var Users $user Данные пользователя
  * @var object $executors Данные задачи
  * @var object $responseForm Форма добавления отклика
  * @var object $completionForm Модель формы завершения задачи
- * @var array $address Город, адрес, координаты
  */
 
 
 use frontend\models\Tasks;
+use frontend\models\Users;
 use frontend\widgets\customerInfo\CustomerInfo;
 use taskforce\Task;
 use yii\bootstrap\Alert;
@@ -75,7 +75,7 @@ use frontend\models\Files;
                 </div>
                 <?php endif; ?>
 
-                <?php if (!empty($address)): ?>
+                <?php if ($task->address): ?>
                     <div class="content-view__location">
                         <h3 class="content-view__h3">Расположение</h3>
                         <div class="content-view__location-wrapper">
@@ -83,8 +83,7 @@ use frontend\models\Files;
                             </div>
                             <div class="content-view__address">
 
-                                <span class="address__town"><?= $address['city'] ?></span><br>
-                                <span><?= $address['street'] ?></span>
+                                <span class="address__town"><?= $task->address ?></span><br>
                             </div>
                         </div>
                     </div>
@@ -189,10 +188,9 @@ use frontend\models\Files;
             ]) ?>
         </section>
 </div>
-<?php if (!empty($address)): ?>
+<?php if ($task->location): ?>
 <?= $this->render('_map', [
-    'address' => $address,
-    'task' => $task
+    'points' => $task->location
 ]) ?>
 <?php endif; ?>
 <?php $this->registerJsFile('/js/messenger.js'); ?>

@@ -83,7 +83,7 @@ class TasksController extends SecuredController
     public function actionIndex(): string
     {
         $lostTasks = new TaskTimeService();
-        $lostTasks->tasks = Tasks::find()->where(['not',['deadline' => null]])
+        $lostTasks->tasks = Tasks::find()->where(['not', ['deadline' => null]])
             ->andWhere(['not', ['status' => Task::STATUS_HIDDEN]]);
         $lostTasks->execute();
 
@@ -129,16 +129,10 @@ class TasksController extends SecuredController
         $getTaskService = new TaskGetService();
         $task = $getTaskService->getTask($id);
         $user = Users::findOne($task->user_id);
-        $geoData = new GeoCoderApi();
 
         if (!$task) {
             throw new NotFoundHttpException("Задача с id $id не найдена");
         }
-        if ($task->city) {
-            $city = $task->city->name;
-            $address = $geoData->getData($city);
-        }
-
 
         $respondService = new TaskResponseService();
         $respondId = $respondService->execute(Yii::$app->request->post(), $task->id);
@@ -155,13 +149,12 @@ class TasksController extends SecuredController
         }
 
         return $this->render('view', [
-            'task' => $task,
-            'user' => $user,
-            'executors' => $getTaskService->getExecutors(),
-            'responseForm' => $respondService->getForm(),
-            'completionForm' => $TaskCompletionService->getForm(),
-            'address' => $address ?? ''
-            ]
+                'task' => $task,
+                'user' => $user,
+                'executors' => $getTaskService->getExecutors(),
+                'responseForm' => $respondService->getForm(),
+                'completionForm' => $TaskCompletionService->getForm(),
+                ]
         );
     }
 
@@ -265,7 +258,6 @@ class TasksController extends SecuredController
             $notice->user_id = $task->user_id;
             $notice->save();
         }
-
         $this->redirect("/task/$task->id");
     }
 
