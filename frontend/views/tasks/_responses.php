@@ -17,7 +17,7 @@ use yii\helpers\Url;
             <div class="content-view__feedback-card">
                 <div class="feedback-card__top">
                     <a href="<?= Url::to(['users/view', 'id' => $response->executor_id]) ?>">
-                        <?= Html::img(Yii::$app->user->identity->avatarFile->path ?? '/img/no-photos.png', [
+                        <?= Html::img($response->executor->avatarFile->path ?? '/img/no-photos.png', [
                             'width' => 55,
                             'height' => 55,
                             'alt' => 'Аватар исполнителя',

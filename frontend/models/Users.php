@@ -284,7 +284,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
             $countReviews++;
         }
 
-        if ($countReviews === 0) {
+        if (count($sum) === 0) {
             return 0;
         }
 

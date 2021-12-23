@@ -3,7 +3,6 @@
 /**
  * @var Notifications $notifications
  * @var Notifications $notification
- * @var float|int $score
  */
 
 use app\models\Notifications;
@@ -24,7 +23,7 @@ use yii\helpers\Url;
             <p class="lightbulb__new-task lightbulb__new-task<?= $notification->icon; ?>">
                 <?= $notification->title; ?>
                 <a href="<?= Url::to('/task/' . $notification->task_id) ?>" class="link-regular">
-                    «<?= $notification->description; ?>»</a>
+                    «<?= $notification->description ?? '' ?>»</a>
             </p>
         <?php endforeach; ?>
         <a href="#" class="lightbulb__new-task is-read link-regular" style="display: block; margin-bottom: 10px">

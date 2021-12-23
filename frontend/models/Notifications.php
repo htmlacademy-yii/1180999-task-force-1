@@ -23,6 +23,7 @@ class Notifications extends ActiveRecord
     public const TITLE_NEW_MESSAGE = 'Новое сообщение в чате';
     public const TITLE_SELECT_EXECUTOR = 'Вас выбрали исполнителем для';
     public const TITLE_NEW_RESPONSE = 'Новый отклик для';
+    public const TITLE_NEW_REVIEW = 'Новый отзыв';
     public const TITLE_REFUSE_RESPONSE = 'Ваш отклик отклонен в';
     public const TITLE_CLOSE_TASK = 'Завершено задание';
     public const TITLE_TASK_REFUSAL = 'Исполнитель отказался от выполнения в';
