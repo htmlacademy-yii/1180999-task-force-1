@@ -2,7 +2,7 @@
 
 namespace frontend\models\forms;
 
-use frontend\helpers\GetCfgVar;
+use frontend\helpers\GetMaxFileSize;
 use yii\base\Model;
 
 class AccountForm extends Model
@@ -76,7 +76,7 @@ class AccountForm extends Model
                 'skipOnEmpty' => true,
                 'maxFiles' => 6,
                 'extensions' => 'png, jpg',
-                'maxSize' => GetCfgVar::getSizeLimits()
+                'maxSize' => GetMaxFileSize::getSizeLimits()
 
             ],
 

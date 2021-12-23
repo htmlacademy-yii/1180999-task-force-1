@@ -9,7 +9,7 @@ use Yii;
 class EventsController extends SecuredController
 {
     /**
-     *
+     * Отмечает все уведомления как прочитанные
      */
     public function actionIndex()
     {
