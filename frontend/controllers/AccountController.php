@@ -3,21 +3,18 @@
 namespace frontend\controllers;
 
 use frontend\models\Categories;
-use frontend\models\Cities;
 use frontend\models\forms\AccountForm;
 use frontend\models\Users;
 use frontend\models\UsersCategories;
 use frontend\models\UsersFiles;
-use frontend\services\FileUploadService;
+use frontend\services\AccountUpdateService;
 use Yii;
 use yii\data\ActiveDataProvider;
-use yii\web\Response;
-use yii\web\UploadedFile;
 
 class AccountController extends SecuredController
 {
+
     /**
-     * @return string|Response
      * @throws \Throwable
      * @throws \yii\base\Exception
      * @throws \yii\db\StaleObjectException
@@ -56,70 +53,14 @@ class AccountController extends SecuredController
         $user->save();
 
         if (Yii::$app->request->isPost) {
-            if ($userForm->load(Yii::$app->request->post()) && $userForm->validate()) {
-                if ($userForm->category_ids) {
-                    if (count($userForm->category_ids) != $userCategories->count()) {
-                        foreach ($user->categories as $category) {
-                            $category->delete();
-                        }
-                        foreach ($userForm->category_ids as $category_id) {
-                            $userCategories = new UsersCategories();
-                            $userCategories->user_id = $user->id;
-                            $userCategories->category_id = (int)$category_id;
-                            $userCategories->save();
-                        }
-                    }
+                $service = new AccountUpdateService($user, $userCategories, $userForm);
+                if ($service->execute() === 1) {
+                    Yii::$app->session->setFlash('changeMessage', 'Профиль успешно обновлен');
                 } else {
-                    foreach ($user->categories as $category) {
-                        $category->delete();
-                    }
+                    Yii::$app->session->setFlash('errorMessage', 'Ошибка обновления');
                 }
+            return $this->redirect(['account/index']);
 
-                $files = UploadedFile::getInstances($userForm, 'images');
-                if (!empty($files)) {
-                    foreach ($files as $uploadFile) {
-                        $service = new FileUploadService();
-                        $fileID = $service->upload($uploadFile);
-
-                        $userFiles = new UsersFiles();
-                        $userFiles->file_id = $fileID;
-                        $userFiles->user_id = $user->id;
-                        $userFiles->save();
-                    }
-                }
-
-                $avatar = UploadedFile::getInstance($userForm, 'avatar');
-                if (!empty($avatar)) {
-                        $service = new FileUploadService();
-                        $fileID = $service->upload($avatar);
-                    $user->avatar_file_id = $fileID;
-                }
-
-                if ($userForm->city) {
-                    $user->city = Cities::findOne(['name' => $userForm->city])->id;
-                }
-                if ($userForm->password) {
-                    $user->password = Yii::$app->getSecurity()->generatePasswordHash($userForm->passwordRepeat);
-                    Yii::$app->session->setFlash('userPassword');
-                }
-
-                $user->email = $userForm->email;
-                $user->birthday = $userForm->birthday;
-                $user->about_me = $userForm->aboutMe;
-                $user->phone = $userForm->phone;
-                $user->skype = $userForm->skype;
-                $user->other_contacts = $userForm->otherContacts;
-                $user->notification_new_message = (int)$userForm->notification_new_message;
-                $user->notification_new_review = (int)$userForm->notification_new_review;
-                $user->notification_task_action = (int)$userForm->notification_task_action;
-                $user->show_contacts = (int)$userForm->show_contacts;
-                $user->hide_profile = (int)$userForm->hide_profile;
-                $user->save();
-
-                Yii::$app->session->setFlash('changeMessage');
-
-                return $this->redirect(['account/index']);
-            }
         }
 
         return $this->render('index', [

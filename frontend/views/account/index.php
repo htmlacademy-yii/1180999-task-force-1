@@ -36,7 +36,19 @@ use yii\widgets\Pjax;
                         'margin' => '20px 0'
                     ]
                 ],
-                'body' => 'Профиль успешно обновлен'
+                'body' => Yii::$app->session->getFlash('changeMessage')
+            ]) ?>
+        <?php endif; ?>
+
+        <?php if (Yii::$app->session->hasFlash('errorMessage')): ?>
+            <?= Alert::widget([
+                'options' => [
+                    'class' => 'alert-danger',
+                    'style' => [
+                        'margin' => '20px 0'
+                    ]
+                ],
+                'body' => Yii::$app->session->getFlash('errorMessage')
             ]) ?>
         <?php endif; ?>
 
