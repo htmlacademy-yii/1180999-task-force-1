@@ -61,7 +61,7 @@ return [
             'enableStrictParsing' => false,
             'showScriptName' => false,
             'rules' => [
-                'test' => 'test/run',
+                'test' => 'test/index',
                 '/' => 'site/index',
                 'users' => 'users/index',
                 'tasks' => 'tasks/index',
@@ -112,8 +112,19 @@ return [
         'cache' => [
             'class' => 'yii\redis\Cache'
         ],
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            'useFileTransport' => false,
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'encryption' => 'ssl',
+                'host' => 'imap.gmail.com',
+                'port' => '465',
+                'username' => 'bairash88@gmail.com',
+                'password' => 'hveqmtybxrfvrokl',
+            ]
+            ]
     ],
     'params' => $params,
-
 ];
 

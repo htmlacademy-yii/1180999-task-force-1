@@ -2,16 +2,14 @@
 
 namespace frontend\controllers;
 
-use frontend\models\Cities;
 use frontend\models\forms\SingUpForm;
 use frontend\models\Users;
-use frontend\services\api\GeoCoderApi;
+use frontend\services\mailer\MailerService;
+use frontend\services\mailer\WelcomeService;
 use Yii;
 use yii\base\Exception;
 use yii\filters\AccessControl;
-use yii\helpers\Url;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
 
 /**
  * Контроллер регистрации пользователей
@@ -59,11 +57,15 @@ class SignUpController extends Controller
             $user->email = $model->email;
             $user->city_id = $model->getCityId();
             $user->password = Yii::$app->getSecurity()->generatePasswordHash($model->password);
-            $user->save();
+            if ($user->save()) {
+                $mailer = new WelcomeService();
+                $mailer->send($model);
+            }
 
             if (!$user->save()) {
                 throw new Exception('Не удалось создать пользователя');
             }
+
 
             Yii::$app->user->login(Users::findIdentity($user->id));
             $this->goHome();

@@ -5,6 +5,7 @@ namespace frontend\services;
 use frontend\models\forms\CompletionForm;
 use frontend\models\Reviews;
 use frontend\models\Tasks;
+use frontend\services\mailer\MailerService;
 use taskforce\Task;
 use Yii;
 
@@ -27,7 +28,15 @@ class TaskCompletionService
             case 1:
                 $task->status = Task::STATUS_FAIL;
         }
-        $task->save();
+        if ($task->save()) {
+            if ($task->executor->notification_task_action === 1) {
+                $service = new NoticeService();
+                $service->run($service::ACTION_CLOSE_TASK, $task->executor_id, $task->id);
+
+                $mailer = new MailerService();
+                $mailer->send($mailer::END_MESSAGE, $task, $task->executor->email);
+            }
+        }
 
         if ($this->form->description != null || Yii::$app->request->post('rating') != null) {
             $review = new Reviews();
@@ -40,6 +49,9 @@ class TaskCompletionService
                 if ($review->executor->notification_new_review === 1) {
                     $service = new NoticeService();
                     $service->run($service::ACTION_REVIEW, $task->executor_id, $task->id);
+
+                    $mailer = new MailerService();
+                    $mailer->send($mailer::REVIEW_MESSAGE, $task, $task->executor->email);
                 }
             }
         }

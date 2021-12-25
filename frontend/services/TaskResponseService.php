@@ -7,6 +7,7 @@ use frontend\models\forms\ResponseForm;
 use frontend\models\Responses;
 use frontend\models\Tasks;
 use frontend\models\Users;
+use frontend\services\mailer\MailerService;
 use Yii;
 
 class TaskResponseService
@@ -39,6 +40,9 @@ class TaskResponseService
         if ($task->user->notification_task_action === 1) {
             $service = new NoticeService();
             $service->run($service::ACTION_NEW_RESPONSE, $task->user_id, $task->id);
+
+            $mailer = new MailerService();
+            $mailer->send($mailer::RESPONSE_MESSAGE, $task, $task->user->email);
         }
 
         return 1;

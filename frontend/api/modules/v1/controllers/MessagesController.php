@@ -6,6 +6,7 @@ use app\models\Notifications;
 use frontend\models\Tasks;
 use frontend\models\Users;
 use frontend\models\UsersMessages;
+use frontend\services\mailer\MailerService;
 use frontend\services\NoticeService;
 use Yii;
 use yii\web\ForbiddenHttpException;
@@ -70,6 +71,9 @@ class MessagesController extends BaseApiController
             if ($message->recipient->notification_new_message === 1) {
                 $service = new NoticeService();
                 $service->run(NoticeService::ACTION_MESSAGE, $message->recipient_id, $taskInfo->id);
+
+                $mailer = new MailerService();
+                $mailer->send($mailer::CHAT_MESSAGE, $taskInfo, $message->recipient->email);
             }
         }
 

@@ -9,6 +9,7 @@ use frontend\models\forms\TaskFilterForm;
 use frontend\models\Responses;
 use frontend\models\TasksSearch;
 use frontend\models\Users;
+use frontend\services\mailer\MailerService;
 use frontend\services\NoticeService;
 use frontend\services\TaskGetService;
 use frontend\services\TaskCompletionService;
@@ -213,6 +214,9 @@ class TasksController extends SecuredController
         if ($executor->notification_task_action === 1) {
             $service = new NoticeService();
             $service->run($service::ACTION_ACCEPT_RESPONSE, $executor->id, $task->id);
+
+            $mailer = new MailerService();
+            $mailer->send($mailer::START_MESSAGE, $task, $task->executor->email);
         }
 
         $this->redirect("/task/$task->id");
@@ -235,6 +239,9 @@ class TasksController extends SecuredController
         if ($task->user->notification_task_action === 1) {
             $service = new NoticeService();
             $service->run($service::ACTION_REFUSAL_OF_TASK, $task->user_id, $task->id);
+
+            $mailer = new MailerService();
+            $mailer->send($mailer::REFUSAL_MESSAGE, $task, $task->user->email);
         }
         $this->redirect("/task/$task->id");
     }
