@@ -7,6 +7,7 @@ use frontend\models\forms\ResponseForm;
 use frontend\models\Responses;
 use frontend\models\Tasks;
 use frontend\models\Users;
+use frontend\services\mailer\MailerService;
 use Yii;
 
 class TaskResponseService
@@ -15,17 +16,15 @@ class TaskResponseService
 
     /**
      * @param array $data
-     * @param int $taskId
+     * @param Tasks $task
      * @return void|null
      */
-    public function execute(array $data, int $taskId): ?int
+    public function execute(array $data, Tasks $task): ?int
     {
         $this->form = new ResponseForm();
-        if (!$this->form->load(Yii::$app->request->post()) || !$this->form->validate()) {
+        if (!$this->form->load($data) || !$this->form->validate()) {
             return null;
         }
-
-        $task = Tasks::findOne($taskId);
 
         $response = new Responses();
         $response->executor_id = Yii::$app->user->identity->getId();
@@ -38,13 +37,13 @@ class TaskResponseService
         $executor->is_executor = 1;
         $executor->save();
 
-        $notice = new Notifications();
-        $notice->title = Notifications::TITLE_NEW_RESPONSE;
-        $notice->icon = Notifications::ICONS_SELECT_EXECUTOR;
-        $notice->description = Tasks::findOne($taskId)->name;
-        $notice->task_id = $task->id;
-        $notice->user_id = $task->user_id;
-        $notice->save();
+        if ($task->user->notification_task_action === 1) {
+            $service = new NoticeService();
+            $service->run($service::ACTION_NEW_RESPONSE, $task->user_id, $task->id);
+
+            $mailer = new MailerService();
+            $mailer->send($mailer::RESPONSE_MESSAGE, $task, $task->user->email);
+        }
 
         return 1;
     }

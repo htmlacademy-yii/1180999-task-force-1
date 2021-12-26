@@ -18,6 +18,7 @@ use yii\widgets\ActiveForm;
     'method' => 'get',
     'options' => ['class' => 'search-task__form'],
     'fieldConfig' => [
+        'options' => ['tags' => false],
         'labelOptions' => ['class' => 'checkbox__legend']
     ]
 ])
@@ -46,7 +47,6 @@ use yii\widgets\ActiveForm;
                   <span>Без откликов</span>
                 </label>'])
             ->checkbox(['class' => 'visually-hidden checkbox__input'], false) ?>
-
         <?= $form->field($modelForm, 'remote', [
             'template' => '<label class="checkbox__legend">{input}
                   <span>Удаленная работа</span>
@@ -77,7 +77,7 @@ use yii\widgets\ActiveForm;
             'class' => 'button'
         ]) ?>
 
-        <a href="<?= Url::to(['tasks']) ?>">
+        <a href="<?= Url::to(['tasks/index']) ?>">
             <?= Html::button('Очистить', [
                 'type' => 'button',
                 'class' => 'button reset-button'

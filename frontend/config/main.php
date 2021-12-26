@@ -15,8 +15,8 @@ return [
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
     'modules' => [
-        'api' => [
-            'class' => 'frontend\api\items\Module'
+        'v1' => [
+            'class' => 'frontend\api\modules\v1\Module',
         ]
     ],
     'components' => [
@@ -61,7 +61,7 @@ return [
             'enableStrictParsing' => false,
             'showScriptName' => false,
             'rules' => [
-                'test' => 'test/run',
+                'test' => 'test/index',
                 '/' => 'site/index',
                 'users' => 'users/index',
                 'tasks' => 'tasks/index',
@@ -80,9 +80,11 @@ return [
                 'delete/<id:\d+>' => 'files/delete',
                 'avatar-delete/<id:\d+>' => 'files/avatar-delete',
                 'events' => 'events/index',
+
                 ['class' => 'yii\rest\UrlRule',
-                    'controller' => ['api/messages'],
+                    'controller' => ['v1/messages'],
                     'pluralize' => false
+
                 ],
             ],
         ],
@@ -110,8 +112,11 @@ return [
         'cache' => [
             'class' => 'yii\redis\Cache'
         ],
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            'useFileTransport' => false,
+        ]
     ],
     'params' => $params,
-
 ];
 

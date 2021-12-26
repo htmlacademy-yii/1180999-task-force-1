@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Yii;
 use yii\db\ActiveRecord;
 
 /**
@@ -15,7 +14,6 @@ use yii\db\ActiveRecord;
  * @property int $is_read
  * @property int $user_id
  * @property int $task_id
- *
  */
 
 class Notifications extends ActiveRecord
@@ -23,10 +21,11 @@ class Notifications extends ActiveRecord
     public const TITLE_NEW_MESSAGE = 'Новое сообщение в чате';
     public const TITLE_SELECT_EXECUTOR = 'Вас выбрали исполнителем для';
     public const TITLE_NEW_RESPONSE = 'Новый отклик для';
+    public const TITLE_NEW_REVIEW = 'Новый отзыв';
     public const TITLE_REFUSE_RESPONSE = 'Ваш отклик отклонен в';
     public const TITLE_CLOSE_TASK = 'Завершено задание';
     public const TITLE_TASK_REFUSAL = 'Исполнитель отказался от выполнения в';
-    public const TITLE_TASK_LOST = 'Срок исполнения истек в';
+//    public const TITLE_TASK_LOST = 'Срок исполнения истек в';
 
     public const ICONS_NEW_MESSAGE = '--message';
     public const ICONS_SELECT_EXECUTOR = '--executor';
@@ -36,7 +35,7 @@ class Notifications extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'notifications';
     }
@@ -44,7 +43,7 @@ class Notifications extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['title', 'icon', 'user_id', 'task_id'], 'required'],
@@ -56,7 +55,7 @@ class Notifications extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',

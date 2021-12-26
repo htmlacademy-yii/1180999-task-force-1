@@ -2,16 +2,14 @@
 
 namespace frontend\controllers;
 
-use frontend\models\Cities;
 use frontend\models\forms\SingUpForm;
 use frontend\models\Users;
-use frontend\services\api\GeoCoderApi;
+use frontend\services\mailer\WelcomeService;
 use Yii;
 use yii\base\Exception;
 use yii\filters\AccessControl;
-use yii\helpers\Url;
+use yii\helpers\Html;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
 
 /**
  * Контроллер регистрации пользователей
@@ -21,7 +19,7 @@ use yii\web\NotFoundHttpException;
  */
 class SignUpController extends Controller
 {
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'access' => [
@@ -42,32 +40,31 @@ class SignUpController extends Controller
 
     /**
      * @return string
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         if (!Yii::$app->user->isGuest) {
             $this->redirect('tasks');
         }
-
         $model = new SingUpForm();
-
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-
             $user = new Users();
-            $user->name = $model->name;
+            $user->name = Html::encode($model->name);
             $user->email = $model->email;
             $user->city_id = $model->getCityId();
             $user->password = Yii::$app->getSecurity()->generatePasswordHash($model->password);
-            $user->save();
-
+            if ($user->save()) {
+                $mailer = new WelcomeService();
+                $mailer->send($model);
+            }
             if (!$user->save()) {
                 throw new Exception('Не удалось создать пользователя');
             }
-
             Yii::$app->user->login(Users::findIdentity($user->id));
             $this->goHome();
         }
+
         return $this->render('index', [
             'model' => $model
         ]);

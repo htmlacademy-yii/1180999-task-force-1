@@ -11,13 +11,11 @@ use yii\filters\AccessControl;
 use frontend\models\Users;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class UsersController extends SecuredController
 {
-    /**
-     * @return array[]
-     */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'access' => [
@@ -57,12 +55,9 @@ class UsersController extends SecuredController
             ]
         ]);
 
-        $users = $provider->getModels();
-
         if ($filterForm->load(\Yii::$app->request->get())) {
             $usersSearch = new UsersSearch();
             $provider = $usersSearch->search($filterForm);
-            $users = $provider->getModels();
         }
 
         return $this->render('index', [
@@ -73,7 +68,7 @@ class UsersController extends SecuredController
 
     /**
      * @param $id
-     * @return string|\yii\web\Response
+     * @return string|Response
      * @throws NotFoundHttpException
      */
     public function actionView($id)
@@ -103,11 +98,11 @@ class UsersController extends SecuredController
 
     /**
      * @param int $favorite_id
-     * @return \yii\web\Response
+     * @return Response
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function actionAddBookmark(int $favorite_id): \yii\web\Response
+    public function actionAddBookmark(int $favorite_id): Response
     {
         $bookmarks = Bookmarks::find()->where(['follower_id' => \Yii::$app->user->id])->all();
 

@@ -2,7 +2,7 @@
 
 namespace frontend\models\forms;
 
-use frontend\helpers\GetCfgVar;
+use frontend\helpers\GetMaxFileSize;
 use frontend\models\Tasks;
 use Yii;
 
@@ -50,7 +50,7 @@ class TaskCreateForm extends Tasks
             [['files'],
                 'file',
                 'maxFiles' => 6,
-                'maxSize' => GetCfgVar::getSizeLimits(),
+                'maxSize' => GetMaxFileSize::getSizeLimits(),
 
             ],
             [['category'], 'integer'],

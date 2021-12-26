@@ -2,22 +2,23 @@
 
 namespace frontend\services;
 
-use app\models\Notifications;
 use frontend\models\forms\CompletionForm;
 use frontend\models\Reviews;
 use frontend\models\Tasks;
+use frontend\services\mailer\MailerService;
 use taskforce\Task;
 use Yii;
+use yii\helpers\Html;
 
 class TaskCompletionService
 {
     private CompletionForm $form;
 
-    public function execute(array $data, Tasks $task): ?int
+    public function execute(Tasks $task): ?int
     {
         $this->form = new CompletionForm();
 
-        if (!$this->form->load(Yii::$app->request->post()) || !$this->form->validate()) {
+        if (!$this->form->load(\Yii::$app->request->post()) || !$this->form->validate()) {
             return null;
         }
 
@@ -28,27 +29,32 @@ class TaskCompletionService
             case 1:
                 $task->status = Task::STATUS_FAIL;
         }
+        if ($task->save()) {
+            if ($task->executor->notification_task_action === 1) {
+                $service = new NoticeService();
+                $service->run($service::ACTION_CLOSE_TASK, $task->executor_id, $task->id);
 
-        $task->save();
+                $mailer = new MailerService();
+                $mailer->send($mailer::END_MESSAGE, $task, $task->executor->email);
+            }
+        }
 
-        $review = new Reviews();
-        $review->task_id = $task->id;
-        $review->user_id = $task->user_id;
-        $review->executor_id = $task->executor_id;
-        $review->text = $this->form->description;
-        $review->score = Yii::$app->request->post('rating');
-        $review->save();
+        if ($this->form->description != null || Yii::$app->request->post('rating') != null) {
+            $review = new Reviews();
+            $review->task_id = $task->id;
+            $review->user_id = $task->user_id;
+            $review->executor_id = $task->executor_id;
+            $review->text = Html::encode($this->form->description);
+            $review->score = Yii::$app->request->post('rating');
+            if ($review->save()) {
+                if ($review->executor->notification_new_review === 1) {
+                    $service = new NoticeService();
+                    $service->run($service::ACTION_REVIEW, $task->executor_id, $task->id);
 
-        if ($review->executor->notification_new_review === 1) {
-            $score = "Ваша оценка: <b>$review->score</b><br>";
-            $notice = new Notifications();
-            $notice->title = $review->score ? $score : '';
-            $notice->title .= Notifications::TITLE_CLOSE_TASK;
-            $notice->icon = Notifications::ICONS_CLOSE_TASK;
-            $notice->description = Tasks::findOne($task->id)->name;
-            $notice->task_id = $task->id;
-            $notice->user_id = $task->executor_id;
-            $notice->save();
+                    $mailer = new MailerService();
+                    $mailer->send($mailer::REVIEW_MESSAGE, $task, $task->executor->email);
+                }
+            }
         }
 
         return 1;

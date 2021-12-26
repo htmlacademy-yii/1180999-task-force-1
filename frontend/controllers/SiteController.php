@@ -27,13 +27,10 @@ class SiteController extends Controller
     {
         parent::init();
         $this->layout = '@app/views/layouts/landing';
-
     }
 
     /**
-     * Displays homepage.
-     *
-     * @return mixed
+     * @return string|Response
      */
     public function actionIndex()
     {
