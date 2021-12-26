@@ -4,6 +4,7 @@ namespace frontend\services;
 
 use Yii;
 use yii\db\ActiveQuery;
+use yii\helpers\Html;
 use yii\web\UploadedFile;
 use frontend\models\Users;
 use frontend\models\Cities;
@@ -32,12 +33,11 @@ class AccountUpdateService
 
     /**
      * Функция инициализирует процесс обвноления данных и загрузки файлов
-     * @return int|null Если все прошло успешно возвращает 1, иначе NULL
      * @throws \Throwable
      * @throws \yii\base\Exception
      * @throws \yii\db\StaleObjectException
      */
-    public function execute(): ?int
+    public function execute(): bool
     {
         if ($this->userForm->load(Yii::$app->request->post()) && $this->userForm->validate()) {
             $files = UploadedFile::getInstances($this->userForm, 'images');
@@ -49,11 +49,20 @@ class AccountUpdateService
             if ($avatar) {
                 $this->uploadAvatar($avatar);
             }
-            if ($this->userForm->category_ids) {
+
+            if (empty($this->userForm->category_ids)) {
+                foreach ($this->user->categories as $category) {
+                    $category->delete();
+                }
+            } else {
                 $this->setCategories();
             }
+
             if ($this->userForm->city) {
-                $this->user->city = Cities::findOne(['name' => $this->userForm->city])->id;
+                $city = Cities::findOne(['name' => $this->userForm->city]);
+                if ($city) {
+                    $this->user->city = $city->id;
+                }
             }
             if ($this->userForm->password) {
                 $this->user->password = Yii::$app->getSecurity()->generatePasswordHash($this->userForm->passwordRepeat);
@@ -63,30 +72,29 @@ class AccountUpdateService
             return $this->update();
         }
 
-        return null;
+        return false;
     }
 
     /**
      * Функция обновления данных профиля
-     * @return int|null В случе успеха возвращает 1
      */
-    private function update(): ?int
+    private function update(): bool
     {
-        $this->user->email = $this->userForm->email;
+        $this->user->email = Html::encode($this->userForm->email);
         $this->user->birthday = $this->userForm->birthday;
-        $this->user->about_me = $this->userForm->aboutMe;
+        $this->user->about_me = Html::encode($this->userForm->aboutMe);
         $this->user->phone = $this->userForm->phone;
-        $this->user->skype = $this->userForm->skype;
-        $this->user->other_contacts = $this->userForm->otherContacts;
+        $this->user->skype = Html::encode($this->userForm->skype);
+        $this->user->other_contacts = Html::encode($this->userForm->otherContacts);
         $this->user->notification_new_message = (int)$this->userForm->notification_new_message;
         $this->user->notification_new_review = (int)$this->userForm->notification_new_review;
         $this->user->notification_task_action = (int)$this->userForm->notification_task_action;
         $this->user->show_contacts = (int)$this->userForm->show_contacts;
         $this->user->hide_profile = (int)$this->userForm->hide_profile;
         if ($this->user->save()) {
-            return 1;
+            return true;
         }
-        return null;
+        return false;
     }
 
     /**
@@ -96,20 +104,16 @@ class AccountUpdateService
      */
     private function setCategories()
     {
-        if (count($this->userForm->category_ids) != $this->usersCategories->count()) {
-            foreach ($this->user->categories as $category) {
-                $category->delete();
-            }
-            foreach ($this->userForm->category_ids as $category_id) {
-                $usersCategories = new UsersCategories();
-                $usersCategories->user_id = $this->user->id;
-                $usersCategories->category_id = (int)$category_id;
-                $usersCategories->save();
-            }
-        } else {
-            foreach ($this->user->categories as $category) {
-                $category->delete();
-            }
+        $categories = $this->usersCategories->asArray()->all();
+        $newCategories = array_diff_assoc($this->userForm->category_ids, $categories);
+        foreach ($this->user->categories as $category) {
+            $category->delete();
+        }
+        foreach ($newCategories as $category_id) {
+            $usersCategories = new UsersCategories();
+            $usersCategories->user_id = $this->user->id;
+            $usersCategories->category_id = (int)$category_id;
+            $usersCategories->save();
         }
     }
 

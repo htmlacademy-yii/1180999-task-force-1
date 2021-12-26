@@ -8,6 +8,7 @@ use frontend\models\Tasks;
 use frontend\services\mailer\MailerService;
 use taskforce\Task;
 use Yii;
+use yii\helpers\Html;
 
 class TaskCompletionService
 {
@@ -43,7 +44,7 @@ class TaskCompletionService
             $review->task_id = $task->id;
             $review->user_id = $task->user_id;
             $review->executor_id = $task->executor_id;
-            $review->text = $this->form->description;
+            $review->text = Html::encode($this->form->description);
             $review->score = Yii::$app->request->post('rating');
             if ($review->save()) {
                 if ($review->executor->notification_new_review === 1) {

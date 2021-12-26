@@ -8,6 +8,7 @@ use frontend\models\Tasks;
 use frontend\models\TasksFiles;
 use frontend\services\api\GeoCoderApi;
 use Yii;
+use yii\helpers\Html;
 use yii\web\UploadedFile;
 
 class TaskCreateService
@@ -29,13 +30,13 @@ class TaskCreateService
         $task = new Tasks();
         $task->user_id = Yii::$app->user->id;
         $task->category_id = $this->form->category;
-        $task->name = $this->form->name;
-        $task->description = $this->form->description;
+        $task->name = Html::encode($this->form->name);
+        $task->description = Html::encode($this->form->description);
         $task->cost = $this->form->cost;
         $task->deadline = $this->form->deadline;
 
         if ($this->form->city) {
-            $data = $this->saveRequest(md5($this->form->city), $this->form->city);
+            $data = $this->saveRequest(md5($this->form->city), Html::encode($this->form->city));
             $task->address = $data['city'] . ',' . $data['street'];
             $task->location = $data['points']['latitude'] . ',' . $data['points']['longitude'];
         }

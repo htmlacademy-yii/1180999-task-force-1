@@ -9,11 +9,7 @@ use yii\web\Controller;
 
 class SecuredController extends Controller
 {
-    /**
-     * Глобальный фильтр запрета для анонимных пользователей
-     * @return array[]
-     */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'access' => [

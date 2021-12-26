@@ -115,15 +115,7 @@ return [
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             'useFileTransport' => false,
-            'transport' => [
-                'class' => 'Swift_SmtpTransport',
-                'encryption' => 'ssl',
-                'host' => 'imap.gmail.com',
-                'port' => '465',
-                'username' => 'bairash88@gmail.com',
-                'password' => 'hveqmtybxrfvrokl',
-            ]
-            ]
+        ]
     ],
     'params' => $params,
 ];

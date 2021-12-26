@@ -54,7 +54,7 @@ class AccountController extends SecuredController
 
         if (Yii::$app->request->isPost) {
                 $service = new AccountUpdateService($user, $userCategories, $userForm);
-                if ($service->execute() === 1) {
+                if ($service->execute()) {
                     Yii::$app->session->setFlash('changeMessage', 'Профиль успешно обновлен');
                 } else {
                     Yii::$app->session->setFlash('errorMessage', 'Ошибка обновления');

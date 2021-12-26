@@ -156,8 +156,7 @@ class TasksController extends SecuredController
      * Действие создания новой задачи
      * @return string
      */
-    public
-    function actionCreate(): string
+    public function actionCreate(): string
     {
         $categories = Categories::find()->select(['name', 'id'])->indexBy('id')->column();
         $cities = ArrayHelper::getColumn(Cities::find()->all(), 'name');
@@ -196,8 +195,7 @@ class TasksController extends SecuredController
      * Действие запуска задачи
      * @param int $id
      */
-    public
-    function actionAccept(int $id)
+    public function actionAccept(int $id)
     {
         $response = Responses::findOne($id);
         $executor = Users::findOne($response->executor_id);
