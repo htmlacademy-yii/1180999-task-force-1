@@ -2,7 +2,6 @@
 
 namespace frontend\models\forms;
 
-use Yii;
 use yii\base\Model;
 
 class ResponseForm extends Model
@@ -13,7 +12,7 @@ class ResponseForm extends Model
     /**
      * @return string[]
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'price' => 'Ваша цена',
@@ -24,7 +23,7 @@ class ResponseForm extends Model
     /**
      * @return array[]
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'safe' => [

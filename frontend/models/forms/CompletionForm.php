@@ -16,7 +16,7 @@ class CompletionForm extends Model
     /**
      * @return string[]
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'completeness' => 'Задание выполнено?',
@@ -28,7 +28,7 @@ class CompletionForm extends Model
     /**
      * @return array[]
      */
-    public function rules()
+    public function rules(): array
     {
      return [
          [['completeness', 'description', 'rating'], 'safe'],

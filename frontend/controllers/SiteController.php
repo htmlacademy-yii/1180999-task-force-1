@@ -3,10 +3,7 @@
 namespace frontend\controllers;
 
 use app\models\Auth;
-use frontend\models\Cities;
-use frontend\models\Files;
 use frontend\models\Tasks;
-use frontend\services\api\GeoCoderApi;
 use frontend\services\UserRegistrationService;
 use Yii;
 use frontend\models\Users;

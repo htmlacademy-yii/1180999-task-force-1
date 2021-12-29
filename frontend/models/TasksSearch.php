@@ -6,7 +6,6 @@ use frontend\models\forms\TaskFilterForm;
 use taskforce\Task;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\Tasks;
 
 /**
  * TasksSearch represents the model behind the search form of `frontend\models\Tasks`.
@@ -16,7 +15,7 @@ class TasksSearch extends Tasks
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['id', 'user_id', 'executor_id', 'category_id', 'city_id', 'cost'], 'integer'],
@@ -27,7 +26,7 @@ class TasksSearch extends Tasks
     /**
      * {@inheritdoc}
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();

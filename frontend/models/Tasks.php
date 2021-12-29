@@ -3,7 +3,8 @@
 namespace frontend\models;
 
 use taskforce\Task;
-use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "tasks".
@@ -31,12 +32,12 @@ use Yii;
  * @property TasksFiles[] $tasksFiles
  * @property UsersMessages[] $usersMessages
  */
-class Tasks extends \yii\db\ActiveRecord
+class Tasks extends ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'tasks';
     }
@@ -44,7 +45,7 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['user_id', 'category_id', 'name', 'description'], 'required'],
@@ -62,7 +63,7 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -84,9 +85,9 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Responses]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getResponses()
+    public function getResponses(): ActiveQuery
     {
         return $this->hasMany(Responses::className(), ['task_id' => 'id']);
     }
@@ -94,9 +95,9 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Reviews]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getReviews()
+    public function getReviews(): ActiveQuery
     {
         return $this->hasMany(Reviews::className(), ['task_id' => 'id']);
     }
@@ -104,9 +105,9 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Category]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getCategory()
+    public function getCategory(): ActiveQuery
     {
         return $this->hasOne(Categories::className(), ['id' => 'category_id']);
     }
@@ -114,9 +115,9 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Location]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getCity()
+    public function getCity(): ActiveQuery
     {
         return $this->hasOne(Cities::className(), ['id' => 'city_id']);
     }
@@ -124,9 +125,9 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Executor]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getExecutor()
+    public function getExecutor(): ActiveQuery
     {
         return $this->hasOne(Users::className(), ['id' => 'executor_id']);
     }
@@ -134,9 +135,9 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[User]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(Users::className(), ['id' => 'user_id']);
     }
@@ -144,9 +145,9 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[TasksFiles]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getTasksFiles()
+    public function getTasksFiles(): ActiveQuery
     {
         return $this->hasMany(TasksFiles::className(), ['task_id' => 'id']);
     }
@@ -154,18 +155,18 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[UsersMessages]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUsersMessages()
+    public function getUsersMessages(): ActiveQuery
     {
         return $this->hasMany(UsersMessages::className(), ['task_id' => 'id']);
     }
 
     /**
      * @param bool $insert
-     * @return bool|void
+     * @return bool
      */
-    public function beforeSave($insert)
+    public function beforeSave($insert): bool
     {
         parent::beforeSave($insert);
         if ($this->isNewRecord) {

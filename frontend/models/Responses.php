@@ -2,7 +2,8 @@
 
 namespace frontend\models;
 
-use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "responses".
@@ -18,12 +19,12 @@ use Yii;
  * @property Users $executor
  * @property Tasks $task
  */
-class Responses extends \yii\db\ActiveRecord
+class Responses extends ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'responses';
     }
@@ -31,7 +32,7 @@ class Responses extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['dt_add'], 'safe'],
@@ -47,7 +48,7 @@ class Responses extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -63,9 +64,9 @@ class Responses extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Executor]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getExecutor()
+    public function getExecutor(): ActiveQuery
     {
         return $this->hasOne(Users::className(), ['id' => 'executor_id']);
     }
@@ -73,18 +74,18 @@ class Responses extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Task]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getTask()
+    public function getTask(): ActiveQuery
     {
         return $this->hasOne(Tasks::className(), ['id' => 'task_id']);
     }
 
     /**
      * @param bool $insert
-     * @return bool|void
+     * @return bool
      */
-    public function beforeSave($insert)
+    public function beforeSave($insert): bool
     {
         parent::beforeSave($insert);
         if ($this->isNewRecord) {

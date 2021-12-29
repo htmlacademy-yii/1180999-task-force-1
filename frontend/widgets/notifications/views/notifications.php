@@ -6,6 +6,7 @@
  */
 
 use app\models\Notifications;
+use yii\helpers\Html;
 use yii\helpers\Url;
 
 ?>
@@ -22,8 +23,10 @@ use yii\helpers\Url;
         <?php foreach ($notifications as $notification): ?>
             <p class="lightbulb__new-task lightbulb__new-task<?= $notification->icon; ?>">
                 <?= $notification->title; ?>
-                <a href="<?= Url::to('/task/' . $notification->task_id) ?>" class="link-regular">
-                    «<?= $notification->description ?? '' ?>»</a>
+                <?= Html::a("«" .  $notification->description ?? '' . "»",
+                    Url::to(['tasks/view', 'id' => $notification->task_id]),
+                    ['class' => 'link-regular']
+                ) ?>
             </p>
         <?php endforeach; ?>
     <?php elseif (Yii::$app->session->hasFlash('auth')): ?>

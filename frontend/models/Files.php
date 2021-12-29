@@ -2,7 +2,8 @@
 
 namespace frontend\models;
 
-use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "files".
@@ -15,12 +16,12 @@ use Yii;
  * @property Users[] $users
  * @property UsersFiles[] $usersFiles
  */
-class Files extends \yii\db\ActiveRecord
+class Files extends ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'files';
     }
@@ -28,7 +29,7 @@ class Files extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['path', 'name'], 'required'],
@@ -39,7 +40,7 @@ class Files extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -51,9 +52,9 @@ class Files extends \yii\db\ActiveRecord
     /**
      * Gets query for [[TasksFiles]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getTasksFiles()
+    public function getTasksFiles(): ActiveQuery
     {
         return $this->hasMany(TasksFiles::className(), ['file_id' => 'id']);
     }
@@ -61,9 +62,9 @@ class Files extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Users]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUsers()
+    public function getUsers(): ActiveQuery
     {
         return $this->hasMany(Users::className(), ['avatar_file_id' => 'id']);
     }
@@ -71,9 +72,9 @@ class Files extends \yii\db\ActiveRecord
     /**
      * Gets query for [[UsersFiles]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUsersFiles()
+    public function getUsersFiles(): ActiveQuery
     {
         return $this->hasMany(UsersFiles::className(), ['file_id' => 'id']);
     }

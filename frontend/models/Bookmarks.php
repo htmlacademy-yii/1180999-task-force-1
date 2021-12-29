@@ -3,7 +3,8 @@
 namespace app\models;
 
 use frontend\models\Users;
-use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "bookmarks".
@@ -15,12 +16,12 @@ use Yii;
  * @property Users $favorite
  * @property Users $follower
  */
-class Bookmarks extends \yii\db\ActiveRecord
+class Bookmarks extends ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'bookmarks';
     }
@@ -28,7 +29,7 @@ class Bookmarks extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['follower_id', 'favorite_id'], 'required'],
@@ -41,7 +42,7 @@ class Bookmarks extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -53,9 +54,9 @@ class Bookmarks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Favorite]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getFavorite()
+    public function getFavorite(): ActiveQuery
     {
         return $this->hasOne(Users::className(), ['id' => 'favorite_id']);
     }
@@ -63,9 +64,9 @@ class Bookmarks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Follower]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getFollower()
+    public function getFollower(): ActiveQuery
     {
         return $this->hasOne(Users::className(), ['id' => 'follower_id']);
     }

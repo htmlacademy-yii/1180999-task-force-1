@@ -2,7 +2,6 @@
 
 namespace frontend\controllers;
 
-use app\models\Notifications;
 use frontend\models\Categories;
 use frontend\models\Cities;
 use frontend\models\forms\TaskFilterForm;
@@ -148,7 +147,7 @@ class TasksController extends SecuredController
                 'executors' => $getTaskService->getExecutors(),
                 'responseForm' => $respondService->getForm(),
                 'completionForm' => $TaskCompletionService->getForm(),
-                ]
+            ]
         );
     }
 

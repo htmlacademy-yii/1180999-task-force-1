@@ -1,13 +1,22 @@
 <?php use yii\helpers\Html;
+
 use yii\helpers\Url;
 
 if (Yii::$app->user->isGuest): ?>
-    <a href="#" class="header__account-enter open-modal" data-for="enter-form">
-        <span>Вход</span></a>
+
+    <?= Html::a('<span>Вход</span>',
+        '#',
+        [
+            'class' => 'header__account-enter open-modal',
+            'data-for' => 'enter-form'
+        ]
+    ) ?>
     или
-    <a href="<?= Url::to(['sign-up/index']) ?>" class="header__account-registration">
-        Регистрация
-    </a>
+    <?= Html::a('Регистрация',
+        Url::to(['sign-up/index']),
+        ['class' => 'header__account-registration']
+    ) ?>
+
 <?php else: ?>
     <?= Html::a('Мои задания', Url::to(['mylist/new']),
     ) ?>

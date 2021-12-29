@@ -4,7 +4,6 @@ namespace frontend\models\forms;
 
 use frontend\helpers\GetMaxFileSize;
 use frontend\models\Tasks;
-use Yii;
 
 
 class TaskCreateForm extends Tasks
@@ -22,7 +21,7 @@ class TaskCreateForm extends Tasks
      * Названия полей формы
      * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'name' => 'Мне нужно',
@@ -39,7 +38,7 @@ class TaskCreateForm extends Tasks
      * Правила полей формы
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['name', 'description', 'category', 'files', 'city', 'cost', 'deadline'],

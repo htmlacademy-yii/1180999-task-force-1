@@ -38,10 +38,10 @@ use frontend\models\Files;
 
                         <h1><?= mb_strimwidth($task->name, 0, 30, "...") ?></h1>
                         <span>Размещено в категории
-                            <a href="<?= Url::to(['tasks/index', 'TaskFilterForm' => ['category_ids' => $task->category_id]]) ?>"
-                               class="link-regular">
-                                <?= $task->category->name ?>
-                            </a>
+                            <?= Html::a("{$task->category->name }",
+                                Url::to(['tasks/index', 'TaskFilterForm' => ['category_ids' => $task->category_id]]),
+                                ['class' => 'link-regular']
+                            ) ?>
                             <?= date('Y-m-d', strtotime($task->dt_add)) ?>
                         </span>
                     </div>
@@ -63,16 +63,16 @@ use frontend\models\Files;
                 </div>
 
                 <?php if ($task->tasksFiles): ?>
-                <div class="content-view__attach">
-                    <h3 class="content-view__h3">Вложения</h3>
-                    <?php foreach ($task->tasksFiles as $file): ?>
-                        <?= Html::a(
-                            Files::findOne(['id' => $file->file->id])->name,
-                            Url::base() . '/' . Files::findOne(['id' => $file->file->id])->path,
-                            ['target' => '_blank']
-                        ); ?>
-                    <?php endforeach; ?>
-                </div>
+                    <div class="content-view__attach">
+                        <h3 class="content-view__h3">Вложения</h3>
+                        <?php foreach ($task->tasksFiles as $file): ?>
+                            <?= Html::a(
+                                Files::findOne(['id' => $file->file->id])->name,
+                                Url::base() . '/' . Files::findOne(['id' => $file->file->id])->path,
+                                ['target' => '_blank']
+                            ); ?>
+                        <?php endforeach; ?>
+                    </div>
                 <?php endif; ?>
 
                 <?php if ($task->address): ?>
@@ -90,45 +90,45 @@ use frontend\models\Files;
                 <?php endif; ?>
             </div>
 
-        <?php if (!Yii::$app->user->isGuest): ?>
+            <?php if (!Yii::$app->user->isGuest): ?>
 
-            <?php if ($task->status === Task::STATUS_IN_WORK
-            || $task->status === Task::STATUS_NEW
-            || $task->status === Task::STATUS_FAIL): ?>
+                <?php if ($task->status === Task::STATUS_IN_WORK
+                    || $task->status === Task::STATUS_NEW
+                    || $task->status === Task::STATUS_FAIL): ?>
 
-            <div class="content-view__action-buttons">
-                <?php if ($task->status === Task::STATUS_NEW && $task->user_id !== Yii::$app->user->getId()): ?>
-                    <?php if (!in_array(Yii::$app->user->getId(), $executors)): ?>
-                        <button class=" button button__big-color response-button open-modal"
-                                type="button" data-for="response-form">Откликнуться
-                        </button>
-                    <?php endif; ?>
-                <?php endif; ?>
-                <?php if ($task->executor_id === Yii::$app->user->getId()
-                    && $task->status != Task::STATUS_FAIL): ?>
-                    <button class="button button__big-color refusal-button open-modal"
-                            type="button" data-for="refuse-form">Отказаться
-                    </button>
-                <?php endif; ?>
-                <?php if ($task->user_id === Yii::$app->user->getId() && !$task->executor_id): ?>
-                    <?php if ($task->status != Task::STATUS_FAIL): ?>
-                        <?= Html::a('<button class="button button__big-color refusal-button"
+                    <div class="content-view__action-buttons">
+                        <?php if ($task->status === Task::STATUS_NEW && $task->user_id !== Yii::$app->user->getId()): ?>
+                            <?php if (!in_array(Yii::$app->user->getId(), $executors)): ?>
+                                <button class=" button button__big-color response-button open-modal"
+                                        type="button" data-for="response-form">Откликнуться
+                                </button>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                        <?php if ($task->executor_id === Yii::$app->user->getId()
+                            && $task->status != Task::STATUS_FAIL): ?>
+                            <button class="button button__big-color refusal-button open-modal"
+                                    type="button" data-for="refuse-form">Отказаться
+                            </button>
+                        <?php endif; ?>
+                        <?php if ($task->user_id === Yii::$app->user->getId() && !$task->executor_id): ?>
+                            <?php if ($task->status != Task::STATUS_FAIL): ?>
+                                <?= Html::a('<button class="button button__big-color refusal-button"
                                         type="button" data-for="refuse-form">Отменить
                                       </button>',
-                            Url::to(['tasks/cancel', 'id' => $task->id])
-                        ) ?>
-                    <?php endif; ?>
-                <?php endif; ?>
+                                    Url::to(['tasks/cancel', 'id' => $task->id])
+                                ) ?>
+                            <?php endif; ?>
+                        <?php endif; ?>
 
-                <?php if ($task->executor_id != Yii::$app->user->getId()): ?>
-                    <?php if ($task->status === Task::STATUS_IN_WORK): ?>
-                        <button class="button button__big-color request-button open-modal"
-                                type="button" data-for="complete-form">Завершить
-                        </button>
-                    <?php endif; ?>
+                        <?php if ($task->executor_id != Yii::$app->user->getId()): ?>
+                            <?php if ($task->status === Task::STATUS_IN_WORK): ?>
+                                <button class="button button__big-color request-button open-modal"
+                                        type="button" data-for="complete-form">Завершить
+                                </button>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
                 <?php endif; ?>
-            </div>
-            <?php endif; ?>
             <?php endif; ?>
         </div>
         <div class="content-view__feedback">
@@ -151,14 +151,16 @@ use frontend\models\Files;
                         'width' => 62,
                         'height' => 62,
                         'alt' => 'Аватар заказчика',
-                    ])?>
+                    ]) ?>
                     <div class="profile-mini__name five-stars__rate">
                         <p><?= $user->name ?></p>
                     </div>
                 </div>
-                <?= CustomerInfo::widget(['userId' => $user->id])?>
-                <a href="<?= Url::to(['users/view', 'id' => $task->user->id]) ?>" class="link-regular">Смотреть
-                    профиль</a>
+                <?= CustomerInfo::widget(['userId' => $user->id]) ?>
+                <?= Html::a('Смотреть профиль',
+                    Url::to(['users/view', 'id' => $task->user->id]),
+                    ['class' => 'link-regular']
+                ) ?>
             </div>
         </div>
 
@@ -189,8 +191,8 @@ use frontend\models\Files;
         </section>
 </div>
 <?php if ($task->location): ?>
-<?= $this->render('_map', [
-    'points' => $task->location
-]) ?>
+    <?= $this->render('_map', [
+        'points' => $task->location
+    ]) ?>
 <?php endif; ?>
 <?php $this->registerJsFile('/js/messenger.js'); ?>

@@ -2,7 +2,8 @@
 
 namespace frontend\models;
 
-use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "reviews".
@@ -19,12 +20,12 @@ use Yii;
  * @property Tasks $task
  * @property Users $user
  */
-class Reviews extends \yii\db\ActiveRecord
+class Reviews extends ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'reviews';
     }
@@ -32,7 +33,7 @@ class Reviews extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['dt_add'], 'safe'],
@@ -48,7 +49,7 @@ class Reviews extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -64,9 +65,9 @@ class Reviews extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Executor]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getExecutor()
+    public function getExecutor(): ActiveQuery
     {
         return $this->hasOne(Users::className(), ['id' => 'executor_id']);
     }
@@ -74,9 +75,9 @@ class Reviews extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Task]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getTask()
+    public function getTask(): ActiveQuery
     {
         return $this->hasOne(Tasks::className(), ['id' => 'task_id']);
     }
@@ -84,18 +85,18 @@ class Reviews extends \yii\db\ActiveRecord
     /**
      * Gets query for [[User]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(Users::className(), ['id' => 'user_id']);
     }
 
     /**
      * @param bool $insert
-     * @return bool|void
+     * @return bool
      */
-    public function beforeSave($insert)
+    public function beforeSave($insert): bool
     {
         parent::beforeSave($insert);
         if ($this->isNewRecord) {

@@ -3,7 +3,7 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 
 use frontend\widgets\notifications\NotificationsWidget;
 use frontend\widgets\towns\TownsWidgets;
-use yii\bootstrap\Alert;
+use taskforce\Task;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\helpers\Url;
@@ -25,7 +25,8 @@ use yii\helpers\Url;
     <title><?= Html::encode($this->title) ?></title>
     <link rel="stylesheet" href="/css/normalize.css">
     <link rel="stylesheet" href="/css/style.css">
-    <script src="https://api-maps.yandex.ru/2.1/?apikey=<?= Yii::$app->params['yandexApiKey']?>>&lang=ru_RU" type="text/javascript">
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=<?= Yii::$app->params['yandexApiKey'] ?>>&lang=ru_RU"
+            type="text/javascript">
     </script>
 </head>
 <body>
@@ -35,8 +36,7 @@ use yii\helpers\Url;
     <header class="page-header">
         <div class="main-container page-header__container">
             <div class="page-header__logo">
-                <a href="<?= Url::home() ?>">
-                    <svg class="page-header__logo-image" id="Layer_2" xmlns="http://www.w3.org/2000/svg"
+                <?= Html::a('<svg class="page-header__logo-image" id="Layer_2" xmlns="http://www.w3.org/2000/svg"
                          viewBox="0 0 1634 646.35">
                         <title>taskforce_logo2-01</title>
                         <g>
@@ -83,23 +83,24 @@ use yii\helpers\Url;
                                         transform="translate(-5.5 -7.17)"/>
                             </g>
                         </g>
-                    </svg>
-                </a>
+                    </svg>', Url::home()) ?>
             </div>
             <div class="header__nav">
                 <ul class="header-nav__list site-list">
                     <li class="site-list__item">
-                        <a href="<?= Url::to(['tasks/index']) ?>">Задания</a>
+                        <?= Html::a('Задания', Url::to(['tasks/index'])) ?>
                     </li>
                     <li class="site-list__item">
-                        <a href="<?= Url::to(['users/index']) ?>">Исполнители</a>
+                        <?= Html::a('Исполнители', Url::to(['users/index'])) ?>
                     </li>
                     <li class="site-list__item">
-                        <a href="<?= Url::to(['tasks/create']) ?>">Создать задание</a>
+                        <?= Html::a('Создать', Url::to(['tasks/create'])) ?>
                     </li>
                     <?php if (!Yii::$app->user->isGuest) : ?>
                         <li class="site-list__item">
-                            <a href="<?= Url::to(['users/view', 'id' => Yii::$app->user->getId()]) ?>">Мой профиль</a>
+                            <?= Html::a('Мой профиль', Url::to(
+                                ['users/view', 'id' => Yii::$app->user->identity->getId()]
+                            )) ?>
                         </li>
                     <?php endif; ?>
                 </ul>
@@ -109,16 +110,15 @@ use yii\helpers\Url;
 
                 <?= TownsWidgets::widget() ?>
 
-                <?= NotificationsWidget::widget(['user_id' => \Yii::$app->user->identity->getId()]) ?>
+                <?= NotificationsWidget::widget(['user_id' => Yii::$app->user->identity->getId()]) ?>
 
                 <div class="header__account">
-                    <a class="header__account-photo">
-                        <?= Html::img(Yii::$app->user->identity->avatarFile->path ?? '/img/camera.png', [
-                                'width' => 43,
-                                'height' => 44,
-                                'alt' => 'Аватар пользователя',
-                        ])?>
-                    </a>
+                    <?= Html::a(Html::img(Yii::$app->user->identity->avatarFile->path ?? '/img/camera.png', [
+                        'width' => 43,
+                        'height' => 44,
+                        'alt' => 'Аватар пользователя',
+                    ]), '#', ['class' => 'header__account-photo']) ?>
+
                     <span class="header__account-name">
                  <?= Yii::$app->user->identity->name ?>
              </span>
@@ -128,19 +128,19 @@ use yii\helpers\Url;
                     <ul class="account__pop-up-list">
                         <li>
                             <?= Html::a('Мои задания',
-                                        Url::to(['mylist/index', 'status' => \taskforce\Task::STATUS_NEW_EN])
-                            )?>
+                                Url::to(['mylist/index', 'status' => Task::STATUS_NEW_EN])
+                            ) ?>
                         </li>
                         <li>
                             <?= Html::a('Настройки',
                                 Url::to(['account/index'])
-                            )?>
+                            ) ?>
                         </li>
                         <li>
                             <?= Html::a('Выход',
                                 Url::to(['site/logout']),
                                 ['data' => ['method' => 'post']
-                            ]) ?>
+                                ]) ?>
                         </li>
                     </ul>
                 </div>
@@ -151,7 +151,7 @@ use yii\helpers\Url;
         <?= $content ?? ''; ?>
     </main>
     <footer class="page-footer">
-       <?= $this->render('footer') ?>
+        <?= $this->render('footer') ?>
     </footer>
 
 </div>

@@ -30,8 +30,7 @@ use yii\helpers\Url;
     <header class=" page-header--index">
         <div class="main-container page-header__container page-header__container--index">
             <div class="page-header__logo--index">
-                <a href="/">
-                    <svg class="logo-image--index" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1634 646.35">
+                    <?= Html::a('<svg class="logo-image--index" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1634 646.35">
                         <title>taskforce_logo2-01</title>
                         <g>
                             <g>
@@ -67,8 +66,7 @@ use yii\helpers\Url;
                                       transform="translate(-5.5 -7.17)"/>
                             </g>
                         </g>
-                    </svg>
-                </a>
+                    </svg>', Url::home()) ?>
                 <p>Работа там, где ты!</p>
             </div>
             <div class="header__account--index">

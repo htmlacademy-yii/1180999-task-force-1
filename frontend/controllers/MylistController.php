@@ -28,10 +28,10 @@ class MylistController extends SecuredController
                 break;
             case Task::STATUS_CANCEL_EN:
             case Task::STATUS_FAIL_EN:
-            $query->andWhere(['status' => [Task::STATUS_FAIL, Task::STATUS_CANCEL]]);
+                $query->andWhere(['status' => [Task::STATUS_FAIL, Task::STATUS_CANCEL]]);
                 break;
             case Task::STATUS_SUCCESS_EN:
-                $query->andWhere(['status' =>  Task::STATUS_SUCCESS]);
+                $query->andWhere(['status' => Task::STATUS_SUCCESS]);
                 break;
             case Task::STATUS_HIDDEN_EN:
                 $query->andWhere(['status' => Task::STATUS_HIDDEN]);

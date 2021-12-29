@@ -23,7 +23,7 @@ class SingUpForm extends Model
     /**
      * @return string[]
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'email' => 'Электронная почта',
@@ -33,7 +33,7 @@ class SingUpForm extends Model
         ];
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'unique' => [

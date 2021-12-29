@@ -2,7 +2,6 @@
 
 namespace frontend\controllers;
 
-use common\models\User;
 use frontend\models\Files;
 use frontend\models\Users;
 use frontend\models\UsersFiles;
