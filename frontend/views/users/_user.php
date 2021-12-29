@@ -14,11 +14,14 @@ use yii\helpers\Url;
 
 <div class="feedback-card__top">
     <div class="user__search-icon">
-    <?= ExecutorInfo::widget(['id' => $model->id]) ?>
+        <?= ExecutorInfo::widget(['id' => $model->id]) ?>
     </div>
     <div class="feedback-card__top--name user__search-card">
         <p class="link-name">
-            <a href="<?= Url::to(['users/view', 'id' => $model->id]) ?>" class="link-regular"><?= $model->name ?></a>
+            <?= Html::a($model->name,
+                Url::to(['users/view', 'id' => $model->id]),
+                ['class' => 'link-regular']
+            ) ?>
         </p>
         <?= RatingWidget::widget(['rating' => $model->calcRatingScore()]) ?>
         <p class="user__search-content">
@@ -26,12 +29,12 @@ use yii\helpers\Url;
         </p>
     </div>
     <?= TimeFormatterWidget::widget([
-            'time' => $model->last_active_time,
-            'format' => TimeFormatterWidget::USER_FORMAT])
+        'time' => $model->last_active_time,
+        'format' => TimeFormatterWidget::USER_FORMAT])
     ?>
-    </div>
+</div>
 <div class="link-specialization user__search-link--bottom">
-    <?php foreach($model->categories as $spec): ?>
+    <?php foreach ($model->categories as $spec): ?>
         <?= Html::a($spec->category->name,
             Url::to(['tasks/index', 'TaskFilterForm' => [
                 'category_ids' => $spec->category_id

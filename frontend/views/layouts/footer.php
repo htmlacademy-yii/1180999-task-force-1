@@ -1,3 +1,9 @@
+<?php
+
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+?>
 <div class="main-container page-footer__container">
     <div class="page-footer__info">
         <p class="page-footer__info-copyright">
@@ -12,28 +18,30 @@
     <div class="page-footer__links">
         <ul class="links__list">
             <li class="links__item">
-                <a href="/tasks">Задания</a>
+                <?= Html::a('Задания', Url::to(['tasks/index'])) ?>
             </li>
-            <?php if (!Yii::$app->user->isGuest):?>
+            <?php if (!Yii::$app->user->isGuest): ?>
                 <li class="links__item">
-                    <a href="/user/<?= Yii::$app->user->identity->getId()?>">Мой профиль</a>
+                    <?= Html::a('Мой профиль', Url::to(
+                        ['users/view', 'id' => Yii::$app->user->identity->getId()]
+                    )) ?>
                 </li>
             <?php endif; ?>
             <li class="links__item">
-                <a href="/users">Исполнители</a>
+                <?= Html::a('Исполнители', Url::to(['users/index'])) ?>
             </li>
-            <?php if (Yii::$app->user->isGuest):?>
-            <li class="links__item">
-                <a href="/sign-up">Регистрация</a>
-            </li>
-            <?php endif; ?>
-            <?php if (!Yii::$app->user->isGuest):?>
+            <?php if (Yii::$app->user->isGuest): ?>
                 <li class="links__item">
-                    <a href="/create">Создать</a>
+                    <?= Html::a('Регистрация', Url::to(['sign-up/index'])) ?>
+                </li>
+            <?php endif; ?>
+            <?php if (!Yii::$app->user->isGuest): ?>
+                <li class="links__item">
+                    <?= Html::a('Создать', Url::to(['tasks/create'])) ?>
                 </li>
             <?php endif; ?>
             <li class="links__item">
-                <a href="">Справка</a>
+                <a href="#">Справка</a>
             </li>
         </ul>
     </div>

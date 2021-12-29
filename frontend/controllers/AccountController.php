@@ -53,12 +53,12 @@ class AccountController extends SecuredController
         $user->save();
 
         if (Yii::$app->request->isPost) {
-                $service = new AccountUpdateService($user, $userCategories, $userForm);
-                if ($service->execute()) {
-                    Yii::$app->session->setFlash('changeMessage', 'Профиль успешно обновлен');
-                } else {
-                    Yii::$app->session->setFlash('errorMessage', 'Ошибка обновления');
-                }
+            $service = new AccountUpdateService($user, $userCategories, $userForm);
+            if ($service->execute()) {
+                Yii::$app->session->setFlash('changeMessage', 'Профиль успешно обновлен');
+            } else {
+                Yii::$app->session->setFlash('errorMessage', 'Ошибка обновления');
+            }
             return $this->redirect(['account/index']);
 
         }

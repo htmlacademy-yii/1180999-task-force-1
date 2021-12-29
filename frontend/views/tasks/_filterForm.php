@@ -77,12 +77,10 @@ use yii\widgets\ActiveForm;
             'class' => 'button'
         ]) ?>
 
-        <a href="<?= Url::to(['tasks/index']) ?>">
-            <?= Html::button('Очистить', [
-                'type' => 'button',
-                'class' => 'button reset-button'
-            ]) ?>
-        </a>
+        <?= Html::a(Html::button('Очистить', [
+            'type' => 'button',
+            'class' => 'button reset-button'
+        ]), Url::to(['tasks/index'])) ?>
     </fieldset>
 
 

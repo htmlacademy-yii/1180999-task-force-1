@@ -13,7 +13,7 @@ class LoginForm extends Model
 
     private $_user;
 
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'email' => 'Email',
@@ -24,7 +24,7 @@ class LoginForm extends Model
     /**
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['email', 'password'], 'required'],

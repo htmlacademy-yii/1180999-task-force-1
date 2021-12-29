@@ -2,7 +2,8 @@
 
 namespace frontend\models;
 
-use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "users_files".
@@ -14,12 +15,12 @@ use Yii;
  * @property Files $file
  * @property Users $user
  */
-class UsersFiles extends \yii\db\ActiveRecord
+class UsersFiles extends ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'users_files';
     }
@@ -27,7 +28,7 @@ class UsersFiles extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['user_id', 'file_id'], 'required'],
@@ -40,7 +41,7 @@ class UsersFiles extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -52,9 +53,9 @@ class UsersFiles extends \yii\db\ActiveRecord
     /**
      * Gets query for [[File]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getFile()
+    public function getFile(): ActiveQuery
     {
         return $this->hasOne(Files::className(), ['id' => 'file_id']);
     }
@@ -62,9 +63,9 @@ class UsersFiles extends \yii\db\ActiveRecord
     /**
      * Gets query for [[User]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(Users::className(), ['id' => 'user_id']);
     }

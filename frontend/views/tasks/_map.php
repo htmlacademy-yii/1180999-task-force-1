@@ -13,6 +13,9 @@ use frontend\models\Tasks;
 
     function init() {
 
+        new ymaps.Placemark([
+            [<?= $points ?>]
+        ], );
         var myMap = new ymaps.Map("map", {
                 center: [<?= $points ?>],
                 zoom: 17,
@@ -20,11 +23,7 @@ use frontend\models\Tasks;
 
             }, {
                 searchControlProvider: 'yandex#search'
-            }),
-
-            myPieChart = new ymaps.Placemark([
-                [<?= $points ?>]
-            ], );
+            });
 
         myMap.geoObjects
             // .add(myGeoObject)

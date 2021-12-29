@@ -7,16 +7,22 @@
 
 use frontend\models\Tasks;
 use taskforce\Task;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 ?>
 
 <?php if ($notifications): ?>
-    <a href="/task/<?= $task->id ?>" class="my-list__bottom-chat  my-list__bottom-chat--new">
-        <b><?= count($notifications) ?></b>
-    </a>
+    <?= Html::a("<b>" . count($notifications) . "</b>",
+        Url::to(['tasks/view', 'id' => $task->id]),
+        ['class' => 'my-list__bottom-chat  my-list__bottom-chat--new']
+    ) ?>
 <?php elseif ($task->status != Task::STATUS_IN_WORK): ?>
     <a href="#" class="my-list__bottom-chat" style="opacity: 0"></a>
 <?php else: ?>
-    <a href="/task/<?= $task->id ?>" class="my-list__bottom-chat"></a>
+    <?= Html::a('',
+        Url::to(['tasks/view', 'id' => $task->id]),
+        ['class' => 'my-list__bottom-chat']
+    ) ?>
 <?php endif; ?>
 

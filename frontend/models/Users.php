@@ -3,9 +3,10 @@
 namespace frontend\models;
 
 use app\models\Bookmarks;
-use phpDocumentor\Reflection\Types\Mixed_;
 use Yii;
+use yii\base\Exception;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
 /**
@@ -47,13 +48,16 @@ use yii\web\IdentityInterface;
  * @property UsersFiles[] $usersFiles
  * @property UsersMessages[] $usersMessages
  * @property UsersMessages[] $usersMessages0
+ * @property string $USER [char(32)]
+ * @property int $CURRENT_CONNECTIONS [bigint]
+ * @property int $TOTAL_CONNECTIONS [bigint]
  */
-class Users extends \yii\db\ActiveRecord implements IdentityInterface
+class Users extends ActiveRecord implements IdentityInterface
 {
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'users';
     }
@@ -61,7 +65,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['is_executor', 'notification_new_message', 'notification_task_action', 'notification_new_review', 'hide_profile', 'failed_count', 'show_contacts', 'city_id', 'avatar_file_id'], 'integer'],
@@ -78,7 +82,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -110,9 +114,9 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * Gets query for [[Responses]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getResponses()
+    public function getResponses(): ActiveQuery
     {
         return $this->hasMany(Responses::className(), ['executor_id' => 'id']);
     }
@@ -120,9 +124,9 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * Gets query for [[Reviews]].
      *
-     * @return \yii\db\ActiveQuery|Reviews[]
+     * @return ActiveQuery
      */
-    public function getReviewsByExecuted()
+    public function getReviewsByExecuted(): ActiveQuery
     {
         return $this->hasMany(Reviews::className(), ['executor_id' => 'id']);
     }
@@ -130,9 +134,9 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * Gets query for [[Reviews0]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getReviewsByCreated()
+    public function getReviewsByCreated(): ActiveQuery
     {
         return $this->hasMany(Reviews::className(), ['user_id' => 'id']);
     }
@@ -140,9 +144,9 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * Gets query for [[Tasks]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getTasks()
+    public function getTasks(): ActiveQuery
     {
         return $this->hasMany(Tasks::className(), ['executor_id' => 'id']);
     }
@@ -150,9 +154,9 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * Gets query for [[Tasks0]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getTasks0()
+    public function getTasks0(): ActiveQuery
     {
         return $this->hasMany(Tasks::className(), ['user_id' => 'id']);
     }
@@ -160,9 +164,9 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * Gets query for [[AvatarFile]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getAvatarFile()
+    public function getAvatarFile(): ActiveQuery
     {
         return $this->hasOne(Files::className(), ['id' => 'avatar_file_id']);
     }
@@ -170,9 +174,9 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * Gets query for [[City]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getCity()
+    public function getCity(): ActiveQuery
     {
         return $this->hasOne(Cities::className(), ['id' => 'city_id']);
     }
@@ -180,9 +184,9 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * Gets query for [[UsersFiles]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUsersFiles()
+    public function getUsersFiles(): ActiveQuery
     {
         return $this->hasMany(UsersFiles::className(), ['user_id' => 'id']);
     }
@@ -190,9 +194,9 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * Gets query for [[UsersMessages]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUsersMessages()
+    public function getUsersMessages(): ActiveQuery
     {
         return $this->hasMany(UsersMessages::className(), ['recipient_id' => 'id']);
     }
@@ -200,9 +204,9 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * Gets query for [[UsersMessages0]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUsersMessages0()
+    public function getUsersMessages0(): ActiveQuery
     {
         return $this->hasMany(UsersMessages::className(), ['sender_id' => 'id']);
     }
@@ -224,46 +228,78 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
         return $this->hasMany(Bookmarks::class, ['favorite_id' => 'id']);
     }
 
-    public function getBookmarks0()
+    /**
+     * @return ActiveQuery
+     */
+    public function getBookmarks0(): ActiveQuery
     {
         return $this->hasMany(Bookmarks::class, ['follower_id' => 'id']);
     }
 
+    /**
+     * @param int|string $id
+     * @return Users|IdentityInterface|null
+     */
     public static function findIdentity($id)
     {
         return self::findOne($id);
     }
 
+    /**
+     * @param mixed $token
+     * @param null $type
+     * @return void
+     */
     public static function findIdentityByAccessToken($token, $type = null)
     {
         // TODO: Implement findIdentityByAccessToken() method.
     }
 
+    /**
+     * @return array|int|mixed|string|null
+     */
     public function getId()
     {
         return $this->getPrimaryKey();
     }
 
-    public function getAuthKey()
+    /**
+     * @return string|null
+     */
+    public function getAuthKey(): ?string
     {
         return $this->auth_key;
     }
 
-    public function validateAuthKey($authKey)
+    /**
+     * @param string $authKey
+     * @return bool
+     */
+    public function validateAuthKey($authKey): bool
     {
         return $this->getAuthKey() === $authKey;
     }
 
-    public function validatePassword($password)
+    /**
+     * @param $password
+     * @return bool
+     */
+    public function validatePassword($password): bool
     {
         return \Yii::$app->security->validatePassword($password, $this->password);
     }
 
+    /**
+     * @throws Exception
+     */
     public function generatePasswordResetToken()
     {
         $this->password_reset_token = Yii::$app->security->generateRandomString();
     }
 
+    /**
+     * @throws Exception
+     */
     public function generateAuthKey()
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
@@ -307,7 +343,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * @return string[]
      */
-    public function fields()
+    public function fields(): array
     {
         return [
             'id', 'name', 'email'

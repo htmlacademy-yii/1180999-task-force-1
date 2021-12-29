@@ -2,7 +2,8 @@
 
 namespace frontend\models;
 
-use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "users_messages".
@@ -19,12 +20,12 @@ use Yii;
  * @property Users $sender
  * @property Tasks $task
  */
-class UsersMessages extends \yii\db\ActiveRecord
+class UsersMessages extends ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'users_messages';
     }
@@ -32,7 +33,7 @@ class UsersMessages extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['sender_id', 'recipient_id', 'message', 'task_id'], 'required'],
@@ -48,7 +49,7 @@ class UsersMessages extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -64,9 +65,9 @@ class UsersMessages extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Recipient]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getRecipient()
+    public function getRecipient(): ActiveQuery
     {
         return $this->hasOne(Users::className(), ['id' => 'recipient_id']);
     }
@@ -74,9 +75,9 @@ class UsersMessages extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Sender]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getSender()
+    public function getSender(): ActiveQuery
     {
         return $this->hasOne(Users::className(), ['id' => 'sender_id']);
     }
@@ -84,18 +85,18 @@ class UsersMessages extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Task]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getTask()
+    public function getTask(): ActiveQuery
     {
         return $this->hasOne(Tasks::className(), ['id' => 'task_id']);
     }
 
     /**
      * @param bool $insert
-     * @return bool|void
+     * @return bool
      */
-    public function beforeSave($insert)
+    public function beforeSave($insert): bool
     {
         parent::beforeSave($insert);
         if ($this->isNewRecord) {
@@ -110,21 +111,21 @@ class UsersMessages extends \yii\db\ActiveRecord
     public function fields(): array
     {
         return [
-            'dt_add' => function() {
+            'dt_add' => function () {
                 return \Yii::$app->formatter->format($this->dt_add, 'relativeTime');
             },
             'sender_id',
             'recipient_id',
             'message',
-            'sender' => function() {
+            'sender' => function () {
                 return $this->sender->name;
-                },
-            'is_mine' => function() {
+            },
+            'is_mine' => function () {
                 if ($this->sender_id === \Yii::$app->user->getId()) {
                     return 1;
                 }
+                return 0;
             }
         ];
-
     }
 }

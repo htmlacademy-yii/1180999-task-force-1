@@ -7,6 +7,7 @@
 
 use frontend\models\Users;
 use frontend\widgets\timeFormatter\TimeFormatterWidget;
+use yii\helpers\Html;
 use yii\helpers\Url;
 
 ?>
@@ -16,6 +17,8 @@ use yii\helpers\Url;
         'time' => $user->last_active_time,
         'format' => TimeFormatterWidget::USER_FORMAT
     ]) ?>
-    <a href="<?= Url::to(['users/add-bookmark', 'favorite_id' => $user->id]) ?>"><b></b></a>
+    <?= Html::a('<b></b>',
+        Url::to(['users/add-bookmark', 'favorite_id' => $user->id])
+    )?>
 </div>
 

@@ -84,19 +84,18 @@ use yii\helpers\Html;
 ])->input('text', ['class' => 'input-middle input']) ?>
 
 
-
 <fieldset class="search-task__categories" style="flex-direction: row-reverse; justify-content: space-between">
     <?= Html::submitButton('Поиск', [
         'type' => 'submit',
         'class' => 'button'
     ]) ?>
 
-    <a href="<?= Url::to(['users/index']) ?>">
-        <?= Html::button('Очистить', [
-            'type' => 'button',
-            'class' => 'button reset-button'
-        ]) ?>
-    </a>
+    <?= Html::a(Html::button('Очистить', [
+        'type' => 'button',
+        'class' => 'button reset-button'
+    ]),
+        Url::to(['users/index'])
+    ) ?>
 </fieldset>
 
 <?php ActiveForm::end() ?>

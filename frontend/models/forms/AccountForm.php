@@ -26,8 +26,6 @@ class AccountForm extends Model
     public $show_contacts;
     public $hide_profile;
 
-    private $_user;
-
     public function attributeLabels()
     {
         return [

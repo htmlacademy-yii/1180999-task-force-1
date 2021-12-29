@@ -13,11 +13,14 @@ use frontend\models\Tasks;
 
 <div class="new-task__card">
     <div class="new-task__title">
-        <a href="<?= Url::to(['tasks/view', 'id' => $model->id]) ?>" class="link-regular"><h2><?= $model->name ?></h2>
-        </a>
-        <a class="new-task__type link-regular" href="
-        <?= Url::to(['tasks/index', 'TaskFilterForm' => ['category_ids' => $model->category_id]]) ?>
-            "><p><?= $model->category->name ?></p></a>
+        <?= Html::a("<h2>{$model->name}</h2>",
+                    Url::to(['tasks/view', 'id' => $model->id]),
+                    ['class' => 'link-regular']
+        )?>
+        <?= Html::a("<p>{$model->category->name }</p>",
+            Url::to(['tasks/index', 'TaskFilterForm' => ['category_ids' => $model->category_id]]),
+            ['class' => 'new-task__type link-regular']
+        )?>
     </div>
     <div class="new-task__icon new-task__icon--<?= $model->category->code?>"></div>
     <p class="new-task_description">

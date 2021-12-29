@@ -30,7 +30,11 @@ use yii\helpers\Url;
             </p>
             <?php if ($model->executor): ?>
                 <div class="feedback-card__top">
-                    <a href="#"><img src="<?= $model->executor->avatarFile->path ?? '/img/no-photos.png' ?>" width="36" height="36"></a>
+                    <?= Html::a(Html::img($model->executor->avatarFile->path ?? '/img/no-photos.png', [
+                        'width' => 36,
+                        'height' => 36,
+                        'alt' => 'Аватар исполнителя',
+                    ]), Url::to(['users/view', 'id' => $model->executor_id])) ?>
                     <div class="feedback-card__top--name my-list__bottom">
                         <p class="link-name">
                             <?= Html::a($model->executor->name,

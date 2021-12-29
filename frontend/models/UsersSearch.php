@@ -4,10 +4,10 @@ namespace frontend\models;
 
 use app\models\Bookmarks;
 use frontend\models\forms\UserFilterForm;
-use frontend\widgets\bookmark\Bookmark;
-use taskforce\Task;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "users".
@@ -41,13 +41,21 @@ use yii\data\ActiveDataProvider;
  * @property UsersFiles[] $usersFiles
  * @property UsersMessages[] $usersMessages
  * @property UsersMessages[] $usersMessages0
+ * @property bool $notification_new_review [tinyint]
+ * @property bool $hide_profile [tinyint]
+ * @property string $auth_key [varchar(255)]
+ * @property string $password_hash [varchar(255)]
+ * @property string $password_reset_token [varchar(255)]
+ * @property string $USER [char(32)]
+ * @property int $CURRENT_CONNECTIONS [bigint]
+ * @property int $TOTAL_CONNECTIONS [bigint]
  */
-class UsersSearch extends \yii\db\ActiveRecord
+class UsersSearch extends ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'users';
     }
@@ -55,7 +63,7 @@ class UsersSearch extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['is_executor', 'notification_new_message', 'notification_task_action', 'failed_count', 'show_contacts', 'city_id', 'avatar_file_id'], 'integer'],
@@ -72,7 +80,7 @@ class UsersSearch extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -100,9 +108,9 @@ class UsersSearch extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Responses]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getResponses()
+    public function getResponses(): ActiveQuery
     {
         return $this->hasMany(Responses::className(), ['executor_id' => 'id']);
     }
@@ -110,9 +118,9 @@ class UsersSearch extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Reviews]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getReviews()
+    public function getReviews(): ActiveQuery
     {
         return $this->hasMany(Reviews::className(), ['executor_id' => 'id']);
     }
@@ -120,9 +128,9 @@ class UsersSearch extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Tasks]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getTasks()
+    public function getTasks(): ActiveQuery
     {
         return $this->hasMany(Tasks::className(), ['executor_id' => 'id']);
     }
@@ -130,9 +138,9 @@ class UsersSearch extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Tasks0]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getTasks0()
+    public function getTasks0(): ActiveQuery
     {
         return $this->hasMany(Tasks::className(), ['user_id' => 'id']);
     }
@@ -140,9 +148,9 @@ class UsersSearch extends \yii\db\ActiveRecord
     /**
      * Gets query for [[AvatarFile]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getAvatarFile()
+    public function getAvatarFile(): ActiveQuery
     {
         return $this->hasOne(Files::className(), ['id' => 'avatar_file_id']);
     }
@@ -150,9 +158,9 @@ class UsersSearch extends \yii\db\ActiveRecord
     /**
      * Gets query for [[City]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getCity()
+    public function getCity(): ActiveQuery
     {
         return $this->hasOne(Cities::className(), ['id' => 'city_id']);
     }
@@ -160,9 +168,9 @@ class UsersSearch extends \yii\db\ActiveRecord
     /**
      * Gets query for [[UsersFiles]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUsersFiles()
+    public function getUsersFiles(): ActiveQuery
     {
         return $this->hasMany(UsersFiles::className(), ['user_id' => 'id']);
     }
@@ -170,9 +178,9 @@ class UsersSearch extends \yii\db\ActiveRecord
     /**
      * Gets query for [[UsersMessages]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUsersMessages()
+    public function getUsersMessages(): ActiveQuery
     {
         return $this->hasMany(UsersMessages::className(), ['recipient_id' => 'id']);
     }
@@ -180,9 +188,9 @@ class UsersSearch extends \yii\db\ActiveRecord
     /**
      * Gets query for [[UsersMessages0]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUsersMessages0()
+    public function getUsersMessages0(): ActiveQuery
     {
         return $this->hasMany(UsersMessages::className(), ['sender_id' => 'id']);
     }

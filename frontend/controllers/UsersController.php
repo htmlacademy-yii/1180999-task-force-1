@@ -6,10 +6,10 @@ use app\models\Bookmarks;
 use frontend\models\forms\UserFilterForm;
 use frontend\models\UsersFiles;
 use frontend\models\UsersSearch;
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use frontend\models\Users;
-use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -45,7 +45,7 @@ class UsersController extends SecuredController
     public function actionIndex(): string
     {
         $query = Users::find()->where(['is_executor' => 1])
-                    ->andWhere(['hide_profile' => 0]);
+            ->andWhere(['hide_profile' => 0]);
         $filterForm = new UserFilterForm();
 
         $provider = new ActiveDataProvider([
@@ -55,7 +55,7 @@ class UsersController extends SecuredController
             ]
         ]);
 
-        if ($filterForm->load(\Yii::$app->request->get())) {
+        if ($filterForm->load(Yii::$app->request->get())) {
             $usersSearch = new UsersSearch();
             $provider = $usersSearch->search($filterForm);
         }
@@ -68,10 +68,10 @@ class UsersController extends SecuredController
 
     /**
      * @param $id
-     * @return string|Response
+     * @return string
      * @throws NotFoundHttpException
      */
-    public function actionView($id)
+    public function actionView($id): string
     {
         $user = Users::find()->where(['id' => $id])->andWhere(['hide_profile' => 0])->one();
 
@@ -104,21 +104,21 @@ class UsersController extends SecuredController
      */
     public function actionAddBookmark(int $favorite_id): Response
     {
-        $bookmarks = Bookmarks::find()->where(['follower_id' => \Yii::$app->user->id])->all();
+        $bookmarks = Bookmarks::find()->where(['follower_id' => Yii::$app->user->id])->all();
 
         foreach ($bookmarks as $bookmark) {
             if ($bookmark->favorite->id === $favorite_id) {
                 if ($bookmark->delete()) {
-                    \Yii::$app->session->setFlash('bookmark-delete', 'Пользователь удален из избранного');
+                    Yii::$app->session->setFlash('bookmark-delete', 'Пользователь удален из избранного');
                 }
                 return $this->redirect(['users/view', 'id' => $favorite_id]);
             }
         }
         $bookmark = new Bookmarks();
         $bookmark->favorite_id = $favorite_id;
-        $bookmark->follower_id = \Yii::$app->user->id;
+        $bookmark->follower_id = Yii::$app->user->id;
         if ($bookmark->save()) {
-            \Yii::$app->session->setFlash('bookmark-add', 'Пользователь добавлен в избранное');
+            Yii::$app->session->setFlash('bookmark-add', 'Пользователь добавлен в избранное');
         }
 
         return $this->redirect(['users/view', 'id' => $favorite_id]);
