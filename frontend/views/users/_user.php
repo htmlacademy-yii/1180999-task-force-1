@@ -1,9 +1,11 @@
 <?php
 
 /**
- * @var $model \frontend\models\Users;
+ * @var $model Users;
  */
 
+use frontend\models\Users;
+use frontend\services\CalcRatingScore;
 use frontend\widgets\executorInfo\ExecutorInfo;
 use frontend\widgets\rating\RatingWidget;
 use frontend\widgets\timeFormatter\TimeFormatterWidget;
@@ -23,7 +25,7 @@ use yii\helpers\Url;
                 ['class' => 'link-regular']
             ) ?>
         </p>
-        <?= RatingWidget::widget(['rating' => $model->calcRatingScore()]) ?>
+        <?= RatingWidget::widget(['rating' => CalcRatingScore::run($model->id)]) ?>
         <p class="user__search-content">
             <?= $model->about_me ?>
         </p>

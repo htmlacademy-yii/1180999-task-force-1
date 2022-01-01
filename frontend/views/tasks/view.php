@@ -8,6 +8,8 @@
  */
 
 
+use frontend\assets\GeoCoderApiAsset;
+use frontend\assets\MessengerAsset;
 use frontend\models\Tasks;
 use frontend\models\Users;
 use frontend\widgets\customerInfo\CustomerInfo;
@@ -17,6 +19,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use frontend\models\Files;
 
+MessengerAsset::register($this);
+GeoCoderApiAsset::register($this);
 ?>
 
 <div class="main-container page-container">
@@ -195,4 +199,3 @@ use frontend\models\Files;
         'points' => $task->location
     ]) ?>
 <?php endif; ?>
-<?php $this->registerJsFile('/js/messenger.js'); ?>

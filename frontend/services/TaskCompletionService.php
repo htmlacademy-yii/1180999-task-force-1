@@ -39,7 +39,7 @@ class TaskCompletionService
             }
         }
 
-        if ($this->form->description != null || Yii::$app->request->post('rating') != null) {
+        if ($this->form->description || Yii::$app->request->post('rating')) {
             $review = new Reviews();
             $review->task_id = $task->id;
             $review->user_id = $task->user_id;
