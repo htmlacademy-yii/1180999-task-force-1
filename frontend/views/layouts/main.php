@@ -15,7 +15,6 @@ use yii\helpers\Url;
  * @var $content string
  */
 
-AppAsset::register($this);
 MainAsset::register($this);
 ?>
 
