@@ -1,6 +1,8 @@
 <?php
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
+use frontend\assets\AppAsset;
+use frontend\assets\MainAsset;
 use frontend\widgets\notifications\NotificationsWidget;
 use frontend\widgets\towns\TownsWidgets;
 use taskforce\Task;
@@ -8,10 +10,12 @@ use yii\helpers\Html;
 use yii\web\View;
 use yii\helpers\Url;
 
+/**
+ * @var $this View
+ * @var $content string
+ */
 
-/* @var $this View */
-
-/* @var $content string */
+MainAsset::register($this);
 ?>
 
 <?php $this->beginPage() ?>
@@ -23,11 +27,6 @@ use yii\helpers\Url;
     <meta charset="<?= Yii::$app->charset ?>">
     <?php $this->registerCsrfMetaTags(); ?>
     <title><?= Html::encode($this->title) ?></title>
-    <link rel="stylesheet" href="/css/normalize.css">
-    <link rel="stylesheet" href="/css/style.css">
-    <script src="https://api-maps.yandex.ru/2.1/?apikey=<?= Yii::$app->params['yandexApiKey'] ?>>&lang=ru_RU"
-            type="text/javascript">
-    </script>
 </head>
 <body>
 <?= Yii::$app->session->getFlash('error') ?? '' ?>
@@ -117,8 +116,10 @@ use yii\helpers\Url;
                         'width' => 43,
                         'height' => 44,
                         'alt' => 'Аватар пользователя',
-                    ]), '#', ['class' => 'header__account-photo']) ?>
-
+                    ]),
+                        Url::to(['users/view', 'id' => Yii::$app->user->identity->getId()]),
+                        ['class' => 'header__account-photo'])
+                    ?>
                     <span class="header__account-name">
                  <?= Yii::$app->user->identity->name ?>
              </span>

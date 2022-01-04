@@ -5,6 +5,7 @@
  */
 
 use frontend\models\Responses;
+use frontend\services\CalcRatingScore;
 use frontend\widgets\rating\RatingWidget;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -28,7 +29,7 @@ use yii\helpers\Url;
                         ['class' => 'link-regular'])
                         ?>
                     </p>
-                    <?= RatingWidget::widget(['rating' => $response->executor->calcRatingScore()]) ?>
+                    <?= RatingWidget::widget(['rating' => CalcRatingScore::run($response->executor_id)]) ?>
 
                 </div>
                 <span class="new-task__time"><?= Yii::$app->formatter->format($response->dt_add, 'relativeTime') ?></span>

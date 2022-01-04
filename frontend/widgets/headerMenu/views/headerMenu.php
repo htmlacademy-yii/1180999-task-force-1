@@ -1,4 +1,5 @@
-<?php use yii\helpers\Html;
+<?php
+use yii\helpers\Html;
 
 use yii\helpers\Url;
 
@@ -27,4 +28,9 @@ if (Yii::$app->user->isGuest): ?>
         </svg>
         Выйти (' . Yii::$app->user->identity->name . ')', Url::to(['site/logout']),
     ) ?>
+<?php endif; ?>
+<?php if (Yii::$app->session->getFlash('errors')): ?>
+<div class="error_message--Registration">
+    <span>Ошибка авторизации,<br>email уже существует</span>
+</div>
 <?php endif; ?>

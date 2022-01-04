@@ -15,12 +15,11 @@ class GeoCoderApi
         }
 
         $api = new Client();
-        $uri = 'https://geocode-maps.yandex.ru/1.x';
 
-        $resource = $api->request('GET', $uri, [
+        $resource = $api->request('GET', Yii::$app->params['geocoder']['uri'], [
             'query' => [
                 'geocode' => $address,
-                'apikey' => Yii::$app->params['yandexApiKey'],
+                'apikey' => Yii::$app->params['geocoder']['token'],
                 'format' => 'json'
             ],
         ]);

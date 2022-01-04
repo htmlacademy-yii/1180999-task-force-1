@@ -9,6 +9,7 @@ use Yii;
 use frontend\models\Users;
 use yii\db\Exception;
 use frontend\models\forms\LoginForm;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\Response;
 
@@ -83,7 +84,10 @@ class SiteController extends Controller
 
             } else { // регистрация
                 $regService = new UserRegistrationService($attributes, $client);
-                $regService->execute();
+                if (!$regService->execute()) {
+                    Yii::$app->session->setFlash('errors');
+                    return $this->redirect(Url::to(['site/index']));
+                }
             }
         } else {
             if (!$auth) {

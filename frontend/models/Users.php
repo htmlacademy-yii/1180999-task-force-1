@@ -304,29 +304,6 @@ class Users extends ActiveRecord implements IdentityInterface
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
-    /**
-     * Функция подсчета рейтинга пользователя
-     * @return float|int
-     */
-    public function calcRatingScore()
-    {
-        $countReviews = 0;
-        $sum = [];
-
-        foreach ($this->getReviewsByExecuted()->all() as $item) {
-            if ($item->score != null) {
-                $sum[] = $item->score;
-            }
-            $countReviews++;
-        }
-
-        if (count($sum) === 0) {
-            return 0;
-        }
-
-        return array_sum($sum) / count($sum);
-    }
-
 
     /**
      * @return bool
