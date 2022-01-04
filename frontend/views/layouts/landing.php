@@ -1,5 +1,6 @@
 <?php
 
+use frontend\assets\AppAsset;
 use frontend\widgets\headerMenu\HeaderMenuWidget;
 use yii\bootstrap\Html;
 use yii\web\View;
@@ -8,8 +9,10 @@ use yii\helpers\Url;
 /* @var $this View */
 
 /* @var $content string */
-?>
 
+AppAsset::register($this);
+
+?>
 <?php $this->beginPage() ?>
 
 <!DOCTYPE html>
@@ -19,11 +22,8 @@ use yii\helpers\Url;
     <meta charset="<?= Yii::$app->charset ?>">
     <?php $this->registerCsrfMetaTags(); ?>
     <title><?= Html::encode($this->title) ?></title>
-    <link rel="stylesheet" href="/css/normalize.css">
-    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-
 <?php $this->beginBody() ?>
 <body class="landing">
 <div class="table-layout">
@@ -75,19 +75,15 @@ use yii\helpers\Url;
         </div>
     </header>
     <main>
-
         <?= $content ?? '' ?>
-
     </main>
     <footer class="page-footer">
         <?= $this->render('footer') ?>
     </footer>
 </div>
 <div class="overlay"></div>
-<?php $this->registerJsFile('/js/main.js'); ?>
 
 <?php $this->endBody(); ?>
-
 </body>
 </html>
 

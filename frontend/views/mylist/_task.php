@@ -1,6 +1,7 @@
 <?php
 
 use frontend\models\Tasks;
+use frontend\services\CalcRatingScore;
 use frontend\widgets\notifications\MessengerWidget;
 use frontend\widgets\rating\RatingWidget;
 use frontend\widgets\status\StatusWidget;
@@ -43,7 +44,7 @@ use yii\helpers\Url;
                             ) ?>
                         </p>
                         <?= MessengerWidget::widget(['task_id' => $model->id]) ?>
-                        <?= RatingWidget::widget(['rating' => $model->executor->calcRatingScore()]) ?>
+                        <?= RatingWidget::widget(['rating' => CalcRatingScore::run($model->executor_id)]) ?>
                     </div>
                 </div>
 

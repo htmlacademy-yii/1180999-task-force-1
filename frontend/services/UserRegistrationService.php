@@ -33,12 +33,10 @@ class UserRegistrationService
      * @throws Exception
      * @throws \yii\base\Exception
      */
-    public function execute()
+    public function execute(): bool
     {
-        if (isset($attributes['email']) && Users::find()->where(['email' => $attributes['email']])->exists()) {
-            Yii::$app->getSession()->setFlash('error', [
-                Yii::t('app', "Пользователь с такой электронной почтой как в {client} уже существует, но с ним не связан. Для начала войдите на сайт использую электронную почту, для того, что бы связать её.", ['client' => $client->getTitle()]),
-            ]);
+        if (!isset($this->attributes['email']) && Users::find()->where(['email' => $this->attributes['email']])->exists()) {
+            return false;
         } else {
             $password = Yii::$app->security->generateRandomString(20);
             $getCity = new GeoCoderApi();
@@ -92,8 +90,9 @@ class UserRegistrationService
                     print_r($auth->getErrors());
                 }
             } else {
-                print_r($user->getErrors());
+                return false;
             }
         }
+    return true;
     }
 }
